@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\SpaceInvader.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{A68C8AEA-2821-4E68-8783-DC0FB359FBB8}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\SpaceInvader.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\SpaceInvaderEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <Filter Include="Config">
+      <UniqueIdentifier>{9A92630F-0FA8-49A7-B59C-59FA70C02963}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\SpaceInvader">
+      <UniqueIdentifier>{80D601BC-6E2C-4BD0-8336-B30D1CE8C041}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\SpaceInvader\SpaceInvader.Build.cs">
+      <Filter>Source\SpaceInvader</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\SpaceInvader\SpaceInvader.cpp">
+      <Filter>Source\SpaceInvader</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SpaceInvader\SpaceInvader.h">
+      <Filter>Source\SpaceInvader</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\SpaceInvader\SpaceInvaderGameModeBase.cpp">
+      <Filter>Source\SpaceInvader</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SpaceInvader\SpaceInvaderGameModeBase.h">
+      <Filter>Source\SpaceInvader</Filter>
+    </ClInclude>
+    <Filter Include="Source\SpaceInvader\Private">
+      <UniqueIdentifier>{280D3E46-A6FB-4411-AAC7-7AD5E7363A6C}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\SpaceInvader\Private\BulletActor.cpp">
+      <Filter>Source\SpaceInvader\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\SpaceInvader\Private\ShipPawn.cpp">
+      <Filter>Source\SpaceInvader\Private</Filter>
+    </ClCompile>
+    <Filter Include="Source\SpaceInvader\Public">
+      <UniqueIdentifier>{C06178B3-B3FF-41C2-AC13-D3D7D03D1238}</UniqueIdentifier>
+    </Filter>
+    <ClInclude Include="..\..\Source\SpaceInvader\Public\BulletActor.h">
+      <Filter>Source\SpaceInvader\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\SpaceInvader\Public\ShipPawn.h">
+      <Filter>Source\SpaceInvader\Public</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
