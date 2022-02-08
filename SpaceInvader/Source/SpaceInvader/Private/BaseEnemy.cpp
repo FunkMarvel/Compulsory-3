@@ -5,6 +5,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Projectile.h"
 
 // Sets default values
 ABaseEnemy::ABaseEnemy()
@@ -23,6 +24,10 @@ ABaseEnemy::ABaseEnemy()
 
 	StartHealth = 50;
 	MovmentSpeed = 200.f;
+
+	
+
+	
 }
 
 // Called when the game starts or when spawned
@@ -38,13 +43,28 @@ void ABaseEnemy::BeginPlay()
 void ABaseEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	Move(FVector());
+	/*Move(FVector::XAxisVector);*/
 }
 
 void ABaseEnemy::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "HIT!");
 	//Code todo Damage and push away
+}
+
+void ABaseEnemy::FireAtPlayer()
+{
+	if (ProjectileClass)
+	{
+		AProjectile* NewProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass,
+			GetActorLocation() + FVector::ZAxisVector * 100.f,
+			GetActorRotation());
+
+		NewProjectile->SetOwner(this);
+	}
+
+	
+
 }
 
 void ABaseEnemy::Move(const FVector &Direction)
