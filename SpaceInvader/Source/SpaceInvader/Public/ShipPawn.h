@@ -29,28 +29,29 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "PlayerMesh")
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
 		UStaticMeshComponent* PlayerMesh{nullptr};
 
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "PlayerMesh")
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Camera")
 		USpringArmComponent* SpringArm{nullptr};
 
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "PlayerMesh")
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Camera")
 		UCameraComponent* Camera{nullptr};
 
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "PlayerMesh")
-		float Speed{5.f};
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Movement")
+		float Speed{ 5.f };
+	float SpeedLerp{};
 
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "PlayerMesh")
-		int Ammo{30};
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
+		int Ammo{ 30 };
 
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "PlayerMesh")
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
 		USoundBase* ShootingSound{nullptr};
 
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "PlayerMesh")
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
 		USoundBase* ReloadingSound{nullptr};
 
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "PlayerMesh")
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
 		TSubclassOf<AActor> ActorToSpawn;
 
 	void Reload();
@@ -61,14 +62,21 @@ public:
 	bool InContact;
 
 private:
+	
 	FVector InitLocation = FVector::ZeroVector;
-
 
 	void MoveXAxis(float Value);
 	void MoveYAxis(float Value);
 
+	void Aim(float Value);
+
 	void Dash();
-	float XValue = 0.f;
-	float YValue = 0.f;
-	float DashTimer = 0.f;
+	void Focus();
+
+	float XValue{};
+	float YValue{};
+	float DashTimer{};
+	float FocusSpeedMod{ 0.5f };
+
+	bool bFocused{ false };
 };
