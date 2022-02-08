@@ -44,6 +44,7 @@ AShipPawn::AShipPawn()
 	PlayerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Player Mesh"));
 	SetRootComponent(PlayerMesh);
 	PlayerMesh->SetStaticMesh(SphereMesh.Object);
+	PlayerMesh->SetSimulatePhysics(true);
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	SpringArm->bDoCollisionTest = false;
@@ -127,11 +128,22 @@ void AShipPawn::Aim(float Value) {
 }
 
 void AShipPawn::Dash() {
+	FVector MouseLocation;
+	FVector MouseDirection;
 
+	Cast<APlayerController>(GetController())->DeprojectMousePositionToWorld(MouseLocation, MouseDirection);
+	MouseDirection.Z = 0.f;
+
+	PlayerMesh->AddRelativeLocation(MouseDirection * 500);
 }
 
 void AShipPawn::Focus() {
+	
 	bFocused = !bFocused;
+	
+	if (bFocused) { Speed = FocusSpeedMod * BaseSpeed; }
+	else { Speed = BaseSpeed; }
+
 	UE_LOG(LogTemp, Warning, TEXT("bFocused: %d"), bFocused);
 }
 

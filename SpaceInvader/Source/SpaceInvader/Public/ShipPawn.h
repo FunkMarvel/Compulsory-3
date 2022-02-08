@@ -39,8 +39,8 @@ public:
 		UCameraComponent* Camera{nullptr};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Movement")
-		float Speed{ 5.f };
-	float SpeedLerp{};
+		float BaseSpeed{ 5.f };
+	float Speed{BaseSpeed};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
 		int Ammo{ 30 };
