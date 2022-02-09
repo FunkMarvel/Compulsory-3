@@ -39,8 +39,8 @@ public:
 		UCameraComponent* Camera{nullptr};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Movement")
-		float BaseSpeed{ 5.f };
-	float Speed{BaseSpeed};
+		float BaseAcceleration{ 1000.f };
+	float Speed{BaseAcceleration};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
 		int Ammo{ 30 };
@@ -71,7 +71,7 @@ private:
 	void Aim(float Value);
 
 	void Dash();
-	void Focus();
+	void Focus(float Value);
 
 	float XValue{};
 	float YValue{};

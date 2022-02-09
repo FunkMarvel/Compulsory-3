@@ -26,7 +26,7 @@ static void InitializeDefaultPawnInputBinding() {
 		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("Aim", EKeys::Mouse2D, 1.f));
 
 		UPlayerInput::AddEngineDefinedActionMapping(FInputActionKeyMapping("Dash", EKeys::LeftShift));
-		UPlayerInput::AddEngineDefinedActionMapping(FInputActionKeyMapping("Focus", EKeys::SpaceBar));
+		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("Focus", EKeys::SpaceBar));
 
 		UPlayerInput::AddEngineDefinedActionMapping(FInputActionKeyMapping("Shoot",EKeys::LeftMouseButton));
 		UPlayerInput::AddEngineDefinedActionMapping(FInputActionKeyMapping("Reload",EKeys::R));
@@ -38,13 +38,13 @@ AShipPawn::AShipPawn()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("StaticMesh'/Game/Models/MaterialSphere.MaterialSphere'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("	StaticMesh'/Game/Models/PlaceHolderPlane/PlaceHolderPlane.PlaceHolderPlane'"));
 
 	PlayerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Player Mesh"));
 	SetRootComponent(PlayerMesh);
 	PlayerMesh->SetStaticMesh(SphereMesh.Object);
 	PlayerMesh->SetSimulatePhysics(true);
+	PlayerMesh->SetEnableGravity(false);
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	SpringArm->bDoCollisionTest = false;
@@ -73,7 +73,7 @@ void AShipPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	InContact = false;
-	PlayerMesh->AddRelativeLocation(FVector(XValue,YValue,0.f)*Speed);
+	PlayerMesh->AddForce(FVector(XValue,YValue,0.f)*Speed);
 
 }
 
@@ -90,8 +90,9 @@ void AShipPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("Aim", this, &AShipPawn::Aim);
 
 	PlayerInputComponent->BindAction("Dash",EInputEvent::IE_Pressed,this,&AShipPawn::Dash);
-	PlayerInputComponent->BindAction("Focus",EInputEvent::IE_Pressed,this,&AShipPawn::Focus);
-	PlayerInputComponent->BindAction("Focus",EInputEvent::IE_Released,this,&AShipPawn::Focus);
+	PlayerInputComponent->BindAxis("Focus", this, &AShipPawn::Focus);
+	//PlayerInputComponent->BindAction("Focus",EInputEvent::IE_Pressed,this,&AShipPawn::Focus);
+	//PlayerInputComponent->BindAction("Focus",EInputEvent::IE_Released,this,&AShipPawn::Focus);
 
 	PlayerInputComponent->BindAction("Shoot",EInputEvent::IE_Pressed,this,&AShipPawn::Shoot);
 	PlayerInputComponent->BindAction("Reload",EInputEvent::IE_Pressed,this,&AShipPawn::Reload);
@@ -130,20 +131,30 @@ void AShipPawn::Aim(float Value) {
 void AShipPawn::Dash() {
 	FVector MouseLocation;
 	FVector MouseDirection;
+	FVector CurrentVelocity = GetVelocity();
 
 	Cast<APlayerController>(GetController())->DeprojectMousePositionToWorld(MouseLocation, MouseDirection);
 	MouseDirection.Z = 0.f;
 
-	PlayerMesh->AddRelativeLocation(MouseDirection * 500);
+	PlayerMesh->AddImpulse(MouseDirection * 2.5 *BaseAcceleration);
+	
 }
 
-void AShipPawn::Focus() {
+void AShipPawn::Focus(float Value) {
 	
-	bFocused = !bFocused;
+	//bFocused = !bFocused;
 	
-	if (bFocused) { Speed = FocusSpeedMod * BaseSpeed; }
-	else { Speed = BaseSpeed; }
+	//if (bFocused) {
+	//	//Speed = FocusSpeedMod * BaseAcceleration;
+	//}
+	//else {
+	//	//Speed = BaseAcceleration;
+	//}
 
-	UE_LOG(LogTemp, Warning, TEXT("bFocused: %d"), bFocused);
+	//UE_LOG(LogTemp, Warning, TEXT("bFocused: %d"), bFocused);
+
+	FVector CurrentVelocity = -GetVelocity();
+	CurrentVelocity.Normalize();
+	PlayerMesh->AddForce(CurrentVelocity*0.5*BaseAcceleration);
 }
 
