@@ -5,6 +5,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "Projectile.h"
 
 // Sets default values
@@ -24,7 +25,7 @@ ABaseEnemy::ABaseEnemy()
 
 	StartHealth = 50;
 	MovmentSpeed = 200.f;
-
+	
 	
 
 	
@@ -34,8 +35,11 @@ ABaseEnemy::ABaseEnemy()
 void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+	PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	CapsuleComp->OnComponentHit.AddDynamic(this, &ABaseEnemy::OnHit);
 	Health = StartHealth;
+
+
 	
 }
 
@@ -44,6 +48,30 @@ void ABaseEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	/*Move(FVector::XAxisVector);*/
+}
+
+bool ABaseEnemy::IsInAgroRange()
+{
+	if (PlayerPawn == nullptr)
+		return false;
+	float Distance = (PlayerPawn->GetActorLocation() - GetActorLocation()).Size();
+	if (Distance <= AggroRange)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool ABaseEnemy::IsInInnerRange()
+{
+	if (PlayerPawn == nullptr)
+		return false;
+	float Distance = (PlayerPawn->GetActorLocation() - GetActorLocation()).Size();
+	if (Distance <= InnerRange)
+	{
+		return true;
+	}
+	return false;
 }
 
 void ABaseEnemy::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -56,14 +84,16 @@ void ABaseEnemy::FireAtPlayer()
 {
 	if (ProjectileClass)
 	{
+		//the line under is unefficient, but since we dont have diffrent types of bullets we are using this
+		ProjectileClass.GetDefaultObject()->ProjectileMovmentComponent->InitialSpeed = ProjectileSpeed;
 		AProjectile* NewProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass,
-			GetActorLocation() + FVector::ZAxisVector * 100.f,
+			GetActorLocation() + GetActorForwardVector() * ProjectileForwardOffset,
 			GetActorRotation());
-
+		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Sharpshooter!");
 		NewProjectile->SetOwner(this);
 	}
 
-	
+	ProjectileForwardOffset = 40.f;
 
 }
 

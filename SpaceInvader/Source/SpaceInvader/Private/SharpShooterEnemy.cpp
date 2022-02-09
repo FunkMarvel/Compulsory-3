@@ -1,39 +1,39 @@
 
 
 #include "Kismet/GameplayStatics.h"
-#include "BasicShooterEnemy.h"
+#include "SharpShooterEnemy.h"
 
-ABasicShooterEnemy::ABasicShooterEnemy() {
+ASharpShooterEnemy::ASharpShooterEnemy() {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	ProjectileForwardOffset = 40.f;
-	ShotInterval = 0.7f;
-	MovmentSpeed = 200.f;
-	AggroRange = 1100.f;
-	InnerRange = 250.f;
-	ProjectileSpeed = 700.f;
+	ProjectileForwardOffset = 100.f;
+	ShotInterval = 2.f;
+	MovmentSpeed = 100.f;
+	AggroRange = 2400.f;
+	InnerRange = 700.f;
+	ProjectileSpeed = 7000.f;
 }
 
 
-void ABasicShooterEnemy::Tick(float DeltaTime) {
+void ASharpShooterEnemy::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 	
-	
+
 	MoveLogic();
 	FiringLogic();
 
 	LookAtPlayer();
 }
 
-void ABasicShooterEnemy::BeginPlay() {
+void ASharpShooterEnemy::BeginPlay() {
 	Super::BeginPlay();
 
-	
-	
+
+
 }
 
-void ABasicShooterEnemy::MoveLogic()
+void ASharpShooterEnemy::MoveLogic()
 {
 	if (PlayerPawn == nullptr)
 		return;
@@ -45,16 +45,23 @@ void ABasicShooterEnemy::MoveLogic()
 
 		Move(ToPlayerVector);
 	}
+	else if (IsInInnerRange()) {
+		FVector ToPlayerVector = PlayerPawn->GetActorLocation() - GetActorLocation();
+		ToPlayerVector.Z = 0.f;
+
+		Move(-ToPlayerVector);
+	}
 
 }
 
-void ABasicShooterEnemy::FiringLogic()
+void ASharpShooterEnemy::FiringLogic()
 {
 	if (PlayerPawn == nullptr)
 		return;
 	LastShotTime += UGameplayStatics::GetWorldDeltaSeconds(this);
 	if (IsInAgroRange() && ShotInterval <= LastShotTime)
 	{
+		
 		FireAtPlayer();
 		LastShotTime = 0.f;
 	}

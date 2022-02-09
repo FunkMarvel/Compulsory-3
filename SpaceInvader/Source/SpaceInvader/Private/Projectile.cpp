@@ -39,12 +39,20 @@ void AProjectile::BeginPlay()
 void AProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	TimeAlive += DeltaTime;
+
+	if (MaxTimeAlive < TimeAlive)
+	{
+		Destroy();
+	}
 
 }
+
+
 
 void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	GEngine->AddOnScreenDebugMessage(-9, 1, FColor::Green, "HIT Something!");
-
+	Destroy();
 }
 

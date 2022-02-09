@@ -35,11 +35,30 @@ public:
 		int StartHealth;
 	UPROPERTY(EditAnywhere, Category = "Enemy")
 		float MovmentSpeed;
+	UPROPERTY(EditAnywhere, Category = "Enemy")
+		float ProjectileForwardOffset;
+
+	//AI LOGIC
+	UPROPERTY(EditAnywhere, Category = "Enemy")
+		float AggroRange;
+	UFUNCTION()
+		bool IsInAgroRange();
+	UPROPERTY(EditAnywhere, Category = "Enemy")
+		float InnerRange;
+	UFUNCTION()
+		bool IsInInnerRange();
+	
+	// Firing
+	UPROPERTY(EditAnywhere, Category = "Enemy")
+		float ProjectileSpeed = 1100.f;
+
 
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 		TSubclassOf<class AProjectile> ProjectileClass;
+
+	APawn* PlayerPawn = nullptr;
 
 	int Health;
 
@@ -48,6 +67,15 @@ protected:
 
 	UFUNCTION()
 		void FireAtPlayer();
+
+	//should be called every frame in tick
+	UFUNCTION()
+		virtual void MoveLogic(){}
+
+	//should be called every frame in tick
+	UFUNCTION()
+		virtual void FiringLogic() {}
+
 
 	/// <summary>
 	/// Move functuon Direction is in world space

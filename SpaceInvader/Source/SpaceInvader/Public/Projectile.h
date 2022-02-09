@@ -23,17 +23,24 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Combat")
+	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
 		UStaticMeshComponent* ProjectileMesh;
 
 	UPROPERTY(VisibleAnywhere, Category = "Movment")
 		class UProjectileMovementComponent* ProjectileMovmentComponent;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Bullet")
 		float Damage = 49.f;
+
+	UPROPERTY(EditAnywhere, Category = "Bullet")
+		float MaxTimeAlive = 4.f;
+
+	
+
 private:
 
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+	float TimeAlive = 0.f;
 };

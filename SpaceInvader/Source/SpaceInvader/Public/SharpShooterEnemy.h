@@ -1,18 +1,21 @@
 
+
 #pragma once
 
 #include "CoreMinimal.h"
 #include "BaseEnemy.h"
-#include "BasicShooterEnemy.generated.h"
+#include "SharpShooterEnemy.generated.h"
 
-
+/**
+ * 
+ */
 UCLASS()
-class SPACEINVADER_API ABasicShooterEnemy : public ABaseEnemy
+class SPACEINVADER_API ASharpShooterEnemy : public ABaseEnemy
 {
 	GENERATED_BODY()
-
+	
 public:
-	ABasicShooterEnemy();
+	ASharpShooterEnemy();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -25,10 +28,10 @@ protected:
 	virtual void FiringLogic() override;
 
 private:
-	
+
 
 	float LastShotTime = 0.f;
 
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"), Category = "Enemy")
-	float ShotInterval = 0.7f;
+		float ShotInterval = 0.7f;
 };
