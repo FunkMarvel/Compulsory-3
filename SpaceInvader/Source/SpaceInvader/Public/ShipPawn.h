@@ -32,6 +32,9 @@ public:
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
 		UStaticMeshComponent* PlayerMesh{nullptr};
 
+	//UPROPERTY(VisibleAnywhere, Category = "Collider")
+	//	class UCapsuleComponent* CapsuleComp{nullptr};
+
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Camera")
 		USpringArmComponent* SpringArm{nullptr};
 
@@ -39,8 +42,10 @@ public:
 		UCameraComponent* Camera{nullptr};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Movement")
-		float BaseAcceleration{ 1000.f };
-	float Speed{BaseAcceleration};
+		float Acceleration{ 5000.f };
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Movement")
+		float SpeedLimit{ 5000.f };
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
 		int Ammo{ 30 };

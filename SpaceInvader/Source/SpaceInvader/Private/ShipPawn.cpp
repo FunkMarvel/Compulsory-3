@@ -40,8 +40,12 @@ AShipPawn::AShipPawn()
 	PrimaryActorTick.bCanEverTick = true;
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("	StaticMesh'/Game/Models/PlaceHolderPlane/PlaceHolderPlane.PlaceHolderPlane'"));
 
+	//CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>("CapsuleComponent");
+	//CapsuleComp->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	//SetRootComponent(CapsuleComp);
+
 	PlayerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Player Mesh"));
-	SetRootComponent(PlayerMesh);
+
 	PlayerMesh->SetStaticMesh(SphereMesh.Object);
 	PlayerMesh->SetSimulatePhysics(true);
 	PlayerMesh->SetEnableGravity(false);
@@ -50,7 +54,7 @@ AShipPawn::AShipPawn()
 	SpringArm->bDoCollisionTest = false;
 	SpringArm->SetUsingAbsoluteRotation(true);
 	SpringArm->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
-	SpringArm->TargetArmLength = 1200.f;
+	SpringArm->TargetArmLength = 2000.f;
 	SpringArm->bEnableCameraLag = false;
 	SpringArm->CameraLagSpeed = 5.f;
 
@@ -72,9 +76,17 @@ void AShipPawn::BeginPlay()
 void AShipPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	InContact = false;
-	PlayerMesh->AddForce(FVector(XValue,YValue,0.f)*Speed);
 
+	InContact = false;
+
+	FVector Forward = GetActorForwardVector();
+	FVector Sideways = GetActorRightVector();
+	
+	PlayerMesh->AddForce((Forward*XValue + Sideways*YValue)*Acceleration);
+
+	FVector currentVelocity = PlayerMesh->GetPhysicsLinearVelocity();
+	FVector clampedVelocity = currentVelocity.GetClampedToMaxSize(SpeedLimit);
+	PlayerMesh->SetPhysicsLinearVelocity(clampedVelocity);
 }
 
 // Called to bind functionality to input
@@ -136,8 +148,7 @@ void AShipPawn::Dash() {
 	Cast<APlayerController>(GetController())->DeprojectMousePositionToWorld(MouseLocation, MouseDirection);
 	MouseDirection.Z = 0.f;
 
-	PlayerMesh->AddImpulse(MouseDirection * 2.5 *BaseAcceleration);
-	
+	PlayerMesh->AddImpulse(MouseDirection * 2.5 *Acceleration);
 }
 
 void AShipPawn::Focus(float Value) {
@@ -155,6 +166,6 @@ void AShipPawn::Focus(float Value) {
 
 	FVector CurrentVelocity = -GetVelocity();
 	CurrentVelocity.Normalize();
-	PlayerMesh->AddForce(CurrentVelocity*0.5*BaseAcceleration);
+	PlayerMesh->AddForce(CurrentVelocity*0.5*Acceleration);
 }
 

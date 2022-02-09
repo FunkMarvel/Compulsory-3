@@ -31,7 +31,6 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Collider")
 		class UCapsuleComponent* CapsuleComp = nullptr;
 
-
 	UPROPERTY(EditAnywhere, Category = "Enemy")
 		int StartHealth;
 	UPROPERTY(EditAnywhere, Category = "Enemy")
