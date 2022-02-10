@@ -1,12 +1,13 @@
 
-
-
 #include "BaseEnemy.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Projectile.h"
+#include "DrawDebugHelpers.h"
+
+
 
 // Sets default values
 ABaseEnemy::ABaseEnemy()
@@ -89,11 +90,12 @@ void ABaseEnemy::FireAtPlayer()
 		AProjectile* NewProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass,
 			GetActorLocation() + GetActorForwardVector() * ProjectileForwardOffset,
 			GetActorRotation());
-		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Sharpshooter!");
+		/*GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Sharpshooter!");*/
 		NewProjectile->SetOwner(this);
+		DrawDebugSphere(GetWorld(), GetActorLocation() + GetActorForwardVector() * ProjectileForwardOffset, 40, 16, FColor::Red, false, 1.f);
 	}
 
-	ProjectileForwardOffset = 40.f;
+	
 
 }
 
