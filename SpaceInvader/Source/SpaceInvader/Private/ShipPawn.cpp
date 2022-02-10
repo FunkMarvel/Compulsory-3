@@ -44,13 +44,15 @@ AShipPawn::AShipPawn()
 	CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>("CapsuleComponent");
 	CapsuleComp->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	SetRootComponent(CapsuleComp);
+	CapsuleComp->SetSimulatePhysics(true);
+	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	CapsuleComp->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	CapsuleComp->SetEnableGravity(false);
 
 	PlayerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Player Mesh"));
 
 	PlayerMesh->SetStaticMesh(ShipMesh.Object);
 	PlayerMesh->SetupAttachment(CapsuleComp);
-	PlayerMesh->SetSimulatePhysics(true);
-	PlayerMesh->SetEnableGravity(false);
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	SpringArm->bDoCollisionTest = false;
@@ -84,11 +86,17 @@ void AShipPawn::Tick(float DeltaTime)
 	FVector Forward = GetActorForwardVector();
 	FVector Sideways = GetActorRightVector();
 	
-	PlayerMesh->AddForce((Forward*XValue + Sideways*YValue)*Acceleration);
+	CapsuleComp->AddForce((Forward*XValue + Sideways*YValue)*Acceleration);
 
-	FVector currentVelocity = PlayerMesh->GetPhysicsLinearVelocity();
-	FVector clampedVelocity = currentVelocity.GetClampedToMaxSize(SpeedLimit);
-	PlayerMesh->SetPhysicsLinearVelocity(clampedVelocity);
+	if ((bDashing && DashTimer < DashDuration) || DashTimer < DashDuration) {
+		PlayerMesh->SetRelativeRotation(FRotator(0,0,DashRotation/DashDuration * DashTimer));
+	}
+	else {
+		FRotator CurrentRot = PlayerMesh->GetRelativeRotation();
+		FRotator DestinationRot = FMath::RInterpConstantTo(CurrentRot, FRotator(0, 0, 45*YValue), DeltaTime, 100);
+		PlayerMesh->SetRelativeRotation(DestinationRot);
+	}
+	DashTimer += DeltaTime;
 }
 
 // Called to bind functionality to input
@@ -104,6 +112,7 @@ void AShipPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("Aim", this, &AShipPawn::Aim);
 
 	PlayerInputComponent->BindAction("Dash",EInputEvent::IE_Pressed,this,&AShipPawn::Dash);
+	PlayerInputComponent->BindAction("Dash",EInputEvent::IE_Released,this,&AShipPawn::EndDash);
 	PlayerInputComponent->BindAxis("Focus", this, &AShipPawn::Focus);
 	//PlayerInputComponent->BindAction("Focus",EInputEvent::IE_Pressed,this,&AShipPawn::Focus);
 	//PlayerInputComponent->BindAction("Focus",EInputEvent::IE_Released,this,&AShipPawn::Focus);
@@ -138,12 +147,13 @@ void AShipPawn::Aim(float Value) {
 	MouseDirection.Z = 0.f;
 
 	SetActorRotation(MouseDirection.Rotation());
-	PlayerMesh->SetRelativeRotation(MouseDirection.Rotation());
-	//UE_LOG(LogTemp, Warning, TEXT("Mouse Location: %f, %f, %f"), MouseLocation.X, MouseLocation.Y, MouseLocation.Z);
-	//UE_LOG(LogTemp, Warning, TEXT("Ship Location: %f, %f, %f"), ShipLocation.X, ShipLocation.Y, ShipLocation.Z);
+	CapsuleComp->SetRelativeRotation(MouseDirection.Rotation());
 }
 
 void AShipPawn::Dash() {
+	bDashing = true;
+	DashTimer = 0;
+
 	FVector MouseLocation;
 	FVector MouseDirection;
 	FVector CurrentVelocity = GetVelocity();
@@ -151,7 +161,12 @@ void AShipPawn::Dash() {
 	Cast<APlayerController>(GetController())->DeprojectMousePositionToWorld(MouseLocation, MouseDirection);
 	MouseDirection.Z = 0.f;
 
-	PlayerMesh->AddImpulse(MouseDirection * 2.5 *Acceleration);
+	CapsuleComp->AddImpulse(MouseDirection * 2.5 *Acceleration);
+	CapsuleComp->AddImpulse(-MouseDirection * Acceleration);
+}
+
+void AShipPawn::EndDash() {
+	bDashing = false;
 }
 
 void AShipPawn::Focus(float Value) {
@@ -169,6 +184,6 @@ void AShipPawn::Focus(float Value) {
 
 	FVector CurrentVelocity = -GetVelocity();
 	CurrentVelocity.Normalize();
-	PlayerMesh->AddForce(CurrentVelocity*0.5*Acceleration);
+	CapsuleComp->AddForce(CurrentVelocity*0.5*Acceleration);
 }
 

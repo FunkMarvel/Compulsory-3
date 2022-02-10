@@ -42,10 +42,10 @@ public:
 		UCameraComponent* Camera{nullptr};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Movement")
-		float Acceleration{ 5000.f };
+		float Acceleration{ 100000.f };
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Movement")
-		float SpeedLimit{ 5000.f };
+		float SpeedLimit{ 10000.f };
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
 		int Ammo{ 30 };
@@ -76,12 +76,16 @@ private:
 	void Aim(float Value);
 
 	void Dash();
+	void EndDash();
 	void Focus(float Value);
 
 	float XValue{};
 	float YValue{};
-	float DashTimer{};
+	float DashDuration{1};
+	float DashRotation{360};
+	float DashTimer{DashDuration};
 	float FocusSpeedMod{ 0.5f };
 
 	bool bFocused{ false };
+	bool bDashing{ false };
 };
