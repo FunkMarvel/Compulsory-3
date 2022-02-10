@@ -45,22 +45,31 @@ public:
 		float Acceleration{ 100000.f };
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Movement")
-		float SpeedLimit{ 10000.f };
+		float SpeedLimit{ 2000.f };
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
 		int Ammo{ 30 };
 
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
 		USoundBase* ShootingSound{nullptr};
 
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
 		USoundBase* ReloadingSound{nullptr};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
 		TSubclassOf<AActor> ActorToSpawn;
 
+	// Firing
+	UPROPERTY(EditAnywhere, Category = "Combat")
+		float ProjectileForwardOffset{100.f};
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+		float ProjectileSpeed{2100.f};
+
 	void Reload();
 	void Shoot();
+	void StartShooting();
+	void EndShooting();
 
 	UFUNCTION(BluePrintCallable)
 		void ResetLoaction() const;
@@ -68,6 +77,9 @@ public:
 
 private:
 	
+	UPROPERTY(EditDefaultsOnly, Category = "Combat")
+		TSubclassOf<class AProjectile> ProjectileClass;
+
 	FVector InitLocation = FVector::ZeroVector;
 
 	void MoveXAxis(float Value);
@@ -76,16 +88,26 @@ private:
 	void Aim(float Value);
 
 	void Dash();
-	void EndDash();
 	void Focus(float Value);
 
 	float XValue{};
 	float YValue{};
-	float DashDuration{1};
-	float DashRotation{360};
+	
+	UPROPERTY(EditAnywhere, Category = "Movement")
+		float DashDuration{1};
+	
+	UPROPERTY(EditAnywhere, Category = "Movement")
+		float DashRotation{360};
+	
 	float DashTimer{DashDuration};
-	float FocusSpeedMod{ 0.5f };
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+		float FocusSpeedMod{ 0.5f };
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+		float TimeBetweenShots{ 0.5f };
+	float ShotTimer{};
 
 	bool bFocused{ false };
-	bool bDashing{ false };
+	bool bShooting{ false };
 };

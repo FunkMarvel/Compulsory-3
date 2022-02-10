@@ -12,6 +12,8 @@
 #include "Components/BoxComponent.h"
 #include "Camera/CameraActor.h"
 #include "Engine/Engine.h"
+#include "GameFramework/ProjectileMovementComponent.h"
+#include "Projectile.h"
 
 static void InitializeDefaultPawnInputBinding() {
 	static bool BindingsAdded{false};
@@ -86,9 +88,13 @@ void AShipPawn::Tick(float DeltaTime)
 	FVector Forward = GetActorForwardVector();
 	FVector Sideways = GetActorRightVector();
 	
-	CapsuleComp->AddForce((Forward*XValue + Sideways*YValue)*Acceleration);
+	CapsuleComp->AddForce((Forward*XValue + Sideways*0.75*YValue)*Acceleration);
 
-	if ((bDashing && DashTimer < DashDuration) || DashTimer < DashDuration) {
+	FVector currentVelocity = CapsuleComp->GetPhysicsLinearVelocity();
+	FVector clampedVelocity = currentVelocity.GetClampedToMaxSize(SpeedLimit);
+	CapsuleComp->SetPhysicsLinearVelocity(clampedVelocity);
+
+	if (DashTimer < DashDuration) {
 		PlayerMesh->SetRelativeRotation(FRotator(0,0,DashRotation/DashDuration * DashTimer));
 	}
 	else {
@@ -97,6 +103,14 @@ void AShipPawn::Tick(float DeltaTime)
 		PlayerMesh->SetRelativeRotation(DestinationRot);
 	}
 	DashTimer += DeltaTime;
+
+	if (bShooting && ShotTimer >= TimeBetweenShots) {
+		Shoot();
+		ShotTimer = 0;
+	}
+	else {
+		ShotTimer += DeltaTime;
+	}
 }
 
 // Called to bind functionality to input
@@ -112,12 +126,13 @@ void AShipPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("Aim", this, &AShipPawn::Aim);
 
 	PlayerInputComponent->BindAction("Dash",EInputEvent::IE_Pressed,this,&AShipPawn::Dash);
-	PlayerInputComponent->BindAction("Dash",EInputEvent::IE_Released,this,&AShipPawn::EndDash);
 	PlayerInputComponent->BindAxis("Focus", this, &AShipPawn::Focus);
 	//PlayerInputComponent->BindAction("Focus",EInputEvent::IE_Pressed,this,&AShipPawn::Focus);
 	//PlayerInputComponent->BindAction("Focus",EInputEvent::IE_Released,this,&AShipPawn::Focus);
 
-	PlayerInputComponent->BindAction("Shoot",EInputEvent::IE_Pressed,this,&AShipPawn::Shoot);
+	PlayerInputComponent->BindAction("Shoot",EInputEvent::IE_Pressed,this,&AShipPawn::StartShooting);
+	PlayerInputComponent->BindAction("Shoot",EInputEvent::IE_Released,this,&AShipPawn::EndShooting);
+
 	PlayerInputComponent->BindAction("Reload",EInputEvent::IE_Pressed,this,&AShipPawn::Reload);
 
 }
@@ -126,6 +141,30 @@ void AShipPawn::Reload() {
 }
 
 void AShipPawn::Shoot() {
+	if (ProjectileClass)
+	{
+		FVector ShipVelocity = GetVelocity();
+		FVector Forward = GetActorForwardVector();
+		//the line under is unefficient, but since we dont have diffrent types of bullets we are using this
+		ProjectileClass.GetDefaultObject()->ProjectileMovmentComponent->InitialSpeed = ProjectileSpeed;
+		AProjectile* NewProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass,
+			GetActorLocation() + Forward * ProjectileForwardOffset,
+			GetActorRotation());
+		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Sharpshooter!");
+		NewProjectile->SetOwner(this);
+	}
+
+	ProjectileForwardOffset = 40.f;
+}
+
+void AShipPawn::StartShooting() {
+	bShooting = true;
+	ShotTimer = TimeBetweenShots + 1;
+}
+
+void AShipPawn::EndShooting() {
+	bShooting = false;
+	ShotTimer = 0;
 }
 
 void AShipPawn::ResetLoaction() const {
@@ -151,7 +190,6 @@ void AShipPawn::Aim(float Value) {
 }
 
 void AShipPawn::Dash() {
-	bDashing = true;
 	DashTimer = 0;
 
 	FVector MouseLocation;
@@ -165,22 +203,7 @@ void AShipPawn::Dash() {
 	CapsuleComp->AddImpulse(-MouseDirection * Acceleration);
 }
 
-void AShipPawn::EndDash() {
-	bDashing = false;
-}
-
 void AShipPawn::Focus(float Value) {
-	
-	//bFocused = !bFocused;
-	
-	//if (bFocused) {
-	//	//Speed = FocusSpeedMod * BaseAcceleration;
-	//}
-	//else {
-	//	//Speed = BaseAcceleration;
-	//}
-
-	//UE_LOG(LogTemp, Warning, TEXT("bFocused: %d"), bFocused);
 
 	FVector CurrentVelocity = -GetVelocity();
 	CurrentVelocity.Normalize();
