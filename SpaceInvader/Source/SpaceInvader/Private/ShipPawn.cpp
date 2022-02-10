@@ -3,6 +3,7 @@
 
 #include "ShipPawn.h"
 #include "GameFramework/PlayerController.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/PlayerInput.h"
 #include "Components/InputComponent.h"
 #include "BulletActor.h"
@@ -38,15 +39,16 @@ AShipPawn::AShipPawn()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMesh(TEXT("	StaticMesh'/Game/Models/PlaceHolderPlane/PlaceHolderPlane.PlaceHolderPlane'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(TEXT("	StaticMesh'/Game/Models/PlaceHolderPlane/PlaceHolderPlane.PlaceHolderPlane'"));
 
-	//CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>("CapsuleComponent");
-	//CapsuleComp->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
-	//SetRootComponent(CapsuleComp);
+	CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>("CapsuleComponent");
+	CapsuleComp->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	SetRootComponent(CapsuleComp);
 
 	PlayerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Player Mesh"));
 
-	PlayerMesh->SetStaticMesh(SphereMesh.Object);
+	PlayerMesh->SetStaticMesh(ShipMesh.Object);
+	PlayerMesh->SetupAttachment(CapsuleComp);
 	PlayerMesh->SetSimulatePhysics(true);
 	PlayerMesh->SetEnableGravity(false);
 
@@ -58,7 +60,7 @@ AShipPawn::AShipPawn()
 	SpringArm->bEnableCameraLag = false;
 	SpringArm->CameraLagSpeed = 5.f;
 
-	SpringArm->SetupAttachment(PlayerMesh);
+	SpringArm->SetupAttachment(CapsuleComp);
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->bUsePawnControlRotation = false;
@@ -136,6 +138,7 @@ void AShipPawn::Aim(float Value) {
 	MouseDirection.Z = 0.f;
 
 	SetActorRotation(MouseDirection.Rotation());
+	PlayerMesh->SetRelativeRotation(MouseDirection.Rotation());
 	//UE_LOG(LogTemp, Warning, TEXT("Mouse Location: %f, %f, %f"), MouseLocation.X, MouseLocation.Y, MouseLocation.Z);
 	//UE_LOG(LogTemp, Warning, TEXT("Ship Location: %f, %f, %f"), ShipLocation.X, ShipLocation.Y, ShipLocation.Z);
 }

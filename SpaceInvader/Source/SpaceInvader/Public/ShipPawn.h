@@ -32,8 +32,8 @@ public:
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
 		UStaticMeshComponent* PlayerMesh{nullptr};
 
-	//UPROPERTY(VisibleAnywhere, Category = "Collider")
-	//	class UCapsuleComponent* CapsuleComp{nullptr};
+	UPROPERTY(VisibleAnywhere, Category = "Collider")
+		class UCapsuleComponent* CapsuleComp{nullptr};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Camera")
 		USpringArmComponent* SpringArm{nullptr};
