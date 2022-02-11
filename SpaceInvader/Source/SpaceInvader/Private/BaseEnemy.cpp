@@ -37,7 +37,9 @@ void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-	CapsuleComp->OnComponentHit.AddDynamic(this, &ABaseEnemy::OnHit);
+	
+	/*CapsuleComp->OnComponentBeginOverlap.AddDynamic(this, )*/
+	CapsuleComp->OnComponentBeginOverlap.AddDynamic(this, &ABaseEnemy::OnHit);
 	Health = StartHealth;
 
 
@@ -64,7 +66,9 @@ bool ABaseEnemy::IsInInnerRange()
 	return false;
 }
 
-void ABaseEnemy::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void ABaseEnemy::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	const FHitResult& SweepResult)
 {
 	GEngine->AddOnScreenDebugMessage(-1230, 1, FColor::Green, "ENEMY WAS HIT!");
 	//Code todo Damage and push away
