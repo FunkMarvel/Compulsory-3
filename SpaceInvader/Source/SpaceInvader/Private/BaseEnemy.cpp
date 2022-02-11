@@ -9,6 +9,7 @@
 
 
 
+
 // Sets default values
 ABaseEnemy::ABaseEnemy()
 {
@@ -24,7 +25,7 @@ ABaseEnemy::ABaseEnemy()
 	Mesh->SetupAttachment(GetRootComponent());
 
 
-	StartHealth = 50;
+	StartHealth = 7;
 	MovmentSpeed = 200.f;
 	
 	
@@ -70,8 +71,19 @@ void ABaseEnemy::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAc
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	GEngine->AddOnScreenDebugMessage(-1230, 1, FColor::Green, "ENEMY WAS HIT!");
+	
 	//Code todo Damage and push away
+	if (OtherActor->IsA<AProjectile>())
+	{
+		GEngine->AddOnScreenDebugMessage(-1230, 1, FColor::Green, "BINGUS!");
+		Health -= Cast<AProjectile>(OtherActor)->Damage;
+
+		if (Health <= 0.f)
+		{
+			Destroy();
+		}
+	}
+
 }
 
 void ABaseEnemy::FireAtPlayer()
@@ -84,7 +96,7 @@ void ABaseEnemy::FireAtPlayer()
 			GetActorLocation() + GetActorForwardVector() * ProjectileForwardOffset,
 			GetActorRotation());
 		/*GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Sharpshooter!");*/
-		NewProjectile->SetOwner(this);
+		//NewProjectile->SetOwner(this);
 		DrawDebugSphere(GetWorld(), GetActorLocation() + GetActorForwardVector() * ProjectileForwardOffset, 40, 16, FColor::Red, false, 1.f);
 	}
 
@@ -92,15 +104,16 @@ void ABaseEnemy::FireAtPlayer()
 
 }
 
-void ABaseEnemy::Move(const FVector &Direction)
+void ABaseEnemy::Move(FVector Direction)
 {
 	/*APawn* PlayerActor = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	
 	FVector ToPlayerVector = PlayerActor->GetActorLocation() - GetActorLocation();*/
+	Direction.Normalize();
+	Direction += GetActorRightVector()*GetLeftRightMovment(Amplitude, Lambda);
+	UE_LOG(LogTemp, Warning, TEXT("%f"), GetLeftRightMovment(4.f, 1.f));
 
-	
-
-	AddActorWorldOffset(Direction.GetSafeNormal() * MovmentSpeed * UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), true);
+	AddActorWorldOffset(Direction * MovmentSpeed * UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), true);
 
 }
 
@@ -114,4 +127,14 @@ void ABaseEnemy::LookAtPlayer()
 
 	SetActorRotation(rot);
 }
+
+float ABaseEnemy::GetLeftRightMovment(const float &_Amplitude, const float &_Lambda)
+{
+	CurrentMovmentTime += UGameplayStatics::GetWorldDeltaSeconds(this);
+	float f = FMath::Sin((1.f / Lambda) * CurrentMovmentTime) * Amplitude;
+	return f;
+}
+
+
+	
 

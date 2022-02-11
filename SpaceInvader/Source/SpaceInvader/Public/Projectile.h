@@ -30,7 +30,7 @@ public:
 		class UProjectileMovementComponent* ProjectileMovmentComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Bullet")
-		float Damage = 49.f;
+		float Damage = 1.f;
 
 	UPROPERTY(EditAnywhere, Category = "Bullet")
 		float MaxTimeAlive = 4.f;

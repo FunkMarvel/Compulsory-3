@@ -15,7 +15,11 @@ AChargerEnemy::AChargerEnemy() {
 	InnerRange = 700.f;
 	StartHealth = 50;
 	ChargeSpeed = 600.f;
+	WindupSpeed = 100.f;
 	currentState = ChargerState::Moving;
+
+	//WindUpTime = 1.f;
+
 
 	//blades
 	BladeNormalSpeed = 400.f;
@@ -26,9 +30,49 @@ AChargerEnemy::AChargerEnemy() {
 void AChargerEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	CurrentStateLogic();
 	MoveLogic();
 	SpinBlades();
+	LookAtPlayer();
 
+	switch (currentState)
+	{
+	case AChargerEnemy::Moving:
+		TargetTilt = -20.f;
+		break;
+	case AChargerEnemy::WindUp:
+		TargetTilt = 15.f;
+		break;
+	case AChargerEnemy::Charging:
+		TargetTilt = -90.f;
+		break;
+	default:
+		break;
+	}
+
+
+	float Angle = FMath::FInterpTo(Mesh->GetRelativeRotation().Pitch, TargetTilt, DeltaTime, 5.f);
+	Mesh->SetRelativeRotation(FRotator(Angle, 0.f, 0.f));
+}
+
+void AChargerEnemy::CurrentStateLogic()
+{
+	if (IsInInnerRange())
+	{
+		currentState = ChargerState::WindUp;
+		bFoundTarget = true;
+	}
+
+
+	if (bFoundTarget)
+	{
+		CurrentWindUpTime += UGameplayStatics::GetWorldDeltaSeconds(this);
+		if (CurrentWindUpTime >= WindUpTime)
+		{
+			currentState = ChargerState::Charging;
+		}
+	}
 }
 
 void AChargerEnemy::MoveLogic()

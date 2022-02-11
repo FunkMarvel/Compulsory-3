@@ -76,12 +76,17 @@ protected:
 		virtual void FiringLogic() {}
 
 
-	/// <summary>
-	/// Move functuon Direction is in world space
-	/// </summary>
-	void Move(const FVector& Direction);
+	// Move functuon Direction is in world space
+	void Move(FVector Direction);
 
 	void LookAtPlayer();
 
+	//move the enemy left to right
+	float GetLeftRightMovment(const float& _Amplitude, const float& _Lambda);
+	float CurrentMovmentTime = 0.f;
+	UPROPERTY(EditAnywhere, Category = "Enemy | LeftRightMovment")
+		float Amplitude = 4.f;
+	UPROPERTY(EditAnywhere, Category = "Enemy | LeftRightMovment")
+		float Lambda = 1.f;
 	
 };

@@ -17,6 +17,17 @@ public:
 	AChargerEnemy();
 	virtual void Tick(float DeltaTime) override;
 private:
+	void CurrentStateLogic();
+
+	
+	//Windup and target found
+	bool bFoundTarget = false;
+	float WindUpTime = 2.f;
+	float CurrentWindUpTime = 0.f;
+	
+	//tilt stuff
+	float TargetTilt = 0.f;
+
 protected:
 
 	

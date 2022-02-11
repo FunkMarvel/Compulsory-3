@@ -4,6 +4,10 @@
 #include "SpaceInvaderGameModeBase.h"
 
 void ASpaceInvaderGameModeBase::BeginPlay() {
+	Super::BeginPlay();
 
+	GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
+
+	
 }
 

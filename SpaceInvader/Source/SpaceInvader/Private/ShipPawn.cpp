@@ -177,11 +177,11 @@ void AShipPawn::Shoot() {
 			GetActorLocation() + Forward * ProjectileForwardOffset,
 			GetActorRotation());
 
-		NewProjectile->ProjectileMesh->IgnoreActorWhenMoving(this, true);
-		CapsuleComp->IgnoreActorWhenMoving(NewProjectile, true);
+		//NewProjectile->ProjectileMesh->IgnoreActorWhenMoving(this, true);
+		//CapsuleComp->IgnoreActorWhenMoving(NewProjectile, true);
 
 		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Ship!");
-		NewProjectile->SetOwner(this);
+		//NewProjectile->SetOwner(this);
 		Ammo--;
 	}
 }

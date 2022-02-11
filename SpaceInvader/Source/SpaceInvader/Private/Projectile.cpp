@@ -22,6 +22,10 @@ AProjectile::AProjectile()
 	ProjectileMovmentComponent->MaxSpeed = 1500.f;
 	ProjectileMovmentComponent->ProjectileGravityScale = 0.f;
 
+	//overlap
+	ProjectileMesh->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	ProjectileMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+
 }
 
 // Called when the game starts or when spawned
