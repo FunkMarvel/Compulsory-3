@@ -14,6 +14,7 @@
 #include "Engine/Engine.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Projectile.h"
+#include "DrawDebugHelpers.h"
 
 static void InitializeDefaultPawnInputBinding() {
 	static bool BindingsAdded{false};
@@ -155,12 +156,12 @@ void AShipPawn::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAct
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	const FHitResult& SweepResult) {
 	
-	if (OtherActor->IsA<AProjectile>()) {
-		if (OtherActor->GetOwner() != this && !bDashing) {
-			GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Red, "HIT!");
-			AProjectile* Overlapper = Cast<AProjectile>(OtherActor);
-			Health -= Overlapper->Damage;
-		}
+	if (OtherActor->IsA<AProjectile>() && OtherActor->GetOwner() != this && !bDashing) {
+		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Red, "HIT!");
+		AProjectile* Overlapper = Cast<AProjectile>(OtherActor);
+		Health -= Overlapper->Damage;
+		UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
+		if (Health <= 0) Death();
 	}
 
 }
@@ -183,6 +184,9 @@ void AShipPawn::Shoot() {
 		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Shoot!");
 		NewProjectile->SetOwner(this);
 		Ammo--;
+	}
+	else if (Ammo <= 0) {
+		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Orange, "Out of Ammo!");
 	}
 }
 
@@ -238,5 +242,13 @@ void AShipPawn::Focus(float Value) {
 	FVector CurrentVelocity = -GetVelocity();
 	CurrentVelocity.Normalize();
 	CapsuleComp->AddForce(CurrentVelocity*0.7*Acceleration);
+}
+
+void AShipPawn::Death() {
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	DisableInput(PlayerController);
+	SetActorHiddenInGame(true);
+	SetActorEnableCollision(false);
+	SetActorTickEnabled(false);
 }
 
