@@ -143,8 +143,6 @@ void AShipPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 	PlayerInputComponent->BindAction("Dash",EInputEvent::IE_Pressed,this,&AShipPawn::Dash);
 	PlayerInputComponent->BindAxis("Focus", this, &AShipPawn::Focus);
-	//PlayerInputComponent->BindAction("Focus",EInputEvent::IE_Pressed,this,&AShipPawn::Focus);
-	//PlayerInputComponent->BindAction("Focus",EInputEvent::IE_Released,this,&AShipPawn::Focus);
 
 	PlayerInputComponent->BindAction("Shoot",EInputEvent::IE_Pressed,this,&AShipPawn::StartShooting);
 	PlayerInputComponent->BindAction("Shoot",EInputEvent::IE_Released,this,&AShipPawn::EndShooting);
@@ -157,9 +155,14 @@ void AShipPawn::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAct
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	const FHitResult& SweepResult) {
 	
-	if (OtherActor->GetOwner() != this && !bDashing) {
-		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Red, "HIT!");
+	if (OtherActor->IsA<AProjectile>()) {
+		if (OtherActor->GetOwner() != this && !bDashing) {
+			GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Red, "HIT!");
+			AProjectile* Overlapper = Cast<AProjectile>(OtherActor);
+			Health -= Overlapper->Damage;
+		}
 	}
+
 }
 
 void AShipPawn::Reload() {
@@ -177,11 +180,8 @@ void AShipPawn::Shoot() {
 			GetActorLocation() + Forward * ProjectileForwardOffset,
 			GetActorRotation());
 
-		//NewProjectile->ProjectileMesh->IgnoreActorWhenMoving(this, true);
-		//CapsuleComp->IgnoreActorWhenMoving(NewProjectile, true);
-
-		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Ship!");
-		//NewProjectile->SetOwner(this);
+		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Shoot!");
+		NewProjectile->SetOwner(this);
 		Ammo--;
 	}
 }
