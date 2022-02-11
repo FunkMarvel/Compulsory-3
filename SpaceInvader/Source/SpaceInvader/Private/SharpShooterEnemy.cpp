@@ -10,7 +10,6 @@ ASharpShooterEnemy::ASharpShooterEnemy() {
 	ProjectileForwardOffset = 100.f;
 	ShotInterval = 2.f;
 	MovmentSpeed = 100.f;
-	AggroRange = 2400.f;
 	InnerRange = 700.f;
 	ProjectileSpeed = 7000.f;
 }
@@ -38,7 +37,7 @@ void ASharpShooterEnemy::MoveLogic()
 	if (PlayerPawn == nullptr)
 		return;
 
-	if (IsInAgroRange() && !IsInInnerRange())
+	if (!IsInInnerRange())
 	{
 		FVector ToPlayerVector = PlayerPawn->GetActorLocation() - GetActorLocation();
 		ToPlayerVector.Z = 0.f;
@@ -59,7 +58,7 @@ void ASharpShooterEnemy::FiringLogic()
 	if (PlayerPawn == nullptr)
 		return;
 	LastShotTime += UGameplayStatics::GetWorldDeltaSeconds(this);
-	if (IsInAgroRange() && ShotInterval <= LastShotTime)
+	if (ShotInterval <= LastShotTime)
 	{
 		
 		FireAtPlayer();

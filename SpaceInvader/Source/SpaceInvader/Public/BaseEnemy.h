@@ -39,10 +39,7 @@ public:
 		float ProjectileForwardOffset;
 
 	//AI LOGIC
-	UPROPERTY(EditAnywhere, Category = "Enemy")
-		float AggroRange;
-	UFUNCTION()
-		bool IsInAgroRange();
+	
 	UPROPERTY(EditAnywhere, Category = "Enemy")
 		float InnerRange;
 	UFUNCTION()

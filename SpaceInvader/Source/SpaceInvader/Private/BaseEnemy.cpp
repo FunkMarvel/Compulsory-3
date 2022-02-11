@@ -51,17 +51,6 @@ void ABaseEnemy::Tick(float DeltaTime)
 	/*Move(FVector::XAxisVector);*/
 }
 
-bool ABaseEnemy::IsInAgroRange()
-{
-	if (PlayerPawn == nullptr)
-		return false;
-	float Distance = (PlayerPawn->GetActorLocation() - GetActorLocation()).Size();
-	if (Distance <= AggroRange)
-	{
-		return true;
-	}
-	return false;
-}
 
 bool ABaseEnemy::IsInInnerRange()
 {
@@ -77,7 +66,7 @@ bool ABaseEnemy::IsInInnerRange()
 
 void ABaseEnemy::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "HIT!");
+	GEngine->AddOnScreenDebugMessage(-1230, 1, FColor::Green, "ENEMY WAS HIT!");
 	//Code todo Damage and push away
 }
 
