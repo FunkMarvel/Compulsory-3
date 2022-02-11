@@ -29,8 +29,8 @@ void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ProjectileMesh->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
-
+	
+	ProjectileMesh->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnHit);
 
 
 }
@@ -50,7 +50,7 @@ void AProjectile::Tick(float DeltaTime)
 
 
 
-void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AProjectile::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	GEngine->AddOnScreenDebugMessage(-9, 1, FColor::Green, "HIT Something!");
 	Destroy();
