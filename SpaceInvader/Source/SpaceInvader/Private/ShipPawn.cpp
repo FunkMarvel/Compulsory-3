@@ -86,7 +86,7 @@ void AShipPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	InitLocation = PlayerMesh->GetComponentLocation();
-	CapsuleComp->OnComponentHit.AddDynamic(this, &AShipPawn::OnHit);
+	CapsuleComp->OnComponentBeginOverlap.AddDynamic(this, &AShipPawn::OnHit);
 }
 
 // Called every frame
@@ -106,17 +106,18 @@ void AShipPawn::Tick(float DeltaTime)
 	FVector currentVelocity = CapsuleComp->GetPhysicsLinearVelocity();
 	FVector clampedVelocity = currentVelocity.GetClampedToMaxSize(SpeedLimit);
 	CapsuleComp->SetPhysicsLinearVelocity(clampedVelocity);
-
+	
 	// animating cosmetic mesh:
 	if (DashTimer < DashDuration) {
 		PlayerMesh->SetRelativeRotation(FRotator(0,0,DashRotation/DashDuration * DashTimer));
+		DashTimer += DeltaTime;
 	}
 	else {
 		FRotator CurrentRot = PlayerMesh->GetRelativeRotation();
 		FRotator DestinationRot = FMath::RInterpConstantTo(CurrentRot, FRotator(0, 0, 45*YValue), DeltaTime, 100);
 		PlayerMesh->SetRelativeRotation(DestinationRot);
+		bDashing = false;
 	}
-	DashTimer += DeltaTime;
 
 	// handling sustained fire:
 	if (bShooting && ShotTimer >= TimeBetweenShots) {
@@ -152,9 +153,11 @@ void AShipPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-void AShipPawn::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
+void AShipPawn::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	const FHitResult& SweepResult) {
 	
-	if (OtherActor->GetOwner() != this) {
+	if (OtherActor->GetOwner() != this && !bDashing) {
 		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Red, "HIT!");
 	}
 }
@@ -177,7 +180,7 @@ void AShipPawn::Shoot() {
 		NewProjectile->ProjectileMesh->IgnoreActorWhenMoving(this, true);
 		CapsuleComp->IgnoreActorWhenMoving(NewProjectile, true);
 
-		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Sharpshooter!");
+		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Ship!");
 		NewProjectile->SetOwner(this);
 		Ammo--;
 	}
@@ -217,6 +220,7 @@ void AShipPawn::Aim(float Value) {
 
 void AShipPawn::Dash() {
 	DashTimer = 0;
+	bDashing = true;
 
 	FVector MouseLocation;
 	FVector MouseDirection;
