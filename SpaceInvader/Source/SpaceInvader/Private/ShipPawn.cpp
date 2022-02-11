@@ -43,19 +43,29 @@ AShipPawn::AShipPawn()
 	PrimaryActorTick.bCanEverTick = true;
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(TEXT("	StaticMesh'/Game/Models/PlaceHolderPlane/PlaceHolderPlane.PlaceHolderPlane'"));
 
+	// collision and physics mesh:
 	CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>("CapsuleComponent");
 	CapsuleComp->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	SetRootComponent(CapsuleComp);
+
+	// Rescale mass:
+	FBodyInstance* BodyInstance = CapsuleComp->GetBodyInstance();
+	BodyInstance->MassScale = 0.025;
+	BodyInstance->LinearDamping = 0.f;
+	BodyInstance->UpdateMassProperties();
+	
+	// enable physics and collision:
 	CapsuleComp->SetSimulatePhysics(true);
 	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	CapsuleComp->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	CapsuleComp->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	CapsuleComp->SetEnableGravity(false);
 
+	// set up cosmetic mesh:
 	PlayerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Player Mesh"));
-
 	PlayerMesh->SetStaticMesh(ShipMesh.Object);
 	PlayerMesh->SetupAttachment(CapsuleComp);
 
+	// Setting up camera:
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	SpringArm->bDoCollisionTest = false;
 	SpringArm->SetUsingAbsoluteRotation(true);
@@ -85,15 +95,18 @@ void AShipPawn::Tick(float DeltaTime)
 
 	InContact = false;
 
+	// Handling movement:
 	FVector Forward = GetActorForwardVector();
 	FVector Sideways = GetActorRightVector();
 	
-	CapsuleComp->AddForce((Forward*XValue + Sideways*0.75*YValue)*Acceleration);
+	CapsuleComp->AddForce((Forward*XValue + Sideways*0.8*YValue)*Acceleration);
 
+	// clamping max velocity:
 	FVector currentVelocity = CapsuleComp->GetPhysicsLinearVelocity();
 	FVector clampedVelocity = currentVelocity.GetClampedToMaxSize(SpeedLimit);
 	CapsuleComp->SetPhysicsLinearVelocity(clampedVelocity);
 
+	// animating cosmetic mesh:
 	if (DashTimer < DashDuration) {
 		PlayerMesh->SetRelativeRotation(FRotator(0,0,DashRotation/DashDuration * DashTimer));
 	}
@@ -104,6 +117,7 @@ void AShipPawn::Tick(float DeltaTime)
 	}
 	DashTimer += DeltaTime;
 
+	// handling sustained fire:
 	if (bShooting && ShotTimer >= TimeBetweenShots) {
 		Shoot();
 		ShotTimer = 0;
@@ -205,6 +219,6 @@ void AShipPawn::Focus(float Value) {
 
 	FVector CurrentVelocity = -GetVelocity();
 	CurrentVelocity.Normalize();
-	CapsuleComp->AddForce(CurrentVelocity*0.5*Acceleration);
+	CapsuleComp->AddForce(CurrentVelocity*0.7*Acceleration);
 }
 

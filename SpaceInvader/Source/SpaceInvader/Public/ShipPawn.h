@@ -61,10 +61,10 @@ public:
 
 	// Firing
 	UPROPERTY(EditAnywhere, Category = "Combat")
-		float ProjectileForwardOffset{100.f};
+		float ProjectileForwardOffset{185.f};
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
-		float ProjectileSpeed{2100.f};
+		float ProjectileSpeed{2500.f};
 
 	void Reload();
 	void Shoot();
