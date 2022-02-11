@@ -153,8 +153,6 @@ void AShipPawn::Shoot() {
 		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Sharpshooter!");
 		NewProjectile->SetOwner(this);
 	}
-
-	ProjectileForwardOffset = 40.f;
 }
 
 void AShipPawn::StartShooting() {
