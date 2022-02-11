@@ -3,3 +3,7 @@
 
 #include "SpaceInvaderGameModeBase.h"
 
+void ASpaceInvaderGameModeBase::BeginPlay() {
+
+}
+

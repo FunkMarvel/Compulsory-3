@@ -14,4 +14,7 @@ class SPACEINVADER_API ASpaceInvaderGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+protected:
+	void BeginPlay() override final;
+
 };
