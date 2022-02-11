@@ -57,7 +57,7 @@ AShipPawn::AShipPawn()
 	// enable physics and collision:
 	CapsuleComp->SetSimulatePhysics(true);
 	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	CapsuleComp->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+	CapsuleComp->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 	CapsuleComp->SetEnableGravity(false);
 
 	// set up cosmetic mesh:
@@ -86,6 +86,7 @@ void AShipPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	InitLocation = PlayerMesh->GetComponentLocation();
+	CapsuleComp->OnComponentHit.AddDynamic(this, &AShipPawn::OnHit);
 }
 
 // Called every frame
@@ -151,11 +152,19 @@ void AShipPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+void AShipPawn::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
+	
+	if (OtherActor->GetOwner() != this) {
+		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Red, "HIT!");
+	}
+}
+
 void AShipPawn::Reload() {
+	Ammo = 30;
 }
 
 void AShipPawn::Shoot() {
-	if (ProjectileClass)
+	if (ProjectileClass && Ammo > 0)
 	{
 		FVector ShipVelocity = GetVelocity();
 		FVector Forward = GetActorForwardVector();
@@ -164,8 +173,13 @@ void AShipPawn::Shoot() {
 		AProjectile* NewProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass,
 			GetActorLocation() + Forward * ProjectileForwardOffset,
 			GetActorRotation());
+
+		NewProjectile->ProjectileMesh->IgnoreActorWhenMoving(this, true);
+		CapsuleComp->IgnoreActorWhenMoving(NewProjectile, true);
+
 		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Sharpshooter!");
 		NewProjectile->SetOwner(this);
+		Ammo--;
 	}
 }
 

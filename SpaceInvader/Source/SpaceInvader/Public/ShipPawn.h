@@ -66,6 +66,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Combat")
 		float ProjectileSpeed{2500.f};
 
+	UFUNCTION()
+		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 	void Reload();
 	void Shoot();
 	void StartShooting();
