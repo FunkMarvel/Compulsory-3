@@ -94,7 +94,7 @@ void AShipPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (Health <= 0) EndPlay(EEndPlayReason::Destroyed);
+	if (Health <= 0) ResetLoaction();
 
 	// Handling movement:
 	FVector Forward = GetActorForwardVector();
@@ -202,6 +202,7 @@ void AShipPawn::EndShooting() {
 }
 
 void AShipPawn::ResetLoaction() const {
+	CapsuleComp->SetWorldLocation(FVector(0.f));
 }
 
 void AShipPawn::MoveXAxis(float Value) {
