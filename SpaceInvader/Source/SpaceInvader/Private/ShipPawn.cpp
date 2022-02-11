@@ -94,7 +94,7 @@ void AShipPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (Health <= 0) EndPlay(EEndPlayReason::Destroyed);
+	InContact = false;
 
 	// Handling movement:
 	FVector Forward = GetActorForwardVector();
@@ -159,8 +159,6 @@ void AShipPawn::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAct
 	
 	if (OtherActor->GetOwner() != this && !bDashing) {
 		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Red, "HIT!");
-		AProjectile* Overlapper = Cast<AProjectile>(OtherActor);
-		Health -= Overlapper->Damage;
 	}
 }
 
@@ -182,12 +180,9 @@ void AShipPawn::Shoot() {
 		NewProjectile->ProjectileMesh->IgnoreActorWhenMoving(this, true);
 		CapsuleComp->IgnoreActorWhenMoving(NewProjectile, true);
 
-		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Fire!");
+		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Ship!");
 		NewProjectile->SetOwner(this);
 		Ammo--;
-	}
-	else {
-		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Orange, "Out of Ammo!");
 	}
 }
 
@@ -234,7 +229,7 @@ void AShipPawn::Dash() {
 	Cast<APlayerController>(GetController())->DeprojectMousePositionToWorld(MouseLocation, MouseDirection);
 	MouseDirection.Z = 0.f;
 
-	CapsuleComp->AddImpulse(MouseDirection * 3 *Acceleration);
+	CapsuleComp->AddImpulse(MouseDirection * 2.5 *Acceleration);
 	CapsuleComp->AddImpulse(-MouseDirection * Acceleration);
 }
 

@@ -50,9 +50,6 @@ public:
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
 		int Ammo{ 30 };
 
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
-		int Health{ 150 };
-
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
 		USoundBase* ShootingSound{nullptr};
 
@@ -81,6 +78,7 @@ public:
 
 	UFUNCTION(BluePrintCallable)
 		void ResetLoaction() const;
+	bool InContact;
 
 private:
 	
