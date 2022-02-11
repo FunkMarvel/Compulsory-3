@@ -51,7 +51,7 @@ public:
 		int Ammo{ 30 };
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
-		int Health{ 1500 };
+		int Health{ 150 };
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
 		USoundBase* ShootingSound{nullptr};
