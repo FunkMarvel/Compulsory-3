@@ -48,7 +48,10 @@ public:
 		float SpeedLimit{ 2000.f };
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
-		int Ammo{ 30 };
+		int32 Ammo{ 30 };
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
+		float Health{ 150 };
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
 		USoundBase* ShootingSound{nullptr};
@@ -94,6 +97,9 @@ private:
 
 	void Dash();
 	void Focus(float Value);
+
+	UFUNCTION()
+		void Death();
 
 	float XValue{};
 	float YValue{};

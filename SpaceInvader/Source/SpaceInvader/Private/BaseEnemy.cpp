@@ -125,7 +125,7 @@ void ABaseEnemy::Move(FVector Direction)
 	FVector ToPlayerVector = PlayerActor->GetActorLocation() - GetActorLocation();*/
 	Direction.Normalize();
 	Direction += GetActorRightVector()*GetLeftRightMovment(Amplitude, Lambda);
-	
+
 
 	AddActorWorldOffset(Direction * MovmentSpeed * UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), true);
 
