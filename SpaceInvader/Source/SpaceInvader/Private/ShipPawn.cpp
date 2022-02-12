@@ -18,6 +18,8 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Projectile.h"
 #include "DrawDebugHelpers.h"
+#include "Components/WidgetComponent.h"
+#include "HealthBarWidget.h"
 
 static void InitializeDefaultPawnInputBinding() {
 	static bool BindingsAdded{false};
@@ -83,6 +85,12 @@ AShipPawn::AShipPawn()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->bUsePawnControlRotation = false;
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
+
+	// Setting up health bar:
+	HealthWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("Player Health Bar"));
+	HealthWidgetComp->SetupAttachment(CapsuleComp);
+	HealthWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
+	HealthWidgetComp->SetRelativeLocation(FVector(-200.f, 0.f, 0.f));
 }
 
 // Called when the game starts or when spawned
@@ -91,6 +99,9 @@ void AShipPawn::BeginPlay()
 	Super::BeginPlay();
 	InitLocation = PlayerMesh->GetComponentLocation();
 	CapsuleComp->OnComponentBeginOverlap.AddDynamic(this, &AShipPawn::OnHit);
+
+	UHealthBarWidget* HealthBar = Cast<UHealthBarWidget>(HealthWidgetComp->GetUserWidgetObject());
+	HealthBar->SetOwnerOfBar(this);
 }
 
 // Called every frame

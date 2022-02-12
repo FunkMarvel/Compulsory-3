@@ -26,7 +26,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
+	
 		class UStaticMeshComponent* PlayerMesh{nullptr};
 
 	UPROPERTY(VisibleAnywhere, Category = "Collider")
@@ -37,6 +37,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Camera")
 		class UCameraComponent* Camera{nullptr};
+
+	UPROPERTY(VisibleAnywhere, Category = "Overlay")
+		class UWidgetComponent* HealthWidgetComp;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Movement")
 		float Acceleration{ 100000.f };
@@ -49,6 +52,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
 		float Health{ 150 };
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
+		float MaxHealth{ 150 };
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
 		class USoundBase* ShootingSound{nullptr};
