@@ -4,9 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "Components/StaticMeshComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Camera/CameraComponent.h"
 #include "ShipPawn.generated.h"
 
 UCLASS()
@@ -30,16 +27,16 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
-		UStaticMeshComponent* PlayerMesh{nullptr};
+		class UStaticMeshComponent* PlayerMesh{nullptr};
 
 	UPROPERTY(VisibleAnywhere, Category = "Collider")
 		class UCapsuleComponent* CapsuleComp{nullptr};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Camera")
-		USpringArmComponent* SpringArm{nullptr};
+		class USpringArmComponent* SpringArm{nullptr};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Camera")
-		UCameraComponent* Camera{nullptr};
+		class UCameraComponent* Camera{nullptr};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Movement")
 		float Acceleration{ 100000.f };
@@ -54,10 +51,10 @@ public:
 		float Health{ 150 };
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
-		USoundBase* ShootingSound{nullptr};
+		class USoundBase* ShootingSound{nullptr};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
-		USoundBase* ReloadingSound{nullptr};
+		class USoundBase* ReloadingSound{nullptr};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
 		TSubclassOf<AActor> ActorToSpawn;

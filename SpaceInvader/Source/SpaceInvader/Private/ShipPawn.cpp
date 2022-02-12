@@ -3,6 +3,9 @@
 
 #include "ShipPawn.h"
 #include "GameFramework/PlayerController.h"
+#include "Components/StaticMeshComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/PlayerInput.h"
 #include "Components/InputComponent.h"
