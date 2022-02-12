@@ -11,14 +11,15 @@ AChargerEnemy::AChargerEnemy() {
 	BladesMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Blades Mesh"));
 	BladesMesh->SetupAttachment(Mesh);
 
-	MovmentSpeed = 200.f;
 	InnerRange = 700.f;
-	StartHealth = 50;
-	ChargeSpeed = 600.f;
-	WindupSpeed = 100.f;
+	StartHealth = 3;
 	currentState = ChargerState::Moving;
 
 	//WindUpTime = 1.f;
+	MovmentSpeed = 200.f;
+	NormalSpeed = 150.f;
+	WindupSpeed = -200.f;
+	ChargeSpeed = 600.f;
 
 
 	//blades
@@ -86,19 +87,20 @@ void AChargerEnemy::MoveLogic()
 	{
 	case AChargerEnemy::Moving:
 		MovmentSpeed = NormalSpeed;
-		Move(ToPlayerVector);
+		
 		break;
 	case AChargerEnemy::WindUp:
 		MovmentSpeed = WindupSpeed;
-		Move(-ToPlayerVector);
+		
 		break;
 	case AChargerEnemy::Charging:
 		MovmentSpeed = ChargeSpeed;
-		Move(ToPlayerVector);
+		
 		break;
 	default:
 		break;
 	}
+	Move(ToPlayerVector);
 
 }
 

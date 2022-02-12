@@ -8,6 +8,7 @@
 #include "DrawDebugHelpers.h"
 
 
+#include "ShipPawn.h"
 
 
 // Sets default values
@@ -67,6 +68,12 @@ bool ABaseEnemy::IsInInnerRange()
 	return false;
 }
 
+void ABaseEnemy::RotateAfterMovment(UStaticMeshComponent* Comp)
+{
+
+
+}
+
 void ABaseEnemy::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	const FHitResult& SweepResult)
@@ -83,6 +90,10 @@ void ABaseEnemy::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAc
 			Destroy();
 		}
 	}
+	else if (OtherActor->IsA<AShipPawn>())
+	{
+		//ligic Here
+	}
 
 }
 
@@ -90,11 +101,14 @@ void ABaseEnemy::FireAtPlayer()
 {
 	if (ProjectileClass)
 	{
+		FVector Direction = (UGameplayStatics::GetPlayerPawn(this, 0)->GetActorLocation() - GetActorLocation());
+		Direction.Normalize();
+
 		//the line under is unefficient, but since we dont have diffrent types of bullets we are using this
 		ProjectileClass.GetDefaultObject()->ProjectileMovmentComponent->InitialSpeed = ProjectileSpeed;
 		AProjectile* NewProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass,
 			GetActorLocation() + GetActorForwardVector() * ProjectileForwardOffset,
-			GetActorRotation());
+			Direction.Rotation());
 		/*GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Sharpshooter!");*/
 		//NewProjectile->SetOwner(this);
 		DrawDebugSphere(GetWorld(), GetActorLocation() + GetActorForwardVector() * ProjectileForwardOffset, 40, 16, FColor::Red, false, 1.f);
@@ -111,7 +125,7 @@ void ABaseEnemy::Move(FVector Direction)
 	FVector ToPlayerVector = PlayerActor->GetActorLocation() - GetActorLocation();*/
 	Direction.Normalize();
 	Direction += GetActorRightVector()*GetLeftRightMovment(Amplitude, Lambda);
-	UE_LOG(LogTemp, Warning, TEXT("%f"), GetLeftRightMovment(4.f, 1.f));
+	
 
 	AddActorWorldOffset(Direction * MovmentSpeed * UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), true);
 
@@ -123,7 +137,10 @@ void ABaseEnemy::LookAtPlayer()
 	
 	FVector ToPlayerVector = PlayerActor->GetActorLocation() - GetActorLocation();
 
-	FRotator rot = ToPlayerVector.Rotation();
+	FRotator rot = FMath::RInterpTo(GetActorRotation(), ToPlayerVector.Rotation(),
+		UGameplayStatics::GetWorldDeltaSeconds(this), 5.f);
+
+
 
 	SetActorRotation(rot);
 }
@@ -132,6 +149,15 @@ float ABaseEnemy::GetLeftRightMovment(const float &_Amplitude, const float &_Lam
 {
 	CurrentMovmentTime += UGameplayStatics::GetWorldDeltaSeconds(this);
 	float f = FMath::Sin((1.f / Lambda) * CurrentMovmentTime) * Amplitude;
+
+	float Distance = (UGameplayStatics::GetPlayerPawn(GetWorld(), 0)->GetActorLocation() - GetActorLocation()).Size();
+
+	if (Distance < 1000.f)
+	{
+		f = f * (Distance / 1500.f);
+		UE_LOG(LogTemp, Warning, TEXT("%f"), f);
+	}
+
 	return f;
 }
 

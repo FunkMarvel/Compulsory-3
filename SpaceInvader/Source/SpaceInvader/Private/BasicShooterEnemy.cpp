@@ -12,6 +12,7 @@ ABasicShooterEnemy::ABasicShooterEnemy() {
 	MovmentSpeed = 200.f;
 	InnerRange = 250.f;
 	ProjectileSpeed = 700.f;
+	StartHealth = 5.f;
 }
 
 
@@ -57,5 +58,4 @@ void ABasicShooterEnemy::FiringLogic()
 		FireAtPlayer();
 		LastShotTime = 0.f;
 	}
-
 }
