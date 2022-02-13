@@ -26,7 +26,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Mesh")
 		class UStaticMeshComponent* PlayerMesh{nullptr};
 
 	UPROPERTY(VisibleAnywhere, Category = "Collider")
@@ -42,7 +42,7 @@ public:
 		class UWidgetComponent* HealthWidgetComp;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Movement")
-		float Acceleration{ 100000.f };
+		float Acceleration{ 10000.f };
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Movement")
 		float SpeedLimit{ 2000.f };
@@ -67,7 +67,7 @@ public:
 
 	// Firing
 	UPROPERTY(EditAnywhere, Category = "Combat")
-		float ProjectileForwardOffset{185.f};
+		float ProjectileForwardOffset{200.f};
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 		float ProjectileSpeed{2500.f};

@@ -47,7 +47,7 @@ AShipPawn::AShipPawn()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(TEXT("	StaticMesh'/Game/Models/PlaceHolderPlane/PlaceHolderPlane.PlaceHolderPlane'"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(TEXT("StaticMesh'/Game/Models/PlayerPlane/Plane_2.Plane_2'"));
 
 	// collision and physics mesh:
 	CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>("CapsuleComponent");
@@ -70,6 +70,8 @@ AShipPawn::AShipPawn()
 	PlayerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Player Mesh"));
 	PlayerMesh->SetStaticMesh(ShipMesh.Object);
 	PlayerMesh->SetupAttachment(CapsuleComp);
+	PlayerMesh->SetSimulatePhysics(false);
+	PlayerMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	// Setting up camera:
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
