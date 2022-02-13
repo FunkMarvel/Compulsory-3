@@ -197,7 +197,9 @@ void AShipPawn::Shoot() {
 			GetActorRotation());
 
 		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Shoot!");
-		NewProjectile->SetOwner(this);
+		if (NewProjectile) {
+			NewProjectile->SetOwner(this);
+		}
 		Ammo--;
 	}
 	else if (Ammo <= 0) {
