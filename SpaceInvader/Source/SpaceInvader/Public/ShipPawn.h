@@ -33,7 +33,7 @@ public:
 		class UCapsuleComponent* CapsuleComp{nullptr};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Camera")
-		class USpringArmComponent* SpringArm{nullptr};
+		class USpringArmComponent* CameraArm{nullptr};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Camera")
 		class UCameraComponent* Camera{nullptr};

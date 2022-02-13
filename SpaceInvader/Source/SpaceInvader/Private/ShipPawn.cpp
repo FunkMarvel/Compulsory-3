@@ -72,25 +72,26 @@ AShipPawn::AShipPawn()
 	PlayerMesh->SetupAttachment(CapsuleComp);
 
 	// Setting up camera:
-	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
-	SpringArm->bDoCollisionTest = false;
-	SpringArm->SetUsingAbsoluteRotation(true);
-	SpringArm->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
-	SpringArm->TargetArmLength = 2000.f;
-	SpringArm->bEnableCameraLag = false;
-	SpringArm->CameraLagSpeed = 5.f;
+	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
+	CameraArm->bDoCollisionTest = false;
+	CameraArm->SetUsingAbsoluteRotation(true);
+	CameraArm->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
+	CameraArm->TargetArmLength = 2000.f;
+	CameraArm->bEnableCameraLag = false;
+	CameraArm->CameraLagSpeed = 5.f;
 
-	SpringArm->SetupAttachment(CapsuleComp);
+	CameraArm->SetupAttachment(CapsuleComp);
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->bUsePawnControlRotation = false;
-	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
+	Camera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
 
 	// Setting up health bar:
 	HealthWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("Player Health Bar"));
 	HealthWidgetComp->SetupAttachment(CapsuleComp);
 	HealthWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
 	HealthWidgetComp->SetRelativeLocation(FVector(-200.f, 0.f, 0.f));
+	
 }
 
 // Called when the game starts or when spawned
