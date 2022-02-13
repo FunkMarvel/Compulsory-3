@@ -42,6 +42,8 @@ public:
 		float MovmentSpeed;
 	UPROPERTY(EditAnywhere, Category = "Enemy")
 		float ProjectileForwardOffset;
+	UPROPERTY(EditAnywhere, Category = "Enemy")
+	float currentTilt = 20.f;
 
 	//AI LOGIC
 	UPROPERTY(EditAnywhere, Category = "Enemy")
@@ -69,7 +71,7 @@ protected:
 	
 
 	UFUNCTION()
-	void RotateAfterMovment(UStaticMeshComponent* Comp);
+	void RotateMeshAfterMovment(UStaticMeshComponent* Comp, FVector Direction);
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -79,13 +81,7 @@ protected:
 	UFUNCTION()
 	void FireAtPlayer();
 
-	//should be called every frame in tick
-	UFUNCTION()
-	virtual void MoveLogic(){}
-
-	//should be called every frame in tick
-	UFUNCTION()
-	virtual void FiringLogic() {}
+	
 
 	// Move functuon Direction is in world space
 	UFUNCTION()
@@ -96,6 +92,8 @@ protected:
 
 	//move the enemy left to right
 	float GetLeftRightMovment(const float& _Amplitude, const float& _Lambda);
+
+	FVector GetToPlayerDirection();
 
 	float CurrentMovmentTime = 0.f;
 	UPROPERTY(EditAnywhere, Category = "Enemy | LeftRightMovment")

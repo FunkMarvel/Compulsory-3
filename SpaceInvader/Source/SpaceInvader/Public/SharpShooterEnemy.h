@@ -23,9 +23,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	virtual void MoveLogic() override;
-
-	virtual void FiringLogic() override;
 
 private:
 

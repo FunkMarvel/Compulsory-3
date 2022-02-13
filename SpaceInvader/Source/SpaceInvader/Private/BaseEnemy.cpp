@@ -3,6 +3,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Projectile.h"
 #include "DrawDebugHelpers.h"
@@ -68,10 +69,25 @@ bool ABaseEnemy::IsInInnerRange()
 	return false;
 }
 
-void ABaseEnemy::RotateAfterMovment(UStaticMeshComponent* Comp)
+void ABaseEnemy::RotateMeshAfterMovment(UStaticMeshComponent* Comp, FVector Direction)
 {
+	
+	FVector v1 = GetActorUpVector();
+	//rotates the (up) vector towards the target
+	// 
+	// gets the "right vector" compared to the player (enemies arent nececeraly rotated towards the player
+	v1 = v1.RotateAngleAxis(-currentTilt, FVector::CrossProduct(Direction, GetActorUpVector()).GetSafeNormal() ); 
+	/*DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + v1.GetSafeNormal() * 400.f, FColor::Blue, false,
+		0.5f);*/
+	
+	FRotator r2 = UKismetMathLibrary::MakeRotFromZX(v1, GetActorForwardVector());
+	
+	/*DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + r2.Vector() * 400.f, FColor::Blue, false,
+		0.5f);*/
 
-
+	Comp->SetWorldRotation(FMath::RInterpTo(Comp->GetComponentRotation(), r2, UGameplayStatics::GetWorldDeltaSeconds(this),
+		5.f));
+	
 }
 
 void ABaseEnemy::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -124,7 +140,7 @@ void ABaseEnemy::Move(FVector Direction)
 	
 	FVector ToPlayerVector = PlayerActor->GetActorLocation() - GetActorLocation();*/
 	Direction.Normalize();
-	Direction += GetActorRightVector()*GetLeftRightMovment(Amplitude, Lambda);
+	
 
 
 	AddActorWorldOffset(Direction * MovmentSpeed * UGameplayStatics::GetWorldDeltaSeconds(GetWorld()), true);
@@ -159,6 +175,13 @@ float ABaseEnemy::GetLeftRightMovment(const float &_Amplitude, const float &_Lam
 	}
 
 	return f;
+}
+
+FVector ABaseEnemy::GetToPlayerDirection()
+{
+	return PlayerPawn->GetActorLocation() - GetActorLocation();
+
+	
 }
 
 

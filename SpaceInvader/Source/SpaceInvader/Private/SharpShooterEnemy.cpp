@@ -19,9 +19,17 @@ ASharpShooterEnemy::ASharpShooterEnemy() {
 void ASharpShooterEnemy::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 	
+	//Enemy logic
+	FVector Direction = GetToPlayerDirection().GetSafeNormal();
+	if (IsInInnerRange())
+	{
+		Direction = -Direction;
+	}
+	Move(Direction);
+	RotateMeshAfterMovment(Mesh, Direction);
 
-	MoveLogic();
-	FiringLogic();
+
+	
 
 	LookAtPlayer();
 }
@@ -33,37 +41,4 @@ void ASharpShooterEnemy::BeginPlay() {
 
 }
 
-void ASharpShooterEnemy::MoveLogic()
-{
-	if (PlayerPawn == nullptr)
-		return;
 
-	if (!IsInInnerRange())
-	{
-		FVector ToPlayerVector = PlayerPawn->GetActorLocation() - GetActorLocation();
-		ToPlayerVector.Z = 0.f;
-
-		Move(ToPlayerVector);
-	}
-	else if (IsInInnerRange()) {
-		FVector ToPlayerVector = PlayerPawn->GetActorLocation() - GetActorLocation();
-		ToPlayerVector.Z = 0.f;
-
-		Move(-ToPlayerVector);
-	}
-
-}
-
-void ASharpShooterEnemy::FiringLogic()
-{
-	if (PlayerPawn == nullptr)
-		return;
-	LastShotTime += UGameplayStatics::GetWorldDeltaSeconds(this);
-	if (ShotInterval <= LastShotTime)
-	{
-		
-		FireAtPlayer();
-		LastShotTime = 0.f;
-	}
-
-}

@@ -19,10 +19,13 @@ public:
 private:
 	void CurrentStateLogic();
 
+	//charger Velocity
+	FVector ChargeVelocity = FVector::ZeroVector;
 	
 	//Windup and target found
 	bool bFoundTarget = false;
 	float WindUpTime = 2.f;
+	float ChargingMinimumTime = 1.2f;
 	float CurrentWindUpTime = 0.f;
 	
 	//tilt stuff
@@ -31,7 +34,7 @@ private:
 protected:
 
 	
-	virtual void MoveLogic() override;
+	
 //
 //	//my deseg
 public:
@@ -46,7 +49,7 @@ public:
 		Charging
 	};
 	ChargerState currentState;
-//
+	// Movemnt speed
 	UPROPERTY(EditAnywhere, Category = "Enemy | CustomMovment")
 	float NormalSpeed;
 	UPROPERTY(EditAnywhere, Category = "Enemy | CustomMovment")
@@ -54,12 +57,21 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Enemy | CustomMovment")
 	float WindupSpeed;
 
+	//blade speed
 	UPROPERTY(EditAnywhere, Category = "Enemy | BladeSpinningSpeed")
 	float BladeNormalSpeed;
 	UPROPERTY(EditAnywhere, Category = "Enemy | BladeSpinningSpeed")
 	float BladeChargeSpeed;
 	UPROPERTY(EditAnywhere, Category = "Enemy | BladeSpinningSpeed")
 	float BladeWindupSpeed;
+
+	UPROPERTY(EditAnywhere, Category = "Enemy | TiltAmount")
+		float NormalTilt;
+	UPROPERTY(EditAnywhere, Category = "Enemy | TiltAmount")
+		float WindUpTilt;
+	UPROPERTY(EditAnywhere, Category = "Enemy | TiltAmount")
+		float ChargeTilt;
+	
 
 	//funcs
 	UFUNCTION()
