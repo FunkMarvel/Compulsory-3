@@ -5,6 +5,16 @@
 #include "Components/ProgressBar.h"
 #include "ShipPawn.h"
 #include "BaseEnemy.h"
+#include "Engine.h"
+
+
+UHealthBarWidget::UHealthBarWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {
+
+}
+
+void UHealthBarWidget::NativeConstruct() {
+	Super::NativeConstruct();
+}
 
 void UHealthBarWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime) {
 
