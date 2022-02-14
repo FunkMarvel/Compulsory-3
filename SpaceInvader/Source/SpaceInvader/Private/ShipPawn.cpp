@@ -145,6 +145,15 @@ void AShipPawn::Tick(float DeltaTime)
 	else {
 		ShotTimer += DeltaTime;
 	}
+
+	// handling stamina:
+	if (Stamina < 3 && StaminaTimer < StaminaRechargeTime) {
+		StaminaTimer += DeltaTime;
+	}
+	else if (Stamina < 3) {
+		Stamina++;
+		StaminaTimer = 0;
+	}
 }
 
 // Called to bind functionality to input
@@ -240,18 +249,22 @@ void AShipPawn::Aim(float Value) {
 }
 
 void AShipPawn::Dash() {
-	DashTimer = 0;
-	bDashing = true;
+	if (StaminaTimer >= StaminaRechargeTime || Stamina > 0) {
+		Stamina--;
+		StaminaTimer = 0;
+		DashTimer = 0;
+		bDashing = true;
 
-	FVector MouseLocation;
-	FVector MouseDirection;
-	FVector CurrentVelocity = GetVelocity();
+		FVector MouseLocation;
+		FVector MouseDirection;
+		FVector CurrentVelocity = GetVelocity();
 
-	Cast<APlayerController>(GetController())->DeprojectMousePositionToWorld(MouseLocation, MouseDirection);
-	MouseDirection.Z = 0.f;
+		Cast<APlayerController>(GetController())->DeprojectMousePositionToWorld(MouseLocation, MouseDirection);
+		MouseDirection.Z = 0.f;
 
-	CapsuleComp->AddImpulse(MouseDirection * 2.5 *Acceleration);
-	CapsuleComp->AddImpulse(-MouseDirection * Acceleration);
+		CapsuleComp->AddImpulse(MouseDirection * 2.5 *Acceleration);
+		CapsuleComp->AddImpulse(-MouseDirection * Acceleration);
+	}
 }
 
 void AShipPawn::Focus(float Value) {
@@ -268,4 +281,3 @@ void AShipPawn::Death() {
 	SetActorEnableCollision(false);
 	SetActorTickEnabled(false);
 }
-

@@ -42,7 +42,7 @@ public:
 	//	class UWidgetComponent* HealthWidgetComp;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Movement")
-		float Acceleration{ 10000.f };
+		float Acceleration{ 50000.f };
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Movement")
 		float SpeedLimit{ 2000.f };
@@ -55,6 +55,14 @@ public:
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
 		float MaxHealth{ 150 };
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+		float StaminaRechargeTime{5.f};
+	float StaminaTimer{StaminaRechargeTime};
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+		int32 MaxStamina{3};
+	int32 Stamina{MaxStamina};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
 		class USoundBase* ShootingSound{nullptr};
@@ -103,12 +111,12 @@ private:
 
 	float XValue{};
 	float YValue{};
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+		float DashDuration{1.f};
 	
 	UPROPERTY(EditAnywhere, Category = "Movement")
-		float DashDuration{1};
-	
-	UPROPERTY(EditAnywhere, Category = "Movement")
-		float DashRotation{360};
+		float DashRotation{360.f};
 	
 	float DashTimer{DashDuration};
 

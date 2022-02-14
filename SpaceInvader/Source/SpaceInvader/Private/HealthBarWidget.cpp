@@ -24,7 +24,7 @@ void UHealthBarWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime
 
 	AActor* Owner = Cast<AActor>(OwnerActor);
 
-	if (Owner->IsA<AShipPawn>()) {
+	if (Owner->IsA<AShipPawn>()) {  // updating for ship class.
 		AShipPawn* OwnerShip = Cast<AShipPawn>(OwnerActor);
 		HealthBar->SetPercent(OwnerShip->Health/OwnerShip->MaxHealth);
 	}
