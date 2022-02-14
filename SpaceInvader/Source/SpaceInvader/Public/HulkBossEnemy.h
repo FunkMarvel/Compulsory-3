@@ -20,7 +20,26 @@ public:
 	//UPROPERTY(EditAnywhere) TArray<class UStaticMeshComponent*> SpinnerMeshes;
 	UPROPERTY(EditAnywhere) 
 		class UStaticMeshComponent* Spinner1;
+private:
+	
+	enum HulkState {
+		Normal,
+		ClosingBeam
+	};
+	HulkState currentState = HulkState::Normal;
+	float StartOfStateTime = 0.f;
+	bool bEnterState = false;
 
+	UFUNCTION()
+	void NormalState();
+	UFUNCTION()
+	void ClosingBeamState();
+
+	
+	void ChangeCurrentState(HulkState NewState);
+
+	// Closing Beam state
+	FVector Direction = FVector::ZeroVector;
 
 protected:
 	// Called when the game starts or when spawned
