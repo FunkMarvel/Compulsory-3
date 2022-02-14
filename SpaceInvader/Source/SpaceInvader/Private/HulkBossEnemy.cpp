@@ -19,12 +19,29 @@ AHulkBossEnemy::AHulkBossEnemy() {
 	ProjectileForwardOffset = 0.f;
 	InnerRange = 1000.f;
 
-	Spinner1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PinnerOne"));
+	SpinnerOne   = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpinenrOne"));
+	SpinnerOne->SetupAttachment(GetRootComponent());
+	SpinnerTwo   = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpinenrTwo"));
+	SpinnerTwo->SetupAttachment(GetRootComponent());
+	SpinnerThree = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpinenrThree"));
+	SpinnerThree->SetupAttachment(GetRootComponent());
+	
 
 	ClosingBeamCurve = CreateDefaultSubobject<UCurveFloat>(TEXT("ClosingBeamCurve"));
 	RotatingBeamCurve = CreateDefaultSubobject<UCurveFloat>(TEXT("RotatingBeamCurve"));
 
 	currentTilt = 40.f;
+}
+
+void AHulkBossEnemy::SpinBlades(float Speed)
+{
+	float DeltaSpeed = Speed * UGameplayStatics::GetWorldDeltaSeconds(this);
+	
+	SpinnerOne->AddLocalRotation(FRotator(0.f, DeltaSpeed,0.f));
+	SpinnerTwo->AddLocalRotation(FRotator(0.f, -DeltaSpeed * 1.1f, 0.f));
+	SpinnerThree->AddLocalRotation(FRotator(0.f, DeltaSpeed * 1.2f, 0.f));
+	
+
 }
 
 void AHulkBossEnemy::NormalState()
@@ -42,7 +59,8 @@ void AHulkBossEnemy::NormalState()
 	Move(Direction);
 	RotateMeshAfterMovment(Mesh, Direction);
 
-	
+	SpinBlades(SpinnerBaseSpeed);
+
 
 	switch (NextBeamIndex)
 	{
@@ -74,9 +92,11 @@ void AHulkBossEnemy::ClosingBeamState()
 		StartOfStateTime = 0.f;
 		LastShotTime = 0.f;
 	}
-
 	StartOfStateTime += UGameplayStatics::GetWorldDeltaSeconds(this);
 	LastShotTime += UGameplayStatics::GetWorldDeltaSeconds(this);
+
+	SpinBlades(SpinnerAttackModifier);
+
 	if (LastShotTime >= ShotInterval)
 	{
 		FVector OffSetVecR = ClosingBeamDirection.RotateAngleAxis(ClosingBeamCurve->GetFloatValue(StartOfStateTime * (1/ClosingBeamDuration)) * 90.f, GetActorUpVector());
@@ -108,6 +128,8 @@ void AHulkBossEnemy::RotateBeamState()
 	
 	StartOfStateTime += UGameplayStatics::GetWorldDeltaSeconds(this);
 	LastShotTime += UGameplayStatics::GetWorldDeltaSeconds(this);
+
+	SpinBlades(SpinnerAttackModifier);
 
 	if (LastShotTime >= ShotInterval){
 

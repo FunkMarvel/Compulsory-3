@@ -16,10 +16,22 @@ class SPACEINVADER_API AHulkBossEnemy : public ABaseEnemy
 public:
 	AHulkBossEnemy();
 
-	//TArray<class UStaticMeshComponent> SpinnerMeshes = nullptr;
-	//UPROPERTY(EditAnywhere) TArray<class UStaticMeshComponent*> SpinnerMeshes;
+	//Spinning the meshes
 	UPROPERTY(EditAnywhere) 
-		class UStaticMeshComponent* Spinner1;
+	class UStaticMeshComponent* SpinnerOne = nullptr;
+	UPROPERTY(EditAnywhere)
+	class UStaticMeshComponent* SpinnerTwo = nullptr;
+	UPROPERTY(EditAnywhere)
+	class UStaticMeshComponent* SpinnerThree = nullptr;
+	
+
+	UPROPERTY(EditAnywhere, Category = "Enemy | SpinnerSpeed")
+	float SpinnerBaseSpeed = 300.f;
+	UPROPERTY(EditAnywhere, Category = "Enemy | SpinnerSpeed")
+	float SpinnerAttackModifier = 500.f;
+
+	UFUNCTION()
+	void SpinBlades(float Speed);
 private:
 	
 	enum HulkState {
