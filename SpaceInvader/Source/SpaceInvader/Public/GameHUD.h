@@ -24,11 +24,11 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-	//UFUNCTION()
-	//	void UpdateHealthBar(float percent);
-
 	UFUNCTION()
 		void UpdateDashBars();
+
+	UFUNCTION()
+		void UpdateAmmoBars();
 
 	UPROPERTY(EditDefaultsOnly, Category="Widgets")
 		TSubclassOf<UUserWidget> HealthBarClass;
@@ -36,12 +36,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Widgets")
 		TSubclassOf<UUserWidget> DashBarsClass;
 
+	UPROPERTY(EditDefaultsOnly, Category="Widgets")
+		TSubclassOf<UUserWidget> AmmoBarsClass;
+
 private:
 	UPROPERTY()
 		class UHealthBarWidget* HealthBar{nullptr};
 
 	UPROPERTY()
 		class UDashBars* DashBars{nullptr};
+
+	UPROPERTY()
+		class UAmmoBars* AmmoBars{nullptr};
 
 	UPROPERTY()
 		FIntPoint ViewSize{};

@@ -5,6 +5,7 @@
 #include "HealthBarWidget.h"
 #include "DashBars.h"
 #include "ShipPawn.h"
+#include "AmmoBars.h"
 #include "Kismet/GameplayStatics.h"
 
 AGameHUD::AGameHUD() {
@@ -28,7 +29,7 @@ void AGameHUD::BeginPlay() {
 		if (HealthBar) {
 			HealthBar->SetOwnerOfBar(GetWorld()->GetFirstPlayerController()->GetPawn());
 			HealthBar->AddToViewport();
-			HealthBar->SetPositionInViewport(FVector2D(ViewSize.X*0.5f-200*0.5f,ViewSize.Y*0.90f));
+			HealthBar->SetPositionInViewport(FVector2D(ViewSize.X*0.5f-90,ViewSize.Y*0.90f));
 		}
 	}
 
@@ -44,12 +45,26 @@ void AGameHUD::BeginPlay() {
 			}
 		}
 	}
+
+	if (AmmoBarsClass) {
+
+		AmmoBars = CreateWidget<UAmmoBars>(GetWorld(), AmmoBarsClass);
+
+		if (AmmoBars) {
+			AmmoBars->AddToViewport();
+			AmmoBars->SetPositionInViewport(FVector2D(ViewSize.X - 175.f,ViewSize.Y*0.85f));
+			for (int32 i = 1; i <= 3; i++) {
+				AmmoBars->UpdateAmmoBars(i, i);
+			}
+		}
+	}
 }
 
 void AGameHUD::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
 	UpdateDashBars();
+	UpdateAmmoBars();
 }
 
 void AGameHUD::UpdateDashBars() {
@@ -60,5 +75,16 @@ void AGameHUD::UpdateDashBars() {
 		PlayerShip = Cast<AShipPawn>(PlayerPawn);
 
 		DashBars->UpdateStaminaBars(PlayerShip->Stamina, PlayerShip->StaminaRechargeTime, PlayerShip->StaminaTimer);
+	}
+}
+
+void AGameHUD::UpdateAmmoBars() {
+	APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+	AShipPawn* PlayerShip{nullptr};
+
+	if (PlayerPawn) {
+		PlayerShip = Cast<AShipPawn>(PlayerPawn);
+
+		AmmoBars->UpdateAmmoBars(PlayerShip->Ammo, PlayerShip->MaxAmmo);
 	}
 }
