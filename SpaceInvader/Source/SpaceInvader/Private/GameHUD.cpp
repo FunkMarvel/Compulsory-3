@@ -52,7 +52,7 @@ void AGameHUD::BeginPlay() {
 
 		if (AmmoBars) {
 			AmmoBars->AddToViewport();
-			AmmoBars->SetPositionInViewport(FVector2D(ViewSize.X - 175.f,ViewSize.Y*0.85f));
+			AmmoBars->SetPositionInViewport(FVector2D(ViewSize.X*0.88f,ViewSize.Y*0.85f));
 			for (int32 i = 1; i <= 3; i++) {
 				AmmoBars->UpdateAmmoBars(i, i);
 			}
