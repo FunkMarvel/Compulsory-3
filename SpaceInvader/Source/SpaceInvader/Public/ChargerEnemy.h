@@ -62,10 +62,11 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Enemy | Charge")
 	float ChargeTime;
 
-
-
+	//CoolDOwn
 	UFUNCTION()
 	void CoolDownState();
+	UPROPERTY(EditAnywhere, Category = "Enemy | CoolDown")
+		float CoolDownTime;
 
 	// Movemnt speed
 	UPROPERTY(EditAnywhere, Category = "Enemy | CustomMovment")
@@ -74,6 +75,8 @@ public:
 	float ChargeSpeed;
 	UPROPERTY(EditAnywhere, Category = "Enemy | CustomMovment")
 	float WindupSpeed;
+	UPROPERTY(EditAnywhere, Category = "Enemy | CustomMovment")
+	float CoolDownSpeed;
 	
 
 	//blade speed
@@ -83,6 +86,8 @@ public:
 	float BladeChargeSpeed;
 	UPROPERTY(EditAnywhere, Category = "Enemy | BladeSpinningSpeed")
 	float BladeWindupSpeed;
+	UPROPERTY(EditAnywhere, Category = "Enemy | BladeSpinningSpeed")
+	float BladeCoolDownSpeed;
 	
 
 
@@ -92,6 +97,8 @@ public:
 	float WindUpTilt;
 	UPROPERTY(EditAnywhere, Category = "Enemy | TiltAmount")
 	float ChargeTilt;
+	UPROPERTY(EditAnywhere, Category = "Enemy | TiltAmount")
+	float CoolDownTilt;
 	
 	
 

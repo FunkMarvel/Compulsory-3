@@ -23,22 +23,28 @@ AChargerEnemy::AChargerEnemy() {
 	//Charge
 	ChargeTime = 1.f;
 
+	//CoolDown
+	CoolDownTime = 2.f;
+
 	//Movment Speends
 	MovmentSpeed = 200.f;
 	NormalSpeed = 150.f;
-	WindupSpeed = -200.f;
+	WindupSpeed = 200.f;
 	ChargeSpeed = 90.f;
+	CoolDownSpeed = 40.f;
 
 
 	//blade speeds
 	BladeNormalSpeed = 400.f;
 	BladeWindupSpeed = 800.f;
 	BladeChargeSpeed = 1400.f;
+	BladeCoolDownSpeed = 250.f;
 
 	//tilt amounts
 	NormalTilt = 30.f;
 	WindUpTilt = 15.f;
 	ChargeTilt = 75.f;
+	CoolDownTilt = 0.f;
 }
 
 void AChargerEnemy::Tick(float DeltaTime)
@@ -62,6 +68,8 @@ void AChargerEnemy::Tick(float DeltaTime)
 	default:
 		break;
 	}
+
+	
 
 }
 
@@ -100,7 +108,8 @@ void AChargerEnemy::MovingState()
 
 void AChargerEnemy::WindUpState()
 {
-	FVector Direction = -GetToPlayerDirection().GetSafeNormal();
+	FVector Direction = GetToPlayerDirection().GetSafeNormal();
+	Direction = -Direction;
 	MovmentSpeed = WindupSpeed;
 	currentTilt = WindUpTilt;
 	RotateMeshAfterMovment(Mesh, Direction);
@@ -108,23 +117,50 @@ void AChargerEnemy::WindUpState()
 	SpinBlades();
 
 	StateTime += UGameplayStatics::GetWorldDeltaSeconds(this);
-
+	UE_LOG(LogTemp, Warning, TEXT("Windup"))
 	if (StateTime >= WindUpTime)
 	{
 		currentState = ChargerState::Charging;
 		StateTime = 0.f;
-		
+		ChargeVelocity = FVector::ZeroVector;
 	}
 }
 
 void AChargerEnemy::ChargingState()
 {
 	FVector Direction = GetToPlayerDirection().GetSafeNormal();
+	MovmentSpeed = ChargeSpeed;
+	currentTilt = ChargeTilt;
+	SpinBlades();
+	RotateMeshAfterMovment(Mesh, Direction);
 	StateTime += UGameplayStatics::GetWorldDeltaSeconds(this);
+
+	ChargeVelocity += Direction * MovmentSpeed * UGameplayStatics::GetWorldDeltaSeconds(this);
+	AddActorWorldOffset(ChargeVelocity);
+
+	if (StateTime >= ChargeTime)
+	{
+		StateTime = 0.f;
+		currentState = ChargerState::CoolDown;
+	}
+	
 }
 
 void AChargerEnemy::CoolDownState()
 {
+	FVector Direction = GetToPlayerDirection().GetSafeNormal();
+	MovmentSpeed = CoolDownSpeed;
+	currentTilt = CoolDownTilt;
+	RotateMeshAfterMovment(Mesh, Direction);
+	StateTime += UGameplayStatics::GetWorldDeltaSeconds(this);
+	Move(Direction);
+	SpinBlades();
+
+	if (StateTime >= CoolDownTime)
+	{
+		StateTime = 0.f;
+		currentState = ChargerState::Moving;
+	}
 }
 
 
@@ -144,7 +180,7 @@ void AChargerEnemy::SpinBlades()
 		ToSpin = BladeChargeSpeed;
 		break;
 	case AChargerEnemy::CoolDown:
-		ToSpin = BladeNormalSpeed;
+		ToSpin = BladeCoolDownSpeed;
 		break;
 	default:
 		break;
