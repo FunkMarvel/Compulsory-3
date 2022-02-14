@@ -13,7 +13,7 @@ void UDashBars::NativeConstruct() {
 }
 
 void UDashBars::UpdateStaminaBars(int32 Stamina, float RechargeTime, float CurrentTime) {
-	// divide total stamina in 3.
+	// Fill stamina bars:
 	switch (Stamina) {
 	case 0:
 		StaminaBar3->SetPercent(0.f);
@@ -30,6 +30,4 @@ void UDashBars::UpdateStaminaBars(int32 Stamina, float RechargeTime, float Curre
 	default:
 		break;
 	}
-
-	// fill bars from 1 to 3 with corresponding amount.
 }

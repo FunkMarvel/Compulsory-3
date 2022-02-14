@@ -42,7 +42,7 @@ public:
 	//	class UWidgetComponent* HealthWidgetComp;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Movement")
-		float Acceleration{ 10000.f };
+		float Acceleration{ 50000.f };
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Movement")
 		float SpeedLimit{ 2000.f };

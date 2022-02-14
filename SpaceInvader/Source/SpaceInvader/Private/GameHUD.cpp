@@ -28,7 +28,7 @@ void AGameHUD::BeginPlay() {
 		if (HealthBar) {
 			HealthBar->SetOwnerOfBar(GetWorld()->GetFirstPlayerController()->GetPawn());
 			HealthBar->AddToViewport();
-			HealthBar->SetPositionInViewport(FVector2D(ViewSize.X*0.5f-200*0.5f,ViewSize.Y*0.95f));
+			HealthBar->SetPositionInViewport(FVector2D(ViewSize.X*0.5f-200*0.5f,ViewSize.Y*0.90f));
 		}
 	}
 
@@ -38,7 +38,7 @@ void AGameHUD::BeginPlay() {
 
 		if (DashBars) {
 			DashBars->AddToViewport();
-			DashBars->SetPositionInViewport(FVector2D(10.f,ViewSize.Y*0.75f));
+			DashBars->SetPositionInViewport(FVector2D(10.f,ViewSize.Y*0.85f));
 			for (int32 i = 0; i < 3; i++) {
 				DashBars->UpdateStaminaBars(i, 1.f, 1.f);
 			}
