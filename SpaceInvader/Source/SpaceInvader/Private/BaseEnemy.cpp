@@ -129,6 +129,7 @@ void ABaseEnemy::FireAtPlayer()
 		/*GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Sharpshooter!");*/
 		if (NewProjectile)
 			NewProjectile->SetOwner(this);
+		
 		DrawDebugSphere(GetWorld(), GetActorLocation() + GetActorForwardVector() * ProjectileForwardOffset, 40, 16, FColor::Red, false, 1.f);
 	}
 
@@ -146,7 +147,7 @@ void ABaseEnemy::FireInDirection(FVector Direction)
 		//the line under is unefficient, but since we dont have diffrent types of bullets we are using this
 		ProjectileClass.GetDefaultObject()->ProjectileMovmentComponent->InitialSpeed = ProjectileSpeed;
 		AProjectile* NewProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass,
-			GetActorLocation() + GetActorForwardVector() * ProjectileForwardOffset,
+			GetActorLocation() + GetToPlayerDirection().GetSafeNormal() * ProjectileForwardOffset,
 			Direction.Rotation());
 		/*GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Sharpshooter!");*/
 		if (NewProjectile)

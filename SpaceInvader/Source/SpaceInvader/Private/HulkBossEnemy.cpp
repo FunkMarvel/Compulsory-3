@@ -7,13 +7,13 @@
 
 
 AHulkBossEnemy::AHulkBossEnemy() {
-	
-	/*for (int32 i = 0; i < 4; i++)
-	{
-		SpinnerMeshes[i] = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MESH %d"), i);
-	}*/
+	ProjectileSpeed = 3000.f;
+	ShotInterval = 0.05f;
+	ClosingBeamDuration = 3.f;
+
 	Spinner1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PinnerOne"));
 	CURVETEST = CreateDefaultSubobject<UCurveFloat>(TEXT("CURVE"));
+
 }
 
 void AHulkBossEnemy::NormalState()
@@ -33,13 +33,27 @@ void AHulkBossEnemy::ClosingBeamState()
 		bEnterState = true;
 		// On Enter State Logic
 		Direction = GetToPlayerDirection().GetSafeNormal();
+		StartOfStateTime = 0.f;
 	}
 
-	
+	StartOfStateTime += UGameplayStatics::GetWorldDeltaSeconds(this);;
+	LastShotTime += UGameplayStatics::GetWorldDeltaSeconds(this);
+	if (LastShotTime >= ShotInterval)
+	{
+		FVector OffSetVecR = Direction.RotateAngleAxis(CURVETEST->GetFloatValue(StartOfStateTime * (1/ClosingBeamDuration)) * 90.f, GetActorUpVector());
+		FVector OffSetVecL = Direction.RotateAngleAxis(-CURVETEST->GetFloatValue(StartOfStateTime * (1 / ClosingBeamDuration)) * 90.f, GetActorUpVector());
+		FireInDirection(OffSetVecR);
+		FireInDirection(OffSetVecL);
+		LastShotTime = 0.f;
 
-	StartOfShotTime += UGameplayStatics::GetWorldDeltaSeconds(this);
-	FVector OffSetVec = Direction.RotateAngleAxis(CURVETEST->GetFloatValue(StartOfShotTime * 0.5f) * 90.f, GetActorUpVector());
-	FireInDirection(OffSetVec);
+		
+	}
+	//is the beam finished?
+	if (StartOfStateTime * (1 / ClosingBeamDuration) >= 1.f)
+	{
+		ChangeCurrentState(HulkState::Normal);
+	}
+	
 }
 
 void AHulkBossEnemy::ChangeCurrentState(HulkState NewState)

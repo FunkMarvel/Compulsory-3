@@ -40,13 +40,15 @@ private:
 
 	// Closing Beam state
 	FVector Direction = FVector::ZeroVector;
+	UPROPERTY(EditAnywhere, Category = "Enemy | Closing Beam")
+		float ClosingBeamDuration;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:
-	float StartOfShotTime = 0.f;
+	
 
 	UPROPERTY(EditAnywhere)
 		class UCurveFloat* CURVETEST;

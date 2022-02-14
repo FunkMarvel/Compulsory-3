@@ -33,8 +33,8 @@ private:
 	UFUNCTION()
 	void SpinSpinner(float SpinSpeed);
 
-	float LastShotTime = 0.f;
+	/*float LastShotTime = 0.f;
 
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"), Category = "Enemy")
-	float ShotInterval = 0.7f;
+	float ShotInterval = 0.7f;*/
 };
