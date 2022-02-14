@@ -38,17 +38,15 @@ public:
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Camera")
 		class UCameraComponent* Camera{nullptr};
 
-	//UPROPERTY(VisibleAnywhere, Category = "Overlay")
-	//	class UWidgetComponent* HealthWidgetComp;
-
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Movement")
 		float Acceleration{ 50000.f };
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Movement")
-		float SpeedLimit{ 2000.f };
+		float SpeedLimit{ 2500.f };
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
-		int32 Ammo{ 30 };
+		int32 MaxAmmo{ 30 };
+	int32 Ammo{MaxAmmo};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
 		float Health{ 150 };
@@ -75,7 +73,7 @@ public:
 		float ProjectileForwardOffset{200.f};
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
-		float ProjectileSpeed{2500.f};
+		float ProjectileSpeed{3000.f};
 
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

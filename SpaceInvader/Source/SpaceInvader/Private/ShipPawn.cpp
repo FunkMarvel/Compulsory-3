@@ -193,7 +193,7 @@ void AShipPawn::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAct
 }
 
 void AShipPawn::Reload() {
-	Ammo = 30;
+	Ammo = MaxAmmo;
 }
 
 void AShipPawn::Shoot() {
