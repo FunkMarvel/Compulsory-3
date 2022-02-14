@@ -28,7 +28,13 @@ void ASharpShooterEnemy::Tick(float DeltaTime) {
 	Move(Direction);
 	RotateMeshAfterMovment(Mesh, Direction);
 
-
+	// shooting logic
+	LastShotTime += UGameplayStatics::GetWorldDeltaSeconds(this);
+	if (LastShotTime >= ShotInterval)
+	{
+		FireAtPlayer();
+		LastShotTime = 0.f;
+	}
 	
 
 	LookAtPlayer();

@@ -59,7 +59,12 @@ public:
 
 private:
 
+
 protected:
+	float LastShotTime = 0.f;
+
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"), Category = "Enemy")
+		float ShotInterval = 0.7f;
 	
 	APawn* PlayerPawn = nullptr;
 	int Health;
@@ -80,6 +85,9 @@ protected:
 
 	UFUNCTION()
 	void FireAtPlayer();
+
+	UFUNCTION()
+	void FireInDirection(FVector Direction);
 
 	
 
