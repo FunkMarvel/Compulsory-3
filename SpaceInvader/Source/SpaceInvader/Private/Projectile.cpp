@@ -56,7 +56,10 @@ void AProjectile::Tick(float DeltaTime)
 
 void AProjectile::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	
+	
 	GEngine->AddOnScreenDebugMessage(-9, 1, FColor::Green, "HIT Something!");
 	Destroy();
+	
 }
 
