@@ -56,9 +56,16 @@ void AProjectile::Tick(float DeltaTime)
 
 void AProjectile::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (OtherActor->IsA<AProjectile>())
+	{
+		AProjectile* OtherProjectile = Cast<AProjectile>(OtherActor);
+		if (OtherProjectile->Parentt != nullptr /*&& Parentt != nullptr*/)
+		{
+			GEngine->AddOnScreenDebugMessage(-9, 1, FColor::Green, "BULLET BOTH HAVE!");
+		}
+	}
 	
 	
-	GEngine->AddOnScreenDebugMessage(-9, 1, FColor::Green, "HIT Something!");
 	Destroy();
 	
 }
