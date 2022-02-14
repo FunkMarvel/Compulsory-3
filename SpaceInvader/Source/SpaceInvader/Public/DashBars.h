@@ -26,4 +26,6 @@ protected:
 		class UProgressBar* StaminaBar2;
 	UPROPERTY(meta = (BindWidget))
 		class UProgressBar* StaminaBar3;
+
+	void UpdateStaminaBars(float stamina);
 };

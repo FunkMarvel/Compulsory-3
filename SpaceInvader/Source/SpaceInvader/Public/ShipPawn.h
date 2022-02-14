@@ -38,8 +38,8 @@ public:
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Camera")
 		class UCameraComponent* Camera{nullptr};
 
-	UPROPERTY(VisibleAnywhere, Category = "Overlay")
-		class UWidgetComponent* HealthWidgetComp;
+	//UPROPERTY(VisibleAnywhere, Category = "Overlay")
+	//	class UWidgetComponent* HealthWidgetComp;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Movement")
 		float Acceleration{ 10000.f };
@@ -61,9 +61,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
 		class USoundBase* ReloadingSound{nullptr};
-
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
-		TSubclassOf<AActor> ActorToSpawn;
 
 	// Firing
 	UPROPERTY(EditAnywhere, Category = "Combat")

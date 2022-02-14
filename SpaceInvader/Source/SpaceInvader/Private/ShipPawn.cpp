@@ -88,11 +88,11 @@ AShipPawn::AShipPawn()
 	Camera->bUsePawnControlRotation = false;
 	Camera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
 
-	// Setting up health bar:
-	HealthWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("Player Health Bar"));
-	HealthWidgetComp->SetupAttachment(CapsuleComp);
-	HealthWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
-	HealthWidgetComp->SetRelativeLocation(FVector(-200.f, 0.f, 0.f));
+	//// Setting up health bar:
+	//HealthWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("Player Health Bar"));
+	//HealthWidgetComp->SetupAttachment(CapsuleComp);
+	//HealthWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
+	//HealthWidgetComp->SetRelativeLocation(FVector(-200.f, 0.f, 0.f));
 	
 }
 
@@ -103,8 +103,8 @@ void AShipPawn::BeginPlay()
 	InitLocation = PlayerMesh->GetComponentLocation();
 	CapsuleComp->OnComponentBeginOverlap.AddDynamic(this, &AShipPawn::OnHit);
 
-	UHealthBarWidget* HealthBar = Cast<UHealthBarWidget>(HealthWidgetComp->GetUserWidgetObject());
-	HealthBar->SetOwnerOfBar(this);
+	//UHealthBarWidget* HealthBar = Cast<UHealthBarWidget>(HealthWidgetComp->GetUserWidgetObject());
+	//HealthBar->SetOwnerOfBar(this);
 }
 
 // Called every frame

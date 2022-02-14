@@ -10,3 +10,7 @@ void UDashBars::NativeConstruct() {
 	Super::NativeConstruct();
 
 }
+
+void UDashBars::UpdateStaminaBars(float stamina) {
+
+}
