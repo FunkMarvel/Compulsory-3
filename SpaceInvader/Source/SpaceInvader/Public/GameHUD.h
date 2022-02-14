@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
 #include "Components/WidgetComponent.h"
-#include "HealthBarWidget.h"
 #include "GameHUD.generated.h"
 
 /**
@@ -29,14 +28,20 @@ public:
 	//	void UpdateHealthBar(float percent);
 
 	UFUNCTION()
-		void UpdateDashBars(float percent);
+		void UpdateDashBars();
 
 	UPROPERTY(EditDefaultsOnly, Category="Widgets")
 		TSubclassOf<UUserWidget> HealthBarClass;
 
+	UPROPERTY(EditDefaultsOnly, Category="Widgets")
+		TSubclassOf<UUserWidget> DashBarsClass;
+
 private:
 	UPROPERTY()
-		UHealthBarWidget* HealthBar{nullptr};
+		class UHealthBarWidget* HealthBar{nullptr};
+
+	UPROPERTY()
+		class UDashBars* DashBars{nullptr};
 
 	UPROPERTY()
 		FIntPoint ViewSize{};

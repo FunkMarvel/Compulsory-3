@@ -22,6 +22,7 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 		class UProgressBar* HealthBar;
 
+	// Ticks on its own in case of being used on enemies.
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 public:
