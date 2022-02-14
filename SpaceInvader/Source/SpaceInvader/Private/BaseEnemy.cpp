@@ -128,16 +128,8 @@ void ABaseEnemy::FireAtPlayer()
 			Direction.Rotation());
 		/*GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Sharpshooter!");*/
 		if (NewProjectile != nullptr)
-		{
 			NewProjectile->SetOwner(this);
-			NewProjectile->Parentt = GetOwner();
-			GEngine->AddOnScreenDebugMessage(32, 1, FColor::Green, "SET OWNER!");
-		}
-		else
-		{
-			GEngine->AddOnScreenDebugMessage(033, 1, FColor::Green, "NOT SET OWNER!");
-
-		}
+		
 		
 		DrawDebugSphere(GetWorld(), GetActorLocation() + GetActorForwardVector() * ProjectileForwardOffset, 40, 16, FColor::Red, false, 1.f);
 	}
@@ -160,16 +152,8 @@ void ABaseEnemy::FireInDirection(FVector Direction)
 			Direction.Rotation());
 		/*GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Sharpshooter!");*/
 		if (NewProjectile != nullptr)
-		{
 			NewProjectile->SetOwner(this);
-			NewProjectile->Parentt = GetOwner();
-			GEngine->AddOnScreenDebugMessage(32, 1, FColor::Green, "SET OWNER!");
-		}
-		else
-		{
-			GEngine->AddOnScreenDebugMessage(033, 1, FColor::Green, "NOT SET OWNER!");
-
-		}
+	
 		
 		DrawDebugSphere(GetWorld(), GetActorLocation() + GetActorForwardVector() * ProjectileForwardOffset, 40, 16, FColor::Red, false, 1.f);
 	}
