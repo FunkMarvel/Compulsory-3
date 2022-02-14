@@ -27,6 +27,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	float StartOfShotTime = 0.f;
+
 	UPROPERTY(EditAnywhere)
 		class UCurveFloat* CURVETEST;
 	// Called every frame

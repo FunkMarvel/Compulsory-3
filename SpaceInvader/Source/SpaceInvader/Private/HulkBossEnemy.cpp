@@ -16,9 +16,16 @@ AHulkBossEnemy::AHulkBossEnemy() {
 
 void AHulkBossEnemy::BeginPlay()
 {
+	Super::BeginPlay();
 }
 
 void AHulkBossEnemy::Tick(float DeltaTime)
 {
+	Super::Tick(DeltaTime);
+	FVector ShootVector = GetToPlayerDirection().GetSafeNormal();
+
+	StartOfShotTime += DeltaTime;
+	ShootVector = ShootVector.RotateAngleAxis(CURVETEST->GetFloatValue(StartOfShotTime * 0.1f) * 90.f, GetActorUpVector());
+	FireInDirection(ShootVector);
 
 }
