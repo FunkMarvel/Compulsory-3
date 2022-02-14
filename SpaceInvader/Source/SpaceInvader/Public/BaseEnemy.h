@@ -79,7 +79,7 @@ protected:
 	void RotateMeshAfterMovment(UStaticMeshComponent* Comp, FVector Direction);
 
 	UFUNCTION()
-	void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	virtual void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 		const FHitResult& SweepResult);
 
@@ -97,16 +97,10 @@ protected:
 	// Look at PLayer
 	UFUNCTION()
 	void LookAtPlayer();
-
-	//move the enemy left to right
-	float GetLeftRightMovment(const float& _Amplitude, const float& _Lambda);
+	
 
 	FVector GetToPlayerDirection();
 
-	float CurrentMovmentTime = 0.f;
-	UPROPERTY(EditAnywhere, Category = "Enemy | LeftRightMovment")
-		float Amplitude = 4.f;
-	UPROPERTY(EditAnywhere, Category = "Enemy | LeftRightMovment")
-		float Lambda = 1.f;
+	
 	
 };

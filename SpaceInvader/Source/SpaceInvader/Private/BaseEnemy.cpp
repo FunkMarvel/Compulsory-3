@@ -7,7 +7,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Projectile.h"
 #include "DrawDebugHelpers.h"
-
+#include "EnemyProjectile.h"
 
 #include "ShipPawn.h"
 
@@ -99,12 +99,15 @@ void ABaseEnemy::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAc
 	//Code todo Damage and push away
 	if (OtherActor->IsA<AProjectile>())
 	{
-		GEngine->AddOnScreenDebugMessage(-1230, 1, FColor::Green, "BINGUS!");
-		Health -= Cast<AProjectile>(OtherActor)->Damage;
-
-		if (Health <= 0.f)
+		if (!OtherActor->IsA<AEnemyProjectile>())
 		{
-			Destroy();
+			GEngine->AddOnScreenDebugMessage(-1230, 1, FColor::Green, "BINGUS!");
+			Health -= Cast<AProjectile>(OtherActor)->Damage;
+
+			if (Health <= 0.f)
+			{
+				Destroy();
+			}
 		}
 	}
 	else if (OtherActor->IsA<AShipPawn>())
@@ -186,27 +189,11 @@ void ABaseEnemy::LookAtPlayer()
 	SetActorRotation(rot);
 }
 
-float ABaseEnemy::GetLeftRightMovment(const float &_Amplitude, const float &_Lambda)
-{
-	CurrentMovmentTime += UGameplayStatics::GetWorldDeltaSeconds(this);
-	float f = FMath::Sin((1.f / Lambda) * CurrentMovmentTime) * Amplitude;
-
-	float Distance = (UGameplayStatics::GetPlayerPawn(GetWorld(), 0)->GetActorLocation() - GetActorLocation()).Size();
-
-	if (Distance < 1000.f)
-	{
-		f = f * (Distance / 1500.f);
-		UE_LOG(LogTemp, Warning, TEXT("%f"), f);
-	}
-
-	return f;
-}
 
 FVector ABaseEnemy::GetToPlayerDirection()
 {
-	return PlayerPawn->GetActorLocation() - GetActorLocation();
+	return (PlayerPawn->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 
-	
 }
 
 

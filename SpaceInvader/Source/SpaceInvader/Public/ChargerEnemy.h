@@ -17,22 +17,13 @@ public:
 	AChargerEnemy();
 	virtual void Tick(float DeltaTime) override;
 private:
-	void CurrentStateLogic();
 
-	//charger Velocity
-	FVector ChargeVelocity = FVector::ZeroVector;
 	
-	//Windup and target found
-	bool bFoundTarget = false;
-	float WindUpTime = 2.f;
-	float ChargingMinimumTime = 1.2f;
-	float CurrentWindUpTime = 0.f;
-	
-	//tilt stuff
-	float TargetTilt = 0.f;
 
 protected:
-
+	void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+		const FHitResult& SweepResult) override;
 	
 	
 //
@@ -46,9 +37,36 @@ public:
 	enum ChargerState {
 		Moving,
 		WindUp,
-		Charging
+		Charging,
+		CoolDown
 	};
 	ChargerState currentState;
+
+	float StateTime = 0.f;
+
+
+	UFUNCTION()
+	void MovingState();
+
+
+	//Wind Up
+	UFUNCTION()
+	void WindUpState();
+	UPROPERTY(EditAnywhere, Category = "Enemy | WindUp")
+	float WindUpTime;
+
+	//Charge
+	UFUNCTION()
+	void ChargingState();
+	FVector ChargeVelocity = FVector::ZeroVector;
+	UPROPERTY(EditAnywhere, Category = "Enemy | Charge")
+	float ChargeTime;
+
+
+
+	UFUNCTION()
+	void CoolDownState();
+
 	// Movemnt speed
 	UPROPERTY(EditAnywhere, Category = "Enemy | CustomMovment")
 	float NormalSpeed;
@@ -56,6 +74,7 @@ public:
 	float ChargeSpeed;
 	UPROPERTY(EditAnywhere, Category = "Enemy | CustomMovment")
 	float WindupSpeed;
+	
 
 	//blade speed
 	UPROPERTY(EditAnywhere, Category = "Enemy | BladeSpinningSpeed")
@@ -64,13 +83,16 @@ public:
 	float BladeChargeSpeed;
 	UPROPERTY(EditAnywhere, Category = "Enemy | BladeSpinningSpeed")
 	float BladeWindupSpeed;
+	
+
 
 	UPROPERTY(EditAnywhere, Category = "Enemy | TiltAmount")
-		float NormalTilt;
+	float NormalTilt;
 	UPROPERTY(EditAnywhere, Category = "Enemy | TiltAmount")
-		float WindUpTilt;
+	float WindUpTilt;
 	UPROPERTY(EditAnywhere, Category = "Enemy | TiltAmount")
-		float ChargeTilt;
+	float ChargeTilt;
+	
 	
 
 	//funcs

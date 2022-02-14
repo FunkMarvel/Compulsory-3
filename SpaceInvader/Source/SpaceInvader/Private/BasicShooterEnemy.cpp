@@ -15,7 +15,7 @@ ABasicShooterEnemy::ABasicShooterEnemy() {
 	ProjectileForwardOffset = 40.f;
 	ShotInterval = 0.7f;
 	MovmentSpeed = 200.f;
-	InnerRange = 250.f;
+	InnerRange = 500.f;
 	ProjectileSpeed = 700.f;
 	StartHealth = 5.f;
 	currentTilt = 20.f;

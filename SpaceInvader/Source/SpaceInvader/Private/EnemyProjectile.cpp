@@ -4,7 +4,7 @@
 #include "GameFramework/DamageType.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-
+#include "BaseEnemy.h"
 #include "EnemyProjectile.h"
 
 AEnemyProjectile::AEnemyProjectile() {
@@ -30,8 +30,12 @@ void AEnemyProjectile::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* O
 	{
 
 	}
+	else if (OtherActor->IsA<ABaseEnemy>())
+	{
+	}
 	else
 	{
+
 		Destroy();
 	}
 }

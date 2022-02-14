@@ -10,7 +10,7 @@ ASharpShooterEnemy::ASharpShooterEnemy() {
 	ProjectileForwardOffset = 100.f;
 	ShotInterval = 2.f;
 	MovmentSpeed = 100.f;
-	InnerRange = 700.f;
+	InnerRange = 1400.f;
 	ProjectileSpeed = 7000.f;
 	StartHealth = 7.f;
 }

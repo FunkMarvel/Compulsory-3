@@ -4,6 +4,7 @@
 #include "ChargerEnemy.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "ShipPawn.h"
 
 
 AChargerEnemy::AChargerEnemy() {
@@ -11,23 +12,30 @@ AChargerEnemy::AChargerEnemy() {
 	BladesMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Blades Mesh"));
 	BladesMesh->SetupAttachment(Mesh);
 
+	//Base variables
 	InnerRange = 700.f;
 	StartHealth = 3;
 	currentState = ChargerState::Moving;
 
-	//WindUpTime = 1.f;
+	//WindUp
+	WindUpTime = 1.f;
+
+	//Charge
+	ChargeTime = 1.f;
+
+	//Movment Speends
 	MovmentSpeed = 200.f;
 	NormalSpeed = 150.f;
 	WindupSpeed = -200.f;
 	ChargeSpeed = 90.f;
 
 
-	//blades
+	//blade speeds
 	BladeNormalSpeed = 400.f;
 	BladeWindupSpeed = 800.f;
 	BladeChargeSpeed = 1400.f;
 
-	//tilt
+	//tilt amounts
 	NormalTilt = 30.f;
 	WindUpTilt = 15.f;
 	ChargeTilt = 75.f;
@@ -37,119 +45,86 @@ void AChargerEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	CurrentStateLogic();
-	SpinBlades();
-
-
-	// Move logic
-	const FVector dir = GetToPlayerDirection().GetSafeNormal();
 	switch (currentState)
 	{
 	case AChargerEnemy::Moving:
-		MovmentSpeed = NormalSpeed;
-		currentTilt = NormalTilt;
+		MovingState();
 		break;
 	case AChargerEnemy::WindUp:
-		MovmentSpeed = WindupSpeed;
-		currentTilt = WindUpTilt;
+		WindUpState();
 		break;
 	case AChargerEnemy::Charging:
-		MovmentSpeed = ChargeSpeed;
-		currentTilt = ChargeTilt;
+		ChargingState();
 		break;
-	}
-	if (currentState != AChargerEnemy::Charging)
-	{
-		Move(dir);
-	}
-	else
-	{
-		
-		ChargeVelocity += dir * ChargeSpeed * DeltaTime;
-		AddActorWorldOffset(ChargeVelocity);
-	}
-
-	RotateMeshAfterMovment(Mesh, GetToPlayerDirection());
-	/*FVector Direction = GetToPlayerDirection().GetSafeNormal();
-
-	CurrentStateLogic();
-	if (PlayerPawn != nullptr)
-	{
-		FVector ToPlayerVector = PlayerPawn->GetActorLocation() - GetActorLocation();
-		ToPlayerVector.Z = 0.f;
-		switch (currentState)
-		{
-		case AChargerEnemy::Moving:
-			MovmentSpeed = NormalSpeed;
-
-			break;
-		case AChargerEnemy::WindUp:
-			MovmentSpeed = WindupSpeed;
-
-			break;
-		case AChargerEnemy::Charging:
-			MovmentSpeed = ChargeSpeed;
-
-			break;
-		default:
-			break;
-		}
-	}
-
-	
-	
-
-
-	SpinBlades();
-	LookAtPlayer();
-
-	switch (currentState)
-	{
-	case AChargerEnemy::Moving:
-		TargetTilt = -20.f;
-		break;
-	case AChargerEnemy::WindUp:
-		TargetTilt = 15.f;
-		break;
-	case AChargerEnemy::Charging:
-		TargetTilt = -90.f;
+	case AChargerEnemy::CoolDown:
+		CoolDownState();
 		break;
 	default:
 		break;
 	}
 
-	
-	float Angle = FMath::FInterpTo(Mesh->GetRelativeRotation().Pitch, TargetTilt, DeltaTime, 5.f);
-	Mesh->SetRelativeRotation(FRotator(Angle, 0.f, 0.f));*/
 }
 
-void AChargerEnemy::CurrentStateLogic()
+
+
+void AChargerEnemy::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	Super::OnHit(OverlappedComponent, OtherActor, OtherComp,
+		OtherBodyIndex, bFromSweep, SweepResult);
+
+	if (OtherActor->IsA<AShipPawn>())
+	{
+		currentState = ChargerState::CoolDown;
+
+	}
+	
+}
+
+void AChargerEnemy::MovingState()
+{
+	FVector Direction = GetToPlayerDirection().GetSafeNormal();
+	MovmentSpeed = NormalSpeed;
+	currentTilt = NormalTilt;
+	RotateMeshAfterMovment(Mesh, Direction);
+	Move(Direction);
+	SpinBlades();
+
+
 	if (IsInInnerRange())
 	{
 		currentState = ChargerState::WindUp;
-		bFoundTarget = true;
+		StateTime = 0.f;
 	}
-	
+}
 
+void AChargerEnemy::WindUpState()
+{
+	FVector Direction = -GetToPlayerDirection().GetSafeNormal();
+	MovmentSpeed = WindupSpeed;
+	currentTilt = WindUpTilt;
+	RotateMeshAfterMovment(Mesh, Direction);
+	Move(Direction);
+	SpinBlades();
 
-	if (bFoundTarget)
+	StateTime += UGameplayStatics::GetWorldDeltaSeconds(this);
+
+	if (StateTime >= WindUpTime)
 	{
-		CurrentWindUpTime += UGameplayStatics::GetWorldDeltaSeconds(this);
-		if (CurrentWindUpTime >= WindUpTime)
-		{
-			currentState = ChargerState::Charging;
-
-			if (CurrentWindUpTime >= ChargingMinimumTime + WindUpTime && !IsInInnerRange())
-			{
-				currentState = ChargerState::Moving;
-				bFoundTarget = false;
-				CurrentWindUpTime = 0.f;
-				ChargeVelocity = FVector::ZeroVector;
-			}
-
-		}
+		currentState = ChargerState::Charging;
+		StateTime = 0.f;
+		
 	}
+}
+
+void AChargerEnemy::ChargingState()
+{
+	FVector Direction = GetToPlayerDirection().GetSafeNormal();
+	StateTime += UGameplayStatics::GetWorldDeltaSeconds(this);
+}
+
+void AChargerEnemy::CoolDownState()
+{
 }
 
 
@@ -167,6 +142,9 @@ void AChargerEnemy::SpinBlades()
 		break;
 	case AChargerEnemy::Charging:
 		ToSpin = BladeChargeSpeed;
+		break;
+	case AChargerEnemy::CoolDown:
+		ToSpin = BladeNormalSpeed;
 		break;
 	default:
 		break;
