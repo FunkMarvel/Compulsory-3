@@ -82,6 +82,7 @@ void ABaseEnemy::RotateMeshAfterMovment(UStaticMeshComponent* Comp, FVector Dire
 	
 	FRotator r2 = UKismetMathLibrary::MakeRotFromZX(v1, GetActorForwardVector());
 	
+	
 	/*DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + r2.Vector() * 400.f, FColor::Blue, false,
 		0.5f);*/
 
@@ -126,12 +127,33 @@ void ABaseEnemy::FireAtPlayer()
 			GetActorLocation() + GetActorForwardVector() * ProjectileForwardOffset,
 			Direction.Rotation());
 		/*GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Sharpshooter!");*/
-		//NewProjectile->SetOwner(this);
+		if (NewProjectile)
+			NewProjectile->SetOwner(this);
 		DrawDebugSphere(GetWorld(), GetActorLocation() + GetActorForwardVector() * ProjectileForwardOffset, 40, 16, FColor::Red, false, 1.f);
 	}
 
 	
 
+}
+
+void ABaseEnemy::FireInDirection(FVector Direction)
+{
+	UE_LOG(LogTemp, Warning, TEXT("BINGUS"));
+	if (ProjectileClass)
+	{
+		Direction.Normalize();
+
+		//the line under is unefficient, but since we dont have diffrent types of bullets we are using this
+		ProjectileClass.GetDefaultObject()->ProjectileMovmentComponent->InitialSpeed = ProjectileSpeed;
+		AProjectile* NewProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass,
+			GetActorLocation() + GetActorForwardVector() * ProjectileForwardOffset,
+			Direction.Rotation());
+		/*GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Sharpshooter!");*/
+		if (NewProjectile)
+			NewProjectile->SetOwner(this);
+		
+		DrawDebugSphere(GetWorld(), GetActorLocation() + GetActorForwardVector() * ProjectileForwardOffset, 40, 16, FColor::Red, false, 1.f);
+	}
 }
 
 void ABaseEnemy::Move(FVector Direction)

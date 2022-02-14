@@ -81,6 +81,9 @@ protected:
 	UFUNCTION()
 	void FireAtPlayer();
 
+	UFUNCTION()
+	void FireInDirection(FVector Direction);
+
 	
 
 	// Move functuon Direction is in world space
