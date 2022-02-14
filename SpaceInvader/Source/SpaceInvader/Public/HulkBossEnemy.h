@@ -24,7 +24,8 @@ private:
 	
 	enum HulkState {
 		Normal,
-		ClosingBeam
+		ClosingBeam,
+		RotatingBeam
 	};
 	HulkState currentState = HulkState::Normal;
 	float StartOfStateTime = 0.f;
@@ -34,15 +35,28 @@ private:
 	void NormalState();
 	UFUNCTION()
 	void ClosingBeamState();
+	UFUNCTION()
+	void RotateBeamState();
 
 	
 	void ChangeCurrentState(HulkState NewState);
 
 	// Closing Beam state
-	FVector Direction = FVector::ZeroVector;
+	FVector ClosingBeamDirection = FVector::ZeroVector;
 	UPROPERTY(EditAnywhere, Category = "Enemy | Closing Beam")
 		float ClosingBeamDuration;
+	UPROPERTY(EditAnywhere, Category = "Enemy | Closing Beam")
+		float ClosingBeamCooldown;
+	
+	// Rotating Beam state
+	FVector RotatingBeamDirection = FVector::ZeroVector;
+	UPROPERTY(EditAnywhere, Category = "Enemy | Rotating beam")
+		float RotatingBeamDuration;
+	UPROPERTY(EditAnywhere, Category = "Enemy | Rotating beam")
+		float RotatingBeamCooldown;
 
+
+	int32 NextBeamIndex = 0.f;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -51,7 +65,10 @@ public:
 	
 
 	UPROPERTY(EditAnywhere)
-		class UCurveFloat* CURVETEST;
+	class UCurveFloat* ClosingBeamCurve;
+	UPROPERTY(EditAnywhere)
+	class UCurveFloat* RotatingBeamCurve;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 };

@@ -9,12 +9,22 @@
 AHulkBossEnemy::AHulkBossEnemy() {
 	ProjectileSpeed = 3000.f;
 	ShotInterval = 0.05f;
+
 	ClosingBeamDuration = 1.f;
+	ClosingBeamCooldown = 2.f;
+
+	RotatingBeamDuration = 2.f;
+	RotatingBeamCooldown = 2.f;
+
 	ProjectileForwardOffset = 200.f;
+	InnerRange = 1000.f;
 
 	Spinner1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PinnerOne"));
-	CURVETEST = CreateDefaultSubobject<UCurveFloat>(TEXT("CURVE"));
 
+	ClosingBeamCurve = CreateDefaultSubobject<UCurveFloat>(TEXT("ClosingBeamCurve"));
+	RotatingBeamCurve = CreateDefaultSubobject<UCurveFloat>(TEXT("RotatingBeamCurve"));
+
+	currentTilt = 40.f;
 }
 
 void AHulkBossEnemy::NormalState()
@@ -22,9 +32,36 @@ void AHulkBossEnemy::NormalState()
 	if (!bEnterState)
 	{
 		bEnterState = true;
+		StartOfStateTime = 0.f;
 		// On Enter State Logic
+		NextBeamIndex = FMath::RandRange(0, 1);
 	}
-	//moving and so on
+	StartOfStateTime += UGameplayStatics::GetWorldDeltaSeconds(this);
+
+	FVector Direction = GetToPlayerDirection().GetSafeNormal();
+	Move(Direction);
+	RotateMeshAfterMovment(Mesh, Direction);
+
+	
+
+	switch (NextBeamIndex)
+	{
+	case 0:
+		if (IsInInnerRange() && StartOfStateTime >= ClosingBeamCooldown)
+		{
+			ChangeCurrentState(HulkState::ClosingBeam);
+		}
+		break;
+	case 1:
+		if (IsInInnerRange() && StartOfStateTime >= RotatingBeamCooldown)
+		{
+			ChangeCurrentState(HulkState::RotatingBeam);
+		}
+		break;
+	}
+
+	
+
 }
 
 void AHulkBossEnemy::ClosingBeamState()
@@ -33,16 +70,16 @@ void AHulkBossEnemy::ClosingBeamState()
 	{
 		bEnterState = true;
 		// On Enter State Logic
-		Direction = GetToPlayerDirection().GetSafeNormal();
+		ClosingBeamDirection = GetToPlayerDirection().GetSafeNormal();
 		StartOfStateTime = 0.f;
 	}
 
-	StartOfStateTime += UGameplayStatics::GetWorldDeltaSeconds(this);;
+	StartOfStateTime += UGameplayStatics::GetWorldDeltaSeconds(this);
 	LastShotTime += UGameplayStatics::GetWorldDeltaSeconds(this);
 	if (LastShotTime >= ShotInterval)
 	{
-		FVector OffSetVecR = Direction.RotateAngleAxis(CURVETEST->GetFloatValue(StartOfStateTime * (1/ClosingBeamDuration)) * 90.f, GetActorUpVector());
-		FVector OffSetVecL = Direction.RotateAngleAxis(-CURVETEST->GetFloatValue(StartOfStateTime * (1 / ClosingBeamDuration)) * 90.f, GetActorUpVector());
+		FVector OffSetVecR = ClosingBeamDirection.RotateAngleAxis(ClosingBeamCurve->GetFloatValue(StartOfStateTime * (1/ClosingBeamDuration)) * 90.f, GetActorUpVector());
+		FVector OffSetVecL = ClosingBeamDirection.RotateAngleAxis(-ClosingBeamCurve->GetFloatValue(StartOfStateTime * (1 / ClosingBeamDuration)) * 90.f, GetActorUpVector());
 		FireInDirection(OffSetVecR);
 		FireInDirection(OffSetVecL);
 		LastShotTime = 0.f;
@@ -57,6 +94,34 @@ void AHulkBossEnemy::ClosingBeamState()
 	
 }
 
+void AHulkBossEnemy::RotateBeamState()
+{
+	if (!bEnterState)
+	{
+		bEnterState = true;
+		StartOfStateTime = 0.f;
+		// On Enter State Logic
+	}
+	
+	StartOfStateTime += UGameplayStatics::GetWorldDeltaSeconds(this);
+	LastShotTime += UGameplayStatics::GetWorldDeltaSeconds(this);
+
+	if (LastShotTime >= ShotInterval){
+
+		LastShotTime = 0.f;
+		FVector OffSetVecR = ClosingBeamDirection.RotateAngleAxis(RotatingBeamCurve->GetFloatValue(StartOfStateTime * (1 / RotatingBeamDuration)) * 90.f, GetActorUpVector());
+		FVector OffSetVecL = ClosingBeamDirection.RotateAngleAxis(-RotatingBeamCurve->GetFloatValue(StartOfStateTime * (1 / RotatingBeamDuration)) * 90.f, GetActorUpVector());
+		FireInDirection(OffSetVecR);
+		FireInDirection(-OffSetVecR);
+
+	}
+	//is the beam finished?
+	if (StartOfStateTime * (1 / RotatingBeamDuration) >= 1.f)
+	{
+		ChangeCurrentState(HulkState::Normal);
+	}
+}
+
 void AHulkBossEnemy::ChangeCurrentState(HulkState NewState)
 {
 	currentState = NewState;
@@ -67,7 +132,7 @@ void AHulkBossEnemy::ChangeCurrentState(HulkState NewState)
 void AHulkBossEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	ChangeCurrentState(HulkState::ClosingBeam);
+	ChangeCurrentState(HulkState::Normal);
 }
 
 void AHulkBossEnemy::Tick(float DeltaTime)
@@ -82,6 +147,9 @@ void AHulkBossEnemy::Tick(float DeltaTime)
 		break;
 	case AHulkBossEnemy::ClosingBeam:
 		ClosingBeamState();
+		break;
+	case AHulkBossEnemy::RotatingBeam:
+		RotateBeamState();
 		break;
 	
 	}
