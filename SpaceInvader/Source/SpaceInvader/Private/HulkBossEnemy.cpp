@@ -13,10 +13,10 @@ AHulkBossEnemy::AHulkBossEnemy() {
 	ClosingBeamDuration = 1.f;
 	ClosingBeamCooldown = 2.f;
 
-	RotatingBeamDuration = 2.f;
+	RotatingBeamDuration = 5.f;
 	RotatingBeamCooldown = 2.f;
 
-	ProjectileForwardOffset = 200.f;
+	ProjectileForwardOffset = 0.f;
 	InnerRange = 1000.f;
 
 	Spinner1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PinnerOne"));
@@ -72,6 +72,7 @@ void AHulkBossEnemy::ClosingBeamState()
 		// On Enter State Logic
 		ClosingBeamDirection = GetToPlayerDirection().GetSafeNormal();
 		StartOfStateTime = 0.f;
+		LastShotTime = 0.f;
 	}
 
 	StartOfStateTime += UGameplayStatics::GetWorldDeltaSeconds(this);
@@ -100,6 +101,8 @@ void AHulkBossEnemy::RotateBeamState()
 	{
 		bEnterState = true;
 		StartOfStateTime = 0.f;
+		LastShotTime = 0.f;
+		ClosingBeamDirection = GetToPlayerDirection().GetSafeNormal();
 		// On Enter State Logic
 	}
 	
@@ -110,7 +113,8 @@ void AHulkBossEnemy::RotateBeamState()
 
 		LastShotTime = 0.f;
 		FVector OffSetVecR = ClosingBeamDirection.RotateAngleAxis(RotatingBeamCurve->GetFloatValue(StartOfStateTime * (1 / RotatingBeamDuration)) * 90.f, GetActorUpVector());
-		FVector OffSetVecL = ClosingBeamDirection.RotateAngleAxis(-RotatingBeamCurve->GetFloatValue(StartOfStateTime * (1 / RotatingBeamDuration)) * 90.f, GetActorUpVector());
+		UE_LOG(LogTemp, Warning, TEXT("CURRENT: %f"), RotatingBeamCurve->GetFloatValue(StartOfStateTime * (1 / RotatingBeamDuration)) * 90.f)
+			UE_LOG(LogTemp, Warning, TEXT("CURRENT: %s"), *OffSetVecR.ToString())
 		FireInDirection(OffSetVecR);
 		FireInDirection(-OffSetVecR);
 
