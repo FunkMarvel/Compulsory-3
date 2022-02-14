@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS( Abstract )
 class SPACEINVADER_API UDashBars : public UUserWidget
 {
 	GENERATED_BODY()
