@@ -9,7 +9,8 @@
 AHulkBossEnemy::AHulkBossEnemy() {
 	ProjectileSpeed = 3000.f;
 	ShotInterval = 0.05f;
-	ClosingBeamDuration = 3.f;
+	ClosingBeamDuration = 1.f;
+	ProjectileForwardOffset = 200.f;
 
 	Spinner1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PinnerOne"));
 	CURVETEST = CreateDefaultSubobject<UCurveFloat>(TEXT("CURVE"));
