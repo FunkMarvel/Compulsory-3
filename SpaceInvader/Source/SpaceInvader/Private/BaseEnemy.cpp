@@ -101,7 +101,7 @@ void ABaseEnemy::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAc
 	{
 		if (!OtherActor->IsA<AEnemyProjectile>())
 		{
-			GEngine->AddOnScreenDebugMessage(-1230, 1, FColor::Green, "BINGUS!");
+			
 			Health -= Cast<AProjectile>(OtherActor)->Damage;
 
 			if (Health <= 0.f)
@@ -143,7 +143,7 @@ void ABaseEnemy::FireAtPlayer()
 
 void ABaseEnemy::FireInDirection(FVector Direction)
 {
-	UE_LOG(LogTemp, Warning, TEXT("BINGUS"));
+	
 	if (ProjectileClass)
 	{
 		Direction.Normalize();

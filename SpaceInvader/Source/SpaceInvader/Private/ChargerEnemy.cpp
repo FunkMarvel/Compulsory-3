@@ -117,7 +117,7 @@ void AChargerEnemy::WindUpState()
 	SpinBlades();
 
 	StateTime += UGameplayStatics::GetWorldDeltaSeconds(this);
-	UE_LOG(LogTemp, Warning, TEXT("Windup"))
+	/*UE_LOG(LogTemp, Warning, TEXT("Windup"))*/
 	if (StateTime >= WindUpTime)
 	{
 		currentState = ChargerState::Charging;
