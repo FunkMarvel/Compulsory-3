@@ -14,6 +14,7 @@ class SPACEINVADER_API AShipPawn : public APawn
 public:
 	// Sets default values for this pawn's properties
 	AShipPawn();
+	bool GetDashState() { return bDashing; }
 
 protected:
 	// Called when the game starts or when spawned
@@ -64,6 +65,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
 		class USoundBase* ShootingSound{nullptr};
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
+		class USoundBase* AmmoWarning{ nullptr };
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
 		class USoundBase* ReloadingSound{nullptr};
