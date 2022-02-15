@@ -68,12 +68,14 @@ void AHulkBossEnemy::NormalState()
 		if (IsInInnerRange() && StartOfStateTime >= ClosingBeamCooldown)
 		{
 			ChangeCurrentState(HulkState::ClosingBeam);
+			PlayFireSound();
 		}
 		break;
 	case 1:
 		if (IsInInnerRange() && StartOfStateTime >= RotatingBeamCooldown)
 		{
 			ChangeCurrentState(HulkState::RotatingBeam);
+			PlayFireSound();
 		}
 		break;
 	}

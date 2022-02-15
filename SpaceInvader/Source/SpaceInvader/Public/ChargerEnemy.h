@@ -29,8 +29,12 @@ protected:
 //
 //	//my deseg
 public:
+	//sound
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|Audio")
+		USoundBase* WindUpSound = nullptr;
+
 	//components
-	UPROPERTY(EditAnywhere, Category = "Enemy")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 		class UStaticMeshComponent* BladesMesh;
 
 	//charging
@@ -52,52 +56,52 @@ public:
 	//Wind Up
 	UFUNCTION()
 	void WindUpState();
-	UPROPERTY(EditAnywhere, Category = "Enemy | WindUp")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|WindUp")
 	float WindUpTime;
 
 	//Charge
 	UFUNCTION()
 	void ChargingState();
 	FVector ChargeVelocity = FVector::ZeroVector;
-	UPROPERTY(EditAnywhere, Category = "Enemy | Charge")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|Charge")
 	float ChargeTime;
 
 	//CoolDOwn
 	UFUNCTION()
 	void CoolDownState();
-	UPROPERTY(EditAnywhere, Category = "Enemy | CoolDown")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|CoolDown")
 		float CoolDownTime;
 
 	// Movemnt speed
-	UPROPERTY(EditAnywhere, Category = "Enemy | CustomMovment")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|CustomMovment")
 	float NormalSpeed;
-	UPROPERTY(EditAnywhere, Category = "Enemy | CustomMovment")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|CustomMovment")
 	float ChargeSpeed;
-	UPROPERTY(EditAnywhere, Category = "Enemy | CustomMovment")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|CustomMovment")
 	float WindupSpeed;
-	UPROPERTY(EditAnywhere, Category = "Enemy | CustomMovment")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|CustomMovment")
 	float CoolDownSpeed;
 	
 
 	//blade speed
-	UPROPERTY(EditAnywhere, Category = "Enemy | BladeSpinningSpeed")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|BladeSpinningSpeed")
 	float BladeNormalSpeed;
-	UPROPERTY(EditAnywhere, Category = "Enemy | BladeSpinningSpeed")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|BladeSpinningSpeed")
 	float BladeChargeSpeed;
-	UPROPERTY(EditAnywhere, Category = "Enemy | BladeSpinningSpeed")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|BladeSpinningSpeed")
 	float BladeWindupSpeed;
-	UPROPERTY(EditAnywhere, Category = "Enemy | BladeSpinningSpeed")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|BladeSpinningSpeed")
 	float BladeCoolDownSpeed;
 	
 
 
-	UPROPERTY(EditAnywhere, Category = "Enemy | TiltAmount")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|TiltAmount")
 	float NormalTilt;
-	UPROPERTY(EditAnywhere, Category = "Enemy | TiltAmount")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|TiltAmount")
 	float WindUpTilt;
-	UPROPERTY(EditAnywhere, Category = "Enemy | TiltAmount")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|TiltAmount")
 	float ChargeTilt;
-	UPROPERTY(EditAnywhere, Category = "Enemy | TiltAmount")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|TiltAmount")
 	float CoolDownTilt;
 	
 	

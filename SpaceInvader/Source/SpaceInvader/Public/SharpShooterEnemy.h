@@ -17,6 +17,10 @@ class SPACEINVADER_API ASharpShooterEnemy : public ABaseEnemy
 public:
 	ASharpShooterEnemy();
 
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|SoundOffset")
+		float SoundOffset = 0.f;
+	bool bPlayedSound = false;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

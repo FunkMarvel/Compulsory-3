@@ -45,6 +45,7 @@ void ABasicShooterEnemy::Tick(float DeltaTime) {
 		{
 			FireAtPlayer();
 			LastShotTime = 0.f;
+			PlayFireSound();
 		}
 	}
 		

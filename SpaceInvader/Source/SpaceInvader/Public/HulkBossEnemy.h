@@ -17,17 +17,17 @@ public:
 	AHulkBossEnemy();
 
 	//Spinning the meshes
-	UPROPERTY(EditAnywhere) 
+	UPROPERTY(EditDefaultsOnly)
 	class UStaticMeshComponent* SpinnerOne = nullptr;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	class UStaticMeshComponent* SpinnerTwo = nullptr;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	class UStaticMeshComponent* SpinnerThree = nullptr;
 	
 
-	UPROPERTY(EditAnywhere, Category = "Enemy | SpinnerSpeed")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|SpinnerSpeed")
 	float SpinnerBaseSpeed = 300.f;
-	UPROPERTY(EditAnywhere, Category = "Enemy | SpinnerSpeed")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|SpinnerSpeed")
 	float SpinnerAttackModifier = 500.f;
 
 	UFUNCTION()
@@ -55,16 +55,16 @@ private:
 
 	// Closing Beam state
 	FVector ClosingBeamDirection = FVector::ZeroVector;
-	UPROPERTY(EditAnywhere, Category = "Enemy | Closing Beam")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|Closing Beam")
 		float ClosingBeamDuration;
-	UPROPERTY(EditAnywhere, Category = "Enemy | Closing Beam")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|Closing Beam")
 		float ClosingBeamCooldown;
 	
 	// Rotating Beam state
 	FVector RotatingBeamDirection = FVector::ZeroVector;
-	UPROPERTY(EditAnywhere, Category = "Enemy | Rotating beam")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|Rotating beam")
 		float RotatingBeamDuration;
-	UPROPERTY(EditAnywhere, Category = "Enemy | Rotating beam")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|Rotating beam")
 		float RotatingBeamCooldown;
 
 
