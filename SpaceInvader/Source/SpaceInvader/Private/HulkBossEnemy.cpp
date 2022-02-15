@@ -93,10 +93,11 @@ void AHulkBossEnemy::ClosingBeamState()
 		ClosingBeamDirection = GetToPlayerDirection().GetSafeNormal();
 		StartOfStateTime = 0.f;
 		LastShotTime = 0.f;
+		StartSoundTime = 0.f;
 	}
 	StartOfStateTime += UGameplayStatics::GetWorldDeltaSeconds(this);
 	LastShotTime += UGameplayStatics::GetWorldDeltaSeconds(this);
-
+	StartSoundTime += UGameplayStatics::GetWorldDeltaSeconds(this);
 	SpinBlades(SpinnerAttackModifier);
 
 	if (LastShotTime >= ShotInterval)
@@ -109,6 +110,14 @@ void AHulkBossEnemy::ClosingBeamState()
 
 		
 	}
+
+	//repeat audio
+	if (StartSoundTime >= FiringSound->GetDuration())
+	{
+		PlayFireSound();
+		StartSoundTime = 0.f;
+	}
+
 	//is the beam finished?
 	if (StartOfStateTime * (1 / ClosingBeamDuration) >= 1.f)
 	{
@@ -124,14 +133,16 @@ void AHulkBossEnemy::RotateBeamState()
 		bEnterState = true;
 		StartOfStateTime = 0.f;
 		LastShotTime = 0.f;
+		StartSoundTime = 0.f;
 		ClosingBeamDirection = GetToPlayerDirection().GetSafeNormal();
 		// On Enter State Logic
 	}
 	
 	StartOfStateTime += UGameplayStatics::GetWorldDeltaSeconds(this);
 	LastShotTime += UGameplayStatics::GetWorldDeltaSeconds(this);
-
+	StartSoundTime += UGameplayStatics::GetWorldDeltaSeconds(this);
 	SpinBlades(SpinnerAttackModifier);
+
 
 	if (LastShotTime >= ShotInterval){
 
@@ -143,6 +154,14 @@ void AHulkBossEnemy::RotateBeamState()
 		FireInDirection(-OffSetVecR);
 
 	}
+
+	//repeat audio
+	if (StartSoundTime >= FiringSound->GetDuration())
+	{
+		PlayFireSound();
+		StartSoundTime = 0.f;
+	}
+
 	//is the beam finished?
 	if (StartOfStateTime * (1 / RotatingBeamDuration) >= 1.f)
 	{
