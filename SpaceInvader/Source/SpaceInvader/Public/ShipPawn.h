@@ -63,17 +63,20 @@ public:
 		int32 MaxStamina{3};
 	int32 Stamina{MaxStamina};
 
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound|Combat")
 		class USoundBase* ShootingSound{nullptr};
 
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound|Combat")
 		class USoundBase* AmmoWarning{ nullptr };
 
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound|Combat")
 		class USoundBase* ReloadingSound{nullptr};
 
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound|Movement")
 		class USoundBase* DashSound{ nullptr };
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound|Movement")
+		class USoundBase* DashRechargeSound{ nullptr };
 
 	// Firing
 	UPROPERTY(EditAnywhere, Category = "Combat")
@@ -122,14 +125,13 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category = "Movement")
 		float DashRotation{360.f};
-	
 	float DashTimer{DashDuration};
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 		float FocusSpeedMod{ 0.5f };
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
-		float TimeBetweenShots{ 0.5f };
+		float TimeBetweenShots{ 0.25f };
 	float ShotTimer{};
 
 	bool bFocused{ false };

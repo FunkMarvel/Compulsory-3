@@ -145,7 +145,7 @@ void AShipPawn::Tick(float DeltaTime)
 		Shoot();
 		ShotTimer = 0;
 	}
-	else {
+	else if (ShotTimer < TimeBetweenShots)  {
 		ShotTimer += DeltaTime;
 	}
 
@@ -156,6 +156,7 @@ void AShipPawn::Tick(float DeltaTime)
 	else if (Stamina < 3) {
 		Stamina++;
 		StaminaTimer = 0;
+		if (DashRechargeSound) UGameplayStatics::PlaySound2D(GetWorld(), DashRechargeSound);
 	}
 }
 
@@ -189,7 +190,7 @@ void AShipPawn::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAct
 		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Red, "HIT!");
 		AProjectile* Overlapper = Cast<AProjectile>(OtherActor);
 		Health -= Overlapper->Damage;
-		UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
+		//UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
 		if (Health <= 0) Death();
 	}
 
@@ -219,18 +220,16 @@ void AShipPawn::Shoot() {
 	}
 	else if (Ammo <= 0) {
 		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Orange, "Out of Ammo!");
-		if (AmmoWarning) UGameplayStatics::PlaySound2D(GetWorld(), AmmoWarning, 4.f);
+		if (AmmoWarning) UGameplayStatics::PlaySound2D(GetWorld(), AmmoWarning, 6.f);
 	}
 }
 
 void AShipPawn::StartShooting() {
 	bShooting = true;
-	ShotTimer = TimeBetweenShots + 1;
 }
 
 void AShipPawn::EndShooting() {
 	bShooting = false;
-	ShotTimer = 0;
 }
 
 void AShipPawn::ResetLoaction() const {
@@ -271,7 +270,7 @@ void AShipPawn::Dash() {
 		MouseDirection.Z = 0.f;
 
 		CapsuleComp->AddImpulse(MouseDirection * 2.5 *Acceleration);
-		CapsuleComp->AddImpulse(-MouseDirection * Acceleration);
+		//CapsuleComp->AddImpulse(-MouseDirection * Acceleration);
 	}
 }
 
