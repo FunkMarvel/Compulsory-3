@@ -9,10 +9,12 @@ ASharpShooterEnemy::ASharpShooterEnemy() {
 
 	ProjectileForwardOffset = 100.f;
 	ShotInterval = 2.f;
+	SoundOffset = 1.7f;
 	MovmentSpeed = 100.f;
 	InnerRange = 1400.f;
 	ProjectileSpeed = 7000.f;
 	StartHealth = 7.f;
+
 }
 
 
@@ -33,7 +35,13 @@ void ASharpShooterEnemy::Tick(float DeltaTime) {
 	if (LastShotTime >= ShotInterval)
 	{
 		FireAtPlayer();
+		bPlayedSound = false;
 		LastShotTime = 0.f;
+	}
+	if (LastShotTime >= ShotInterval - SoundOffset && !bPlayedSound)
+	{
+		bPlayedSound = true;
+		PlayFireSound();
 	}
 	
 

@@ -9,6 +9,9 @@
 #include "Projectile.h"
 #include "EnemyProjectile.h"
 
+
+#include "Particles/ParticleSystemComponent.h"
+
 // Sets default values
 AProjectile::AProjectile()
 {
@@ -22,6 +25,10 @@ AProjectile::AProjectile()
 	ProjectileMovmentComponent->InitialSpeed = 1100.f;
 	ProjectileMovmentComponent->MaxSpeed = 1500.f;
 	ProjectileMovmentComponent->ProjectileGravityScale = 0.f;
+
+	Trail = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particle System Component"));
+	Trail->SetupAttachment(GetRootComponent());
+	Trail->bAutoActivate = true;
 
 	//overlap
 	ProjectileMesh->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);

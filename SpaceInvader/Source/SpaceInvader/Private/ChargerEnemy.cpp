@@ -103,6 +103,7 @@ void AChargerEnemy::MovingState()
 	{
 		currentState = ChargerState::WindUp;
 		StateTime = 0.f;
+		UGameplayStatics::PlaySound2D(GetWorld(), WindUpSound);
 	}
 }
 
@@ -123,6 +124,7 @@ void AChargerEnemy::WindUpState()
 		currentState = ChargerState::Charging;
 		StateTime = 0.f;
 		ChargeVelocity = FVector::ZeroVector;
+		PlayFireSound();
 	}
 }
 

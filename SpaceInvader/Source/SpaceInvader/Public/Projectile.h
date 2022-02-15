@@ -35,6 +35,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Bullet")
 		float MaxTimeAlive = 4.f;
 
+	UPROPERTY(EditAnywhere, Category = "Bullet")
+		class UParticleSystemComponent* Trail = nullptr;
+
 	
 
 private:

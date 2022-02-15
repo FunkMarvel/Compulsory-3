@@ -28,7 +28,7 @@ public:
 	// my desegnater area -----------------------------
 public:
 	// components
-	UPROPERTY(EditAnywhere, Category = "Enemy")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 		class UStaticMeshComponent* Mesh;
 
 	UPROPERTY(VisibleAnywhere, Category = "Collider")
@@ -36,26 +36,30 @@ public:
 
 
 	// Basic Variables
-	UPROPERTY(EditAnywhere, Category = "Enemy")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 		float StartHealth;
-	UPROPERTY(EditAnywhere, Category = "Enemy")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 		float MovmentSpeed;
-	UPROPERTY(EditAnywhere, Category = "Enemy")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 		float ProjectileForwardOffset;
-	UPROPERTY(EditAnywhere, Category = "Enemy")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 	float currentTilt = 20.f;
 
 	//AI LOGIC
-	UPROPERTY(EditAnywhere, Category = "Enemy")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 		float InnerRange;
 	UFUNCTION()
 		bool IsInInnerRange();
 	
 	
 	// Firing
-	UPROPERTY(EditAnywhere, Category = "Enemy")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 		float ProjectileSpeed = 1100.f;
-
+	//sound
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|Audio")
+		USoundBase* FiringSound = nullptr;
+	UFUNCTION()
+		void PlayFireSound();
 
 private:
 
@@ -63,7 +67,7 @@ private:
 protected:
 	float LastShotTime = 0.f;
 
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"), Category = "Enemy")
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"), Category = "Enemy")
 		float ShotInterval = 0.7f;
 	
 	APawn* PlayerPawn = nullptr;

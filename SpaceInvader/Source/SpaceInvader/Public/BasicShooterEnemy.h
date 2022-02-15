@@ -14,13 +14,13 @@ class SPACEINVADER_API ABasicShooterEnemy : public ABaseEnemy
 public:
 	ABasicShooterEnemy();
 
-	UPROPERTY(EditAnywhere, Category = "Enemy")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 		class UStaticMeshComponent* SpinnerMesh;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, Category = "Enemy")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 		float SpinnerSpinSpeed = 14.f;
 
 protected:

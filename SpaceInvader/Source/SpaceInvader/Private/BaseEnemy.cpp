@@ -26,6 +26,9 @@ ABaseEnemy::ABaseEnemy()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(GetRootComponent());
 
+	// audio
+	FiringSound = CreateDefaultSubobject<USoundBase>(TEXT("Fire Sound"));
+
 
 	StartHealth = 7;
 	MovmentSpeed = 200.f;
@@ -67,6 +70,11 @@ bool ABaseEnemy::IsInInnerRange()
 		return true;
 	}
 	return false;
+}
+
+void ABaseEnemy::PlayFireSound()
+{
+	UGameplayStatics::PlaySound2D(GetWorld(), FiringSound);
 }
 
 void ABaseEnemy::RotateMeshAfterMovment(UStaticMeshComponent* Comp, FVector Direction)

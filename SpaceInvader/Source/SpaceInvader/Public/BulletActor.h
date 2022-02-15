@@ -24,23 +24,19 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	UPROPERTY(EditAnywhere, Category = "Bullet Properties")
+	UPROPERTY(EditDefaultsOnly, Category = "Bullet Properties")
 		float Speed{1000.f};
 
-	UPROPERTY(EditAnywhere, Category = "Bullet Properties")
+	UPROPERTY(EditDefaultsOnly, Category = "Bullet Properties")
 		float TimeBeforeDestroy{5.f};
 
-	UPROPERTY(EditAnywhere, Category = "Bullet Properties")
+	UPROPERTY(EditDefaultsOnly, Category = "Bullet Properties")
 		float LifeTime{0.f};
 
-	UPROPERTY(EditAnywhere, Category = "Bullet Properties")
+	UPROPERTY(EditDefaultsOnly, Category = "Bullet Properties")
 		UParticleSystem* BulletFireFX{nullptr};
 
-	UPROPERTY(EditAnywhere, Category = "Bullet Properties")
+	UPROPERTY(EditDefaultsOnly, Category = "Bullet Properties")
 		USoundBase* BulletFireSound{nullptr};
 
-	/*int score;*/
-
-	//UFUNCTION()
-		//void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent)
 };
