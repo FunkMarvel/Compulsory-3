@@ -72,6 +72,9 @@ public:
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
 		class USoundBase* ReloadingSound{nullptr};
 
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
+		class USoundBase* DashSound{ nullptr };
+
 	// Firing
 	UPROPERTY(EditAnywhere, Category = "Combat")
 		float ProjectileForwardOffset{200.f};
