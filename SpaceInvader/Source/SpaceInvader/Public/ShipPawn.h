@@ -66,6 +66,9 @@ public:
 		class USoundBase* ShootingSound{nullptr};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
+		class USoundBase* AmmoWarning{ nullptr };
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Sound")
 		class USoundBase* ReloadingSound{nullptr};
 
 	// Firing

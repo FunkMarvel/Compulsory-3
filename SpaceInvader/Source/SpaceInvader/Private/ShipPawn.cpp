@@ -194,6 +194,7 @@ void AShipPawn::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAct
 
 void AShipPawn::Reload() {
 	Ammo = MaxAmmo;
+	if (ShootingSound) UGameplayStatics::PlaySound2D(GetWorld(), ReloadingSound);
 }
 
 void AShipPawn::Shoot() {
@@ -215,6 +216,7 @@ void AShipPawn::Shoot() {
 	}
 	else if (Ammo <= 0) {
 		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Orange, "Out of Ammo!");
+		if (ShootingSound) UGameplayStatics::PlaySound2D(GetWorld(), AmmoWarning, 4.f);
 	}
 }
 
