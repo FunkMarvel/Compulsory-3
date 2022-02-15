@@ -78,7 +78,7 @@ AShipPawn::AShipPawn()
 	CameraArm->bDoCollisionTest = false;
 	CameraArm->SetUsingAbsoluteRotation(true);
 	CameraArm->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
-	CameraArm->TargetArmLength = 2000.f;
+	CameraArm->TargetArmLength = 4000.f;
 	CameraArm->bEnableCameraLag = false;
 	CameraArm->CameraLagSpeed = 5.f;
 
@@ -115,10 +115,10 @@ void AShipPawn::Tick(float DeltaTime)
 	InContact = false;
 
 	// Handling movement:
-	FVector Forward = GetActorForwardVector();
-	FVector Sideways = GetActorRightVector();
-	
-	CapsuleComp->AddForce((Forward*XValue + Sideways*0.8*YValue)*Acceleration);
+	//FVector Forward = GetActorForwardVector();
+	//FVector Sideways = GetActorRightVector();
+	FVector AccelDirection = FVector(XValue, YValue, 0.f).GetSafeNormal();
+	CapsuleComp->AddForce(AccelDirection*Acceleration);
 
 	// clamping max velocity:
 	FVector currentVelocity = CapsuleComp->GetPhysicsLinearVelocity();
