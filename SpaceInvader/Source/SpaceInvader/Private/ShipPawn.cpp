@@ -210,7 +210,7 @@ void AShipPawn::Shoot() {
 		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Shoot!");
 		if (NewProjectile) NewProjectile->SetOwner(this);
 
-		UGameplayStatics::PlaySound2D(GetWorld(), ShootingSound);
+		if (ShootingSound) UGameplayStatics::PlaySound2D(GetWorld(), ShootingSound);
 		Ammo--;
 	}
 	else if (Ammo <= 0) {
