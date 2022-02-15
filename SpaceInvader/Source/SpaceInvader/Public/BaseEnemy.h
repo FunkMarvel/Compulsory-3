@@ -55,12 +55,14 @@ public:
 	// Firing
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 		float ProjectileSpeed = 1100.f;
+
+
 	//sound
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|Audio")
 		USoundBase* FiringSound = nullptr;
 	UFUNCTION()
 		void PlayFireSound();
-
+	float StartSoundTime = 0.f;
 private:
 
 

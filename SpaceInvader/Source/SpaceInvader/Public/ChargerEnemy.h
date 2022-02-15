@@ -32,6 +32,8 @@ public:
 	//sound
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|Audio")
 		USoundBase* WindUpSound = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|Audio")
+		USoundBase* OnHitSound = nullptr;
 
 	//components
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy")

@@ -84,7 +84,8 @@ void AChargerEnemy::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* Othe
 	if (OtherActor->IsA<AShipPawn>())
 	{
 		currentState = ChargerState::CoolDown;
-
+		UGameplayStatics::PlaySound2D(GetWorld(), OnHitSound);
+		
 	}
 	
 }
