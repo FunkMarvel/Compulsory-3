@@ -131,8 +131,11 @@ void AShipPawn::Tick(float DeltaTime)
 		DashTimer += DeltaTime;
 	}
 	else {
+		FVector Velocity = GetVelocity().GetSafeNormal();
+		FVector Sideways = GetActorRightVector();
+
 		FRotator CurrentRot = PlayerMesh->GetRelativeRotation();
-		FRotator DestinationRot = FMath::RInterpConstantTo(CurrentRot, FRotator(0, 0, 45*YValue), DeltaTime, 100);
+		FRotator DestinationRot = FMath::RInterpConstantTo(CurrentRot, FRotator(0, 0, 45*FVector::DotProduct(Velocity, Sideways)), DeltaTime, 100);
 		PlayerMesh->SetRelativeRotation(DestinationRot);
 		bDashing = false;
 	}
