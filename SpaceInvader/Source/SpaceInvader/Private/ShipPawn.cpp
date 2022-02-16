@@ -197,7 +197,7 @@ void AShipPawn::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAct
 	else if (OtherActor->IsA<ABaseEnemy>()) {
 		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Red, "HIT!");
 		ABaseEnemy* Overlapper = Cast<ABaseEnemy>(OtherActor);
-		Health -= Overlapper->Damage;
+		Health -= Overlapper->DamageCollide;
 		//UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
 		if (Health <= 0) Death();
 	}
