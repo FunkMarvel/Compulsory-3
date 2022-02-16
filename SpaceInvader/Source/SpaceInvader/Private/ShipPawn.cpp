@@ -193,9 +193,8 @@ void AShipPawn::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAct
 		//UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
 		if (Health <= 0) Death();
 	}
-	else if (OtherActor->IsA<ABlockingVolume>()) {
+	else if (OtherActor->IsA<ABlockingVolume>()) { // Bounce back if pawn hits level bounds.
 		FVector Back = -GetVelocity().GetSafeNormal();
-
 		CapsuleComp->AddImpulse(Back*Acceleration);
 	}
 
