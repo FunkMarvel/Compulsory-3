@@ -49,7 +49,7 @@ public:
 
 	// FX
 	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
-		TSubclassOf<class ASpawnParticleEffectActor> SpawnParticleClass;
+		class UParticleSystem* ParticleSystemHit;
 	UFUNCTION()
 		void SpawnOnHitFX();
 

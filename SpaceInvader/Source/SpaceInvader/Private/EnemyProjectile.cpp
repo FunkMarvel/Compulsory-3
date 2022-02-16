@@ -27,26 +27,22 @@ void AEnemyProjectile::Tick(float DeltaTime)
 
 void AEnemyProjectile::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->IsA<AEnemyProjectile>())
+	//guard cloauses
+	if (OtherActor->IsA<AEnemyProjectile>() || OtherActor->IsA<ABaseEnemy>())
 	{
+		return;
+	}
 
-	}
-	else if (OtherActor->IsA<ABaseEnemy>())
+	if(OtherActor->IsA<AShipPawn>())
 	{
-	}
-	else if(OtherActor->IsA<AShipPawn>())
-	{
-		AShipPawn* Ship = Cast<AShipPawn>(OtherActor);
-		if (!Ship->GetDashState())
+		AShipPawn* Ship = Cast<AShipPawn>(OtherActor); 
+		if (!Ship->GetDashState())	// If ship is dashing do nothing
 		{
 			Destroy();
 		}
-
-
 	}
 	else
 	{
 		Destroy();
-
 	}
 }

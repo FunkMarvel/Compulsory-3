@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "BaseEnemy.generated.h"
 
-// DECLARE_DYNAMIC_MULTICAST_DELEGATE
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEnemyDiedDelegate);
 
 UCLASS()
 class SPACEINVADER_API ABaseEnemy : public AActor
@@ -71,11 +71,15 @@ public:
 		void PlayFireSound();
 	float StartSoundTime = 0.f;
 
+	FEnemyDiedDelegate OnEnemyDiedDelegate;
+
+	//handle destruction
+	void HandleDestruction();
 
 protected:
 
 	float LastShotTime = 0.f;
-	int Health;
+	int32 Health;
 	APawn* PlayerPawn = nullptr;
 
 	//projectile
@@ -84,7 +88,7 @@ protected:
 
 	//FX
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|FX")
-		TSubclassOf<class ASpawnParticleEffectActor> ParticleActorToSpawnClass;
+		class UParticleSystem* FireParticleSystem;
 	UFUNCTION()
 		void PlayDeathFX();
 
