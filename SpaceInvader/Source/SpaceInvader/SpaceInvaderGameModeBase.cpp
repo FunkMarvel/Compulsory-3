@@ -28,8 +28,10 @@ void ASpaceInvaderGameModeBase::Tick(float DeltaTime) {
 		CurrentWave++;
 		SpawnWave();
 	}
-	else if (CurrentWave >= NumberOfWaves) {
-		// end game.
+	else if (CurrentEnemyCount <= 0 && CurrentWave >= NumberOfWaves) {
+	AGameHUD* HUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+
+	HUD->ViewGameWin(true);
 	}
 }
 
