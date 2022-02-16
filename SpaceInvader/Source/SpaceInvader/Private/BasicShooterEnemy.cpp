@@ -12,7 +12,7 @@ ABasicShooterEnemy::ABasicShooterEnemy() {
 	SpinnerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpinnerMesh"));
 	SpinnerMesh->SetupAttachment(Mesh);
 
-	ProjectileForwardOffset = 40.f;
+	ProjectileForwardOffset = 200.f;
 	ShotInterval = 0.7f;
 	MovmentSpeed = 200.f;
 	InnerRange = 500.f;

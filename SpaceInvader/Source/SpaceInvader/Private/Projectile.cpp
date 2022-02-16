@@ -9,7 +9,7 @@
 #include "Projectile.h"
 #include "EnemyProjectile.h"
 #include "Particles/ParticleSystemComponent.h"
-#include "SpawnParticleEffectActor.h"
+#include "Particles/ParticleSystem.h"
 
 
 // Sets default values
@@ -64,27 +64,15 @@ void AProjectile::Tick(float DeltaTime)
 
 void AProjectile::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->IsA<AEnemyProjectile>())
-	{
-		Destroy();
-		SpawnOnHitFX();
-	}
-	else
-	{
-		Destroy();
-	}
-	
-	
-	
-	
-	
+	Destroy();
+	SpawnOnHitFX();
 }
 
 void AProjectile::SpawnOnHitFX()
 {
-	if (SpawnParticleClass)
+	if (ParticleSystemHit)
 	{
-		GetWorld()->SpawnActor<ASpawnParticleEffectActor>(SpawnParticleClass, GetActorLocation(), GetActorRotation());
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ParticleSystemHit, GetActorLocation());
 	}
 }
 

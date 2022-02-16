@@ -10,7 +10,6 @@
 #include "EnemyProjectile.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "ShipPawn.h"
-#include "SpawnParticleEffectActor.h"
 
 
 // Sets default values
@@ -89,12 +88,18 @@ void ABaseEnemy::PlayFireSound()
 	UGameplayStatics::PlaySound2D(GetWorld(), FiringSound);
 }
 
+void ABaseEnemy::HandleDestruction()
+{
+	OnEnemyDiedDelegate.Broadcast();
+	PlayDeathFX();
+	Destroy();
+}
+
 void ABaseEnemy::PlayDeathFX()
 {
-	if (ParticleActorToSpawnClass)
+	if (FireParticleSystem)
 	{
-		GetWorld()->SpawnActor<AActor>(ParticleActorToSpawnClass, GetActorLocation(), GetActorRotation());
-
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), FireParticleSystem, GetActorLocation());
 	}
 }
 
@@ -125,19 +130,11 @@ void ABaseEnemy::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAc
 
 			if (Health <= 0.f)
 			{
-				PlayDeathFX();
+				HandleDestruction();
 				UE_LOG(LogTemp, Warning, TEXT("ON DEATH"));
-				Destroy();
-				
-				
-
 				
 			}
 		}
-	}
-	else if (OtherActor->IsA<AShipPawn>())
-	{
-		//ligic Here
 	}
 
 }

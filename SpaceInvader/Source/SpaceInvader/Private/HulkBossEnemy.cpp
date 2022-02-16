@@ -8,7 +8,7 @@
 
 AHulkBossEnemy::AHulkBossEnemy() {
 	ProjectileSpeed = 3000.f;
-	ShotInterval = 0.05f;
+	ShotInterval = 0.04f;
 
 	ClosingBeamDuration = 1.f;
 	ClosingBeamCooldown = 2.f;
@@ -17,7 +17,7 @@ AHulkBossEnemy::AHulkBossEnemy() {
 	RotatingBeamCooldown = 2.f;
 
 	ProjectileForwardOffset = 0.f;
-	InnerRange = 1000.f;
+	InnerRange = 3000.f;
 
 	SpinnerOne   = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpinenrOne"));
 	SpinnerOne->SetupAttachment(GetRootComponent());
