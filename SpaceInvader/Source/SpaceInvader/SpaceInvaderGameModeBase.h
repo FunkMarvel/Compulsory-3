@@ -17,4 +17,26 @@ class SPACEINVADER_API ASpaceInvaderGameModeBase : public AGameModeBase
 protected:
 	void BeginPlay() override final;
 
+	void Tick(float DeltaTime) override final;
+
+	void SpawnEnemies();
+
+private:
+	UPROPERTY(EditAnywhere, Category = "Spawning|Enemies")
+		TSubclassOf<class ABaseEnemy> Basic;
+
+	UPROPERTY(EditAnywhere, Category = "Spawning|Enemies")
+		TSubclassOf<class ABaseEnemy> SharpShooter;
+
+	UPROPERTY(EditAnywhere, Category = "Spawning|Enemies")
+		TSubclassOf<class ABaseEnemy> Charger;
+
+	UPROPERTY(EditAnywhere, Category = "Spawning|Enemies")
+		TSubclassOf<class ABaseEnemy> Boss;
+
+	TArray<class ABaseEnemy*> EnemyArray;
+
+	bool bAllDead;
+
+	int32 NumberOfWaves{3};
 };
