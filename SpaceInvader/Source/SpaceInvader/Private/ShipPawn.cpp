@@ -294,6 +294,8 @@ void AShipPawn::Focus(float Value) {
 }
 
 void AShipPawn::Death() {
+	OnPlayerDeath.Broadcast();
+
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 	DisableInput(PlayerController);
 	SetActorHiddenInGame(true);

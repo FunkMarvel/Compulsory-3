@@ -6,6 +6,8 @@
 #include "GameFramework/Pawn.h"
 #include "ShipPawn.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDeathDelegate);
+
 UCLASS()
 class SPACEINVADER_API AShipPawn : public APawn
 {
@@ -26,6 +28,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	FPlayerDeathDelegate OnPlayerDeath;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Mesh")
 		class UStaticMeshComponent* PlayerMesh{nullptr};
@@ -50,7 +54,7 @@ public:
 	int32 Ammo{MaxAmmo};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
-		float Health{ 150 };
+		float Health{ 100 };
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
 		float MaxHealth{ 150 };
