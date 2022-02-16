@@ -68,6 +68,8 @@ void ASpaceInvaderGameModeBase::OnEnemyDeath() {
 
 void ASpaceInvaderGameModeBase::OnPlayerDeath() {
 	AGameHUD* HUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+
+	HUD->ViewGameOver(true);
 }
 
 void ASpaceInvaderGameModeBase::SpawnWave() {

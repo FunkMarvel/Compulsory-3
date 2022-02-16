@@ -6,10 +6,10 @@
 #include "DashBars.h"
 #include "ShipPawn.h"
 #include "AmmoBars.h"
+#include "GameOverWidget.h"
 #include "Kismet/GameplayStatics.h"
 
 AGameHUD::AGameHUD() {
-
 }
 
 void AGameHUD::DrawHUD() {
@@ -58,6 +58,28 @@ void AGameHUD::BeginPlay() {
 			}
 		}
 	}
+
+	if (GameOverClass) {
+
+		GameOver = CreateWidget<UGameOverWidget>(GetWorld(), GameOverClass);
+
+		if (GameOver) {
+			GameOver->SetVisibility(ESlateVisibility::Hidden);
+			GameOver->AddToViewport();
+			GameOver->SetPositionInViewport(FVector2D(ViewSize.X*0.25f,ViewSize.Y*0.45f));
+		}
+	}
+
+	if (GameWinClass) {
+
+		GameWin = CreateWidget<UGameOverWidget>(GetWorld(), GameWinClass);
+
+		if (GameWin) {
+			GameWin->SetVisibility(ESlateVisibility::Hidden);
+			GameWin->AddToViewport();
+			GameWin->SetPositionInViewport(FVector2D(ViewSize.X*0.25f,ViewSize.Y*0.45f));
+		}
+	}
 }
 
 void AGameHUD::Tick(float DeltaTime) {
@@ -87,4 +109,14 @@ void AGameHUD::UpdateAmmoBars() {
 
 		AmmoBars->UpdateAmmoBars(PlayerShip->Ammo, PlayerShip->MaxAmmo);
 	}
+}
+
+void AGameHUD::ViewGameOver(bool ShowGameOver) {
+	if (GameOver && ShowGameOver) { GameOver->SetVisibility(ESlateVisibility::Visible); }
+	else if (GameOver) { GameOver->SetVisibility(ESlateVisibility::Hidden); }
+}
+
+void AGameHUD::ViewGameWin(bool ShowGameWin) {
+	if (GameWin && ShowGameWin) { GameWin->SetVisibility(ESlateVisibility::Visible); }
+	else if (GameWin) { GameWin->SetVisibility(ESlateVisibility::Hidden); }
 }

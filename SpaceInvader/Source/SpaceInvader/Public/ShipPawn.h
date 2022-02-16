@@ -54,10 +54,8 @@ public:
 	int32 Ammo{MaxAmmo};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
-		float Health{ 100 };
-
-	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
-		float MaxHealth{ 150 };
+		float MaxHealth{ 100 };
+	float Health{ MaxHealth };
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 		float StaminaRechargeTime{5.f};
