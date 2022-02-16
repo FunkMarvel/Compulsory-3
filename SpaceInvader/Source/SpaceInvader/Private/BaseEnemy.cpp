@@ -8,8 +8,9 @@
 #include "Projectile.h"
 #include "DrawDebugHelpers.h"
 #include "EnemyProjectile.h"
-
+#include "Particles/ParticleSystemComponent.h"
 #include "ShipPawn.h"
+#include "SpawnParticleEffectActor.h"
 
 
 // Sets default values
@@ -29,12 +30,11 @@ ABaseEnemy::ABaseEnemy()
 	// audio
 	FiringSound = CreateDefaultSubobject<USoundBase>(TEXT("Fire Sound"));
 
-
+	// Setting basic variables
 	StartHealth = 7;
 	MovmentSpeed = 200.f;
-	
-	
-
+	FireRange = 4000.f;
+	InnerRange = 1000.f;
 	
 }
 
@@ -72,31 +72,42 @@ bool ABaseEnemy::IsInInnerRange()
 	return false;
 }
 
+bool ABaseEnemy::IsInFireRange()
+{
+	if (PlayerPawn == nullptr)
+		return false;
+	float Distance = (PlayerPawn->GetActorLocation() - GetActorLocation()).Size();
+	if (Distance <= FireRange)
+	{
+		return true;
+	}
+	return false;
+}
+
 void ABaseEnemy::PlayFireSound()
 {
 	UGameplayStatics::PlaySound2D(GetWorld(), FiringSound);
 }
 
+void ABaseEnemy::PlayDeathFX()
+{
+	if (ParticleActorToSpawnClass)
+	{
+		GetWorld()->SpawnActor<AActor>(ParticleActorToSpawnClass, GetActorLocation(), GetActorRotation());
+
+	}
+}
+
 void ABaseEnemy::RotateMeshAfterMovment(UStaticMeshComponent* Comp, FVector Direction)
 {
-	
-	FVector v1 = GetActorUpVector();
-	//rotates the (up) vector towards the target
-	// 
+	FVector PsuedoRightVector = GetActorUpVector();	
 	// gets the "right vector" compared to the player (enemies arent nececeraly rotated towards the player
-	v1 = v1.RotateAngleAxis(-currentTilt, FVector::CrossProduct(Direction, GetActorUpVector()).GetSafeNormal() ); 
-	/*DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + v1.GetSafeNormal() * 400.f, FColor::Blue, false,
-		0.5f);*/
-	
-	FRotator r2 = UKismetMathLibrary::MakeRotFromZX(v1, GetActorForwardVector());
-	
-	
-	/*DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + r2.Vector() * 400.f, FColor::Blue, false,
-		0.5f);*/
-
-	Comp->SetWorldRotation(FMath::RInterpTo(Comp->GetComponentRotation(), r2, UGameplayStatics::GetWorldDeltaSeconds(this),
-		5.f));
-	
+	PsuedoRightVector = PsuedoRightVector.RotateAngleAxis(-currentTilt, FVector::CrossProduct(Direction, GetActorUpVector()).GetSafeNormal() ); 
+	//creates the new rotation
+	FRotator NewRotation = UKismetMathLibrary::MakeRotFromZX(PsuedoRightVector, GetActorForwardVector());
+	//rotates the Mesh Component inputted accordingly
+	Comp->SetWorldRotation(FMath::RInterpTo(Comp->GetComponentRotation(), NewRotation, 
+		UGameplayStatics::GetWorldDeltaSeconds(this), 5.f));
 }
 
 void ABaseEnemy::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -114,7 +125,13 @@ void ABaseEnemy::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAc
 
 			if (Health <= 0.f)
 			{
+				PlayDeathFX();
+				UE_LOG(LogTemp, Warning, TEXT("ON DEATH"));
 				Destroy();
+				
+				
+
+				
 			}
 		}
 	}

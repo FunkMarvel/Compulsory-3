@@ -19,27 +19,24 @@ public:
 private:
 
 	
+	//my deseg ----------------------------
+public:
+	//Propeller Mesh
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
+		class UStaticMeshComponent* BladesMesh;
 
-protected:
+	//When charger hits something
 	void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 		const FHitResult& SweepResult) override;
-	
-	
-//
-//	//my deseg
-public:
+
 	//sound
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|Audio")
 		USoundBase* WindUpSound = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|Audio")
 		USoundBase* OnHitSound = nullptr;
 
-	//components
-	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
-		class UStaticMeshComponent* BladesMesh;
-
-	//charging
+	//charging states
 	enum ChargerState {
 		Moving,
 		WindUp,
@@ -48,33 +45,33 @@ public:
 	};
 	ChargerState currentState;
 
+	//the time we have been in one state
 	float StateTime = 0.f;
 
-
+	// moving state
 	UFUNCTION()
 	void MovingState();
 
-
-	//Wind Up
+	//Wind Up state
 	UFUNCTION()
 	void WindUpState();
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|WindUp")
 	float WindUpTime;
 
-	//Charge
+	//Charge state
 	UFUNCTION()
 	void ChargingState();
 	FVector ChargeVelocity = FVector::ZeroVector;
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|Charge")
 	float ChargeTime;
 
-	//CoolDOwn
+	//Cooldown
 	UFUNCTION()
 	void CoolDownState();
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|CoolDown")
 		float CoolDownTime;
 
-	// Movemnt speed
+	// movemnt speed
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|CustomMovment")
 	float NormalSpeed;
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|CustomMovment")
@@ -85,7 +82,7 @@ public:
 	float CoolDownSpeed;
 	
 
-	//blade speed
+	// blade speed
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|BladeSpinningSpeed")
 	float BladeNormalSpeed;
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|BladeSpinningSpeed")
@@ -96,7 +93,7 @@ public:
 	float BladeCoolDownSpeed;
 	
 
-
+	// tilt amount
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|TiltAmount")
 	float NormalTilt;
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|TiltAmount")

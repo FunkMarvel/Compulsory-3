@@ -17,6 +17,10 @@ class SPACEINVADER_API ASharpShooterEnemy : public ABaseEnemy
 public:
 	ASharpShooterEnemy();
 
+	// My Deseg ----------
+public:
+
+	// by how much before the shot we should play the sound (sharpshooter has a windup sound)
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|SoundOffset")
 		float SoundOffset = 0.f;
 	bool bPlayedSound = false;
@@ -26,13 +30,4 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
-
-private:
-
-
-	/*float LastShotTime = 0.f;
-
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"), Category = "Enemy")
-		float ShotInterval = 0.7f;*/
 };

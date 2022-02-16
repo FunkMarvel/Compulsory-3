@@ -17,22 +17,17 @@ AChargerEnemy::AChargerEnemy() {
 	StartHealth = 3;
 	currentState = ChargerState::Moving;
 
-	//WindUp
+	// Diffrent Times in reach state
 	WindUpTime = 1.f;
-
-	//Charge
 	ChargeTime = 1.f;
-
-	//CoolDown
 	CoolDownTime = 2.f;
 
-	//Movment Speends
+	//Movment Speeds
 	MovmentSpeed = 200.f;
 	NormalSpeed = 150.f;
 	WindupSpeed = 200.f;
 	ChargeSpeed = 90.f;
 	CoolDownSpeed = 40.f;
-
 
 	//blade speeds
 	BladeNormalSpeed = 400.f;

@@ -16,7 +16,7 @@ class SPACEINVADER_API AHulkBossEnemy : public ABaseEnemy
 public:
 	AHulkBossEnemy();
 
-	//Spinning the meshes
+	// Hulk Meshes 
 	UPROPERTY(EditDefaultsOnly)
 	class UStaticMeshComponent* SpinnerOne = nullptr;
 	UPROPERTY(EditDefaultsOnly)
@@ -24,7 +24,7 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	class UStaticMeshComponent* SpinnerThree = nullptr;
 	
-
+	// Spinner speed
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|SpinnerSpeed")
 	float SpinnerBaseSpeed = 300.f;
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|SpinnerSpeed")

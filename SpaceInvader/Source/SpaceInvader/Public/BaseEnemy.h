@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "BaseEnemy.generated.h"
 
+// DECLARE_DYNAMIC_MULTICAST_DELEGATE
+
 UCLASS()
 class SPACEINVADER_API ABaseEnemy : public AActor
 {
@@ -23,17 +25,15 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
-
-
 	// my desegnater area -----------------------------
 public:
-	// components
+
+	// Basic Components
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 		class UStaticMeshComponent* Mesh;
 
 	UPROPERTY(VisibleAnywhere, Category = "Collider")
 		class UCapsuleComponent* CapsuleComp = nullptr;
-
 
 	// Basic Variables
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
@@ -45,17 +45,24 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 	float currentTilt = 20.f;
 
-	//AI LOGIC
+	// Getter setter func
+	float GetHealthPercent() { return Health / StartHealth;  }
+
+	//AI 
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 		float InnerRange;
 	UFUNCTION()
 		bool IsInInnerRange();
-	
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
+		float FireRange;
+	UFUNCTION()
+		bool IsInFireRange();
 	
 	// Firing
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 		float ProjectileSpeed = 1100.f;
-
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"), Category = "Enemy")
+		float ShotInterval = 0.7f;
 
 	//sound
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|Audio")
@@ -63,31 +70,33 @@ public:
 	UFUNCTION()
 		void PlayFireSound();
 	float StartSoundTime = 0.f;
-private:
 
 
 protected:
+
 	float LastShotTime = 0.f;
-
-	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess = "true"), Category = "Enemy")
-		float ShotInterval = 0.7f;
-	
-	APawn* PlayerPawn = nullptr;
 	int Health;
+	APawn* PlayerPawn = nullptr;
 
+	//projectile
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 		TSubclassOf<class AProjectile> ProjectileClass;
 
-
-	
-
+	//FX
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|FX")
+		TSubclassOf<class ASpawnParticleEffectActor> ParticleActorToSpawnClass;
 	UFUNCTION()
-	void RotateMeshAfterMovment(UStaticMeshComponent* Comp, FVector Direction);
+		void PlayDeathFX();
 
+	// On Hit
 	UFUNCTION()
 	virtual void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 		const FHitResult& SweepResult);
+
+	// Movment and Compant Relevent funcs
+	UFUNCTION()
+	void RotateMeshAfterMovment(UStaticMeshComponent* Comp, FVector Direction);
 
 	UFUNCTION()
 	void FireAtPlayer();
@@ -95,16 +104,15 @@ protected:
 	UFUNCTION()
 	void FireInDirection(FVector Direction);
 
-	
-
 	// Move functuon Direction is in world space
 	UFUNCTION()
 	void Move(FVector Direction);
+	
 	// Look at PLayer
 	UFUNCTION()
 	void LookAtPlayer();
 	
-
+	UFUNCTION()
 	FVector GetToPlayerDirection();
 
 	
