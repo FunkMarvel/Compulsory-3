@@ -30,14 +30,23 @@ public:
 	UFUNCTION()
 		void UpdateAmmoBars();
 
-	UPROPERTY(EditDefaultsOnly, Category="Widgets")
+	UPROPERTY(EditDefaultsOnly, Category="Widgets|HUD")
 		TSubclassOf<UUserWidget> HealthBarClass;
 
-	UPROPERTY(EditDefaultsOnly, Category="Widgets")
+	UPROPERTY(EditDefaultsOnly, Category="Widgets|HUD")
 		TSubclassOf<UUserWidget> DashBarsClass;
 
-	UPROPERTY(EditDefaultsOnly, Category="Widgets")
+	UPROPERTY(EditDefaultsOnly, Category="Widgets|HUD")
 		TSubclassOf<UUserWidget> AmmoBarsClass;
+
+	UPROPERTY(EditDefaultsOnly, Category="Widgets|Game state")
+		TSubclassOf<UUserWidget> GameOverClass;
+
+	UPROPERTY(EditDefaultsOnly, Category="Widgets|Game state")
+		TSubclassOf<UUserWidget> GameWinClass;
+
+	void ViewGameOver(bool ShowGameOver);
+	void ViewGameWin(bool ShowGameWin);
 
 private:
 	UPROPERTY()
@@ -48,6 +57,12 @@ private:
 
 	UPROPERTY()
 		class UAmmoBars* AmmoBars{nullptr};
+
+	UPROPERTY()
+		class UGameOverWidget* GameOver{nullptr};
+
+	UPROPERTY()
+		class UGameOverWidget* GameWin{nullptr};
 
 	UPROPERTY()
 		FIntPoint ViewSize{};
