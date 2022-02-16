@@ -4,7 +4,6 @@
 #include "HealthBarWidget.h"
 #include "Components/ProgressBar.h"
 #include "ShipPawn.h"
-#include "HulkBossEnemy.h"
 #include "Engine.h"
 
 
@@ -27,9 +26,5 @@ void UHealthBarWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime
 	if (Owner->IsA<AShipPawn>()) {  // updating for ship class.
 		AShipPawn* OwnerShip = Cast<AShipPawn>(OwnerActor);
 		HealthBar->SetPercent(OwnerShip->Health/OwnerShip->MaxHealth);
-	}
-	else if (Owner->IsA<AHulkBossEnemy>()) {
-		ABaseEnemy* OwnerEnemy = Cast<AHulkBossEnemy>(OwnerActor);
-		//HealthBar->SetPercent(OwnerEnemy->Health/OwnerEnemy->MaxHealth);
 	}
 }
