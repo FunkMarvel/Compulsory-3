@@ -30,11 +30,11 @@ ABaseEnemy::ABaseEnemy()
 	// audio
 	FiringSound = CreateDefaultSubobject<USoundBase>(TEXT("Fire Sound"));
 
-
+	// Setting basic variables
 	StartHealth = 7;
 	MovmentSpeed = 200.f;
-	
-	
+	FireRange = 4000.f;
+	InnerRange = 1000.f;
 	
 }
 
@@ -66,6 +66,18 @@ bool ABaseEnemy::IsInInnerRange()
 		return false;
 	float Distance = (PlayerPawn->GetActorLocation() - GetActorLocation()).Size();
 	if (Distance <= InnerRange)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool ABaseEnemy::IsInFireRange()
+{
+	if (PlayerPawn == nullptr)
+		return false;
+	float Distance = (PlayerPawn->GetActorLocation() - GetActorLocation()).Size();
+	if (Distance <= FireRange)
 	{
 		return true;
 	}

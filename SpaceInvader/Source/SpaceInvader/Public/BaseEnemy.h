@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "BaseEnemy.generated.h"
 
+// DECLARE_DYNAMIC_MULTICAST_DELEGATE
+
 UCLASS()
 class SPACEINVADER_API ABaseEnemy : public AActor
 {
@@ -43,12 +45,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 	float currentTilt = 20.f;
 
+	// Getter setter func
+	float GetHealthPercent() { return Health / StartHealth;  }
+
 	//AI 
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 		float InnerRange;
 	UFUNCTION()
 		bool IsInInnerRange();
-	
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
+		float FireRange;
+	UFUNCTION()
+		bool IsInFireRange();
 	
 	// Firing
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
@@ -62,9 +70,6 @@ public:
 	UFUNCTION()
 		void PlayFireSound();
 	float StartSoundTime = 0.f;
-
-	
-private:
 
 
 protected:

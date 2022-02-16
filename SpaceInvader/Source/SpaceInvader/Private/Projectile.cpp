@@ -9,7 +9,7 @@
 #include "Projectile.h"
 #include "EnemyProjectile.h"
 #include "Particles/ParticleSystemComponent.h"
-
+#include "SpawnParticleEffectActor.h"
 
 
 // Sets default values
@@ -67,15 +67,24 @@ void AProjectile::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherA
 	if (OtherActor->IsA<AEnemyProjectile>())
 	{
 		Destroy();
+		SpawnOnHitFX();
 	}
 	else
 	{
 		Destroy();
 	}
-	//GEngine->AddOnScreenDebugMessage(-9, 1, FColor::Green, "BULLET BOTH HAVE!");
 	
 	
 	
 	
+	
+}
+
+void AProjectile::SpawnOnHitFX()
+{
+	if (SpawnParticleClass)
+	{
+		GetWorld()->SpawnActor<ASpawnParticleEffectActor>(SpawnParticleClass, GetActorLocation(), GetActorRotation());
+	}
 }
 

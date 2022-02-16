@@ -16,6 +16,7 @@ ABasicShooterEnemy::ABasicShooterEnemy() {
 	ShotInterval = 0.7f;
 	MovmentSpeed = 200.f;
 	InnerRange = 500.f;
+	FireRange = 3000.f;
 	ProjectileSpeed = 700.f;
 	StartHealth = 5.f;
 	currentTilt = 20.f;
@@ -29,25 +30,25 @@ void ABasicShooterEnemy::Tick(float DeltaTime) {
 
 	Direction = GetToPlayerDirection();
 
-	if (IsInInnerRange())
-	{
-
-	}
-	else
+	if (!IsInInnerRange())
 	{
 		Move(Direction.GetSafeNormal());
 	} 
 
 	//firing logic
-	if (PlayerPawn != nullptr) {
-		LastShotTime += UGameplayStatics::GetWorldDeltaSeconds(this);
-		if (ShotInterval <= LastShotTime)
-		{
-			FireAtPlayer();
-			LastShotTime = 0.f;
-			PlayFireSound();
+	if (IsInFireRange())
+	{
+		if (PlayerPawn != nullptr) {
+			LastShotTime += UGameplayStatics::GetWorldDeltaSeconds(this);
+			if (ShotInterval <= LastShotTime)
+			{
+				FireAtPlayer();
+				LastShotTime = 0.f;
+				PlayFireSound();
+			}
 		}
 	}
+	
 		
 	//rotating
 	RotateMeshAfterMovment(Mesh, GetToPlayerDirection().GetSafeNormal());

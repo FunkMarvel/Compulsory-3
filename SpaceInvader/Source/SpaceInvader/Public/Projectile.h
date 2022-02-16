@@ -31,23 +31,27 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Movment")
 		class UProjectileMovementComponent* ProjectileMovmentComponent;
 
-	UPROPERTY(EditAnywhere, Category = "Bullet")
+	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
 		float Damage = 1.f;
 
-	UPROPERTY(EditAnywhere, Category = "Bullet")
+	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
 		float MaxTimeAlive = 4.f;
 
 	// Particle System
-	UPROPERTY(EditAnywhere, Category = "Bullet")
+	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
 		class UParticleSystemComponent* Trail = nullptr;
 
 	
-
-private:
-
+	float TimeAlive = 0.f;
 	UFUNCTION()
-		virtual void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
+		virtual void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 			int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	float TimeAlive = 0.f;
+	// FX
+	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
+		TSubclassOf<class ASpawnParticleEffectActor> SpawnParticleClass;
+	UFUNCTION()
+		void SpawnOnHitFX();
+
+
 };
