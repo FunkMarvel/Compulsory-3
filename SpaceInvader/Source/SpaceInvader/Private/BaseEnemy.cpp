@@ -129,8 +129,6 @@ void ABaseEnemy::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAc
 	//Code todo Damage and push away
 	if (OtherActor->IsA<AProjectile>())
 	{
-		//change material
-		SetToOnHitMaterial(Mesh);
 		if (!OtherActor->IsA<AEnemyProjectile>())
 		{
 			
