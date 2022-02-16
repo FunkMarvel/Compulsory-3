@@ -29,7 +29,7 @@ void AGameHUD::BeginPlay() {
 		if (HealthBar) {
 			HealthBar->SetOwnerOfBar(GetWorld()->GetFirstPlayerController()->GetPawn());
 			HealthBar->AddToViewport();
-			HealthBar->SetPositionInViewport(FVector2D(ViewSize.X*0.5f-90,ViewSize.Y*0.90f));
+			HealthBar->SetPositionInViewport(FVector2D(ViewSize.X*0.45f,ViewSize.Y*0.90f));
 		}
 	}
 
@@ -39,7 +39,7 @@ void AGameHUD::BeginPlay() {
 
 		if (DashBars) {
 			DashBars->AddToViewport();
-			DashBars->SetPositionInViewport(FVector2D(10.f,ViewSize.Y*0.85f));
+			DashBars->SetPositionInViewport(FVector2D(ViewSize.X*0.05f,ViewSize.Y*0.8f));
 			for (int32 i = 0; i < 3; i++) {
 				DashBars->UpdateStaminaBars(i, 1.f, 1.f);
 			}
@@ -52,7 +52,7 @@ void AGameHUD::BeginPlay() {
 
 		if (AmmoBars) {
 			AmmoBars->AddToViewport();
-			AmmoBars->SetPositionInViewport(FVector2D(ViewSize.X*0.88f,ViewSize.Y*0.85f));
+			AmmoBars->SetPositionInViewport(FVector2D(ViewSize.X*0.825f,ViewSize.Y*0.8f));
 			for (int32 i = 1; i <= 3; i++) {
 				AmmoBars->UpdateAmmoBars(i, i);
 			}
