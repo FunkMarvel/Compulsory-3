@@ -15,11 +15,13 @@ class SPACEINVADER_API ASpaceInvaderGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 	
 protected:
+	ASpaceInvaderGameModeBase();
+
 	void BeginPlay() override final;
 
-	void Tick(float DeltaTime) override final;
+	void Tick(float DeltaTime) override;
 
-	void SpawnEnemies();
+	void SpawnEnemies(int32 EnemyType);
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Spawning|Enemies")
@@ -38,5 +40,13 @@ private:
 
 	bool bAllDead;
 
-	int32 NumberOfWaves{3};
+	UPROPERTY(VisibleAnywhere, Category = "Spawning|Waves")
+		int32 NumberOfWaves{3};
+	UPROPERTY(EditAnywhere, Category = "Spawning|Waves")
+		int32 NumEnemiesWaveOne{3};
+	UPROPERTY(EditAnywhere, Category = "Spawning|Waves")
+		int32 NumEnemiesWaveTwo{3};
+	UPROPERTY(EditAnywhere, Category = "Spawning|Waves")
+		int32 NumEnemiesWaveThree{3};
+
 };
