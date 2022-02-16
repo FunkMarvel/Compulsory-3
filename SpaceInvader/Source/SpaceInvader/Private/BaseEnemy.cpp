@@ -8,8 +8,9 @@
 #include "Projectile.h"
 #include "DrawDebugHelpers.h"
 #include "EnemyProjectile.h"
-
+#include "Particles/ParticleSystemComponent.h"
 #include "ShipPawn.h"
+#include "SpawnParticleEffectActor.h"
 
 
 // Sets default values
@@ -34,7 +35,6 @@ ABaseEnemy::ABaseEnemy()
 	MovmentSpeed = 200.f;
 	
 	
-
 	
 }
 
@@ -77,6 +77,15 @@ void ABaseEnemy::PlayFireSound()
 	UGameplayStatics::PlaySound2D(GetWorld(), FiringSound);
 }
 
+void ABaseEnemy::PlayDeathFX()
+{
+	if (ParticleActorToSpawnClass)
+	{
+		GetWorld()->SpawnActor<AActor>(ParticleActorToSpawnClass, GetActorLocation(), GetActorRotation());
+
+	}
+}
+
 void ABaseEnemy::RotateMeshAfterMovment(UStaticMeshComponent* Comp, FVector Direction)
 {
 	
@@ -114,7 +123,13 @@ void ABaseEnemy::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAc
 
 			if (Health <= 0.f)
 			{
+				PlayDeathFX();
+				UE_LOG(LogTemp, Warning, TEXT("ON DEATH"));
 				Destroy();
+				
+				
+
+				
 			}
 		}
 	}

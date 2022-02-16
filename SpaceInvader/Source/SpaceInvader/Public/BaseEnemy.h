@@ -63,6 +63,12 @@ public:
 	UFUNCTION()
 		void PlayFireSound();
 	float StartSoundTime = 0.f;
+
+	//FX
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|FX")
+		TSubclassOf<class ASpawnParticleEffectActor> ParticleActorToSpawnClass;
+	UFUNCTION()
+		void PlayDeathFX();
 private:
 
 
