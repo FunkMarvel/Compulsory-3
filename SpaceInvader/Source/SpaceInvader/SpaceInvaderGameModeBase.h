@@ -42,11 +42,19 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Spawning|Waves")
 		int32 NumberOfWaves{3};
+	int32 CurrentWave{};
+
 	UPROPERTY(EditAnywhere, Category = "Spawning|Waves")
-		int32 NumEnemiesWaveOne{3};
+		int32 NumEnemiesWaveOne{5};
+
 	UPROPERTY(EditAnywhere, Category = "Spawning|Waves")
-		int32 NumEnemiesWaveTwo{3};
+		int32 NumEnemiesWaveTwo{10};
+
 	UPROPERTY(EditAnywhere, Category = "Spawning|Waves")
-		int32 NumEnemiesWaveThree{3};
+		int32 NumEnemiesWaveThree{20};
+	int32 CurrentEnemyCount{};
+
+	UFUNCTION()
+		void OnEnemyDeath();
 
 };

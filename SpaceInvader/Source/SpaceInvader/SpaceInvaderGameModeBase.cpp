@@ -16,14 +16,26 @@ void ASpaceInvaderGameModeBase::BeginPlay() {
 
 	for (int i = 0; i < NumEnemiesWaveOne; i++) {
 		SpawnEnemies(0);
+		CurrentEnemyCount++;
+		//EnemyArray[i]->OnDestroyed.AddDynamic
 	}
 }
 
 void ASpaceInvaderGameModeBase::Tick(float DeltaTime) {
-		//GEngine->AddOnScreenDebugMessage(-12, 1, FColor::Red, "Tick2");
-	for (int i = 0; i < EnemyArray.Num(); i++) {
-		if ((EnemyArray[i]->IsValidLowLevel())) {
-			GEngine->AddOnScreenDebugMessage(-12, 10, FColor::Red, "Enemy Killed!");
+	if (CurrentEnemyCount <= 0) {
+		EnemyArray.Empty();
+		CurrentWave++;
+		switch (CurrentWave) {
+		case 1:
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		default:
+			break;
 		}
 	}
 }
@@ -34,16 +46,16 @@ void ASpaceInvaderGameModeBase::SpawnEnemies(int32 EnemyType) {
 	if (World) {
 		ABaseEnemy* tempEnemy;
 
-		FVector Location = 1000 * FVector(FMath::Cos(RandNum), FMath::Sin(RandNum), 0.f);
+		FVector Location = (EnemyType + 1)*1000 * FVector(FMath::Cos(RandNum), FMath::Sin(RandNum), 0.f);
 		switch (EnemyType) {
 		case 0:
 			tempEnemy = World->SpawnActor<ABaseEnemy>(Basic, Location, FRotator::ZeroRotator);
 			break;
 		case 1:
-			tempEnemy = World->SpawnActor<ABaseEnemy>(SharpShooter, Location, FRotator::ZeroRotator);
+			tempEnemy = World->SpawnActor<ABaseEnemy>(Charger, Location, FRotator::ZeroRotator);
 			break;
 		case 2:
-			tempEnemy = World->SpawnActor<ABaseEnemy>(Charger, Location, FRotator::ZeroRotator);
+			tempEnemy = World->SpawnActor<ABaseEnemy>(SharpShooter, Location, FRotator::ZeroRotator);
 			break;
 		case 3:
 			tempEnemy = World->SpawnActor<ABaseEnemy>(Boss, Location, FRotator::ZeroRotator);
@@ -54,4 +66,8 @@ void ASpaceInvaderGameModeBase::SpawnEnemies(int32 EnemyType) {
 
         EnemyArray.Add(tempEnemy);
 	}
+}
+
+void ASpaceInvaderGameModeBase::OnEnemyDeath() {
+	if (CurrentEnemyCount > 0) CurrentEnemyCount--;
 }
