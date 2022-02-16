@@ -2,11 +2,11 @@
 
 
 
+#include "Projectile.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/DamageType.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "Projectile.h"
 #include "EnemyProjectile.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Particles/ParticleSystem.h"

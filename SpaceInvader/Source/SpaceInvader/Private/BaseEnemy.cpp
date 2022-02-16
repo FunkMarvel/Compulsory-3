@@ -101,12 +101,6 @@ void ABaseEnemy::HandleDestruction()
 	Destroy();
 }
 
-void ABaseEnemy::SetToStartMaterial(UStaticMeshComponent* MeshComp)
-{
-	
-	
-}
-
 void ABaseEnemy::PlayDeathFX()
 {
 	if (FireParticleSystem)
@@ -131,12 +125,12 @@ void ABaseEnemy::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAc
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	
+		
 	//Code todo Damage and push away
 	if (OtherActor->IsA<AProjectile>())
 	{
 		//change material
-
+		SetToOnHitMaterial(Mesh);
 		if (!OtherActor->IsA<AEnemyProjectile>())
 		{
 			

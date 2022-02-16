@@ -87,7 +87,9 @@ private:
 	UMaterial* StartMaterial;
 	FTimerHandle OnHitChangeColorTimerHandle;
 	UFUNCTION()
-		void SetToStartMaterial(UStaticMeshComponent* MeshComp);
+		void SetToStartMaterial(UStaticMeshComponent* MeshComp) { MeshComp->SetMaterial(0, StartMaterial); }
+	UFUNCTION()
+		void SetToOnHitMaterial(UStaticMeshComponent* MeshComp) { MeshComp->SetMaterial(0, OnHitMaterial); }
 
 protected:
 
