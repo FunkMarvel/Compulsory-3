@@ -23,9 +23,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// Components
 	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
 		UStaticMeshComponent* ProjectileMesh;
 
+	// Movment Component
 	UPROPERTY(VisibleAnywhere, Category = "Movment")
 		class UProjectileMovementComponent* ProjectileMovmentComponent;
 
@@ -35,6 +37,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Bullet")
 		float MaxTimeAlive = 4.f;
 
+	// Particle System
 	UPROPERTY(EditAnywhere, Category = "Bullet")
 		class UParticleSystemComponent* Trail = nullptr;
 

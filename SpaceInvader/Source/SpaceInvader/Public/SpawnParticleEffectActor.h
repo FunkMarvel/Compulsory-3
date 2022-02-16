@@ -30,7 +30,7 @@ public:
 		float TimeToDestroy;
 	FTimerHandle DestroyTimerHandle;
 
-	
+	//since the StartTimer needs a void func, and Destroy() returns a bool, i made a shell function that only calls Destroy()
 	UFUNCTION()
 		void DestroySheelFunc();
 };
