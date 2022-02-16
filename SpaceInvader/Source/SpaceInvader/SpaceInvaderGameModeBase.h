@@ -62,4 +62,6 @@ private:
 
 	void SpawnWave();
 
+public:
+	TArray<class ABaseEnemy*> GetAllEnemies() { return EnemyArray; }
 };
