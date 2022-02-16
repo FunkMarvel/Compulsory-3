@@ -20,6 +20,7 @@
 #include "DrawDebugHelpers.h"
 #include "Components/WidgetComponent.h"
 #include "HealthBarWidget.h"
+#include "BaseEnemy.h"
 
 static void InitializeDefaultPawnInputBinding() {
 	static bool BindingsAdded{false};
@@ -189,6 +190,13 @@ void AShipPawn::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAct
 	if (OtherActor->IsA<AProjectile>() && OtherActor->GetOwner() != this && !bDashing) {
 		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Red, "HIT!");
 		AProjectile* Overlapper = Cast<AProjectile>(OtherActor);
+		Health -= Overlapper->Damage;
+		//UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
+		if (Health <= 0) Death();
+	}
+	else if (OtherActor->IsA<ABaseEnemy>()) {
+		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Red, "HIT!");
+		ABaseEnemy* Overlapper = Cast<ABaseEnemy>(OtherActor);
 		Health -= Overlapper->Damage;
 		//UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
 		if (Health <= 0) Death();
