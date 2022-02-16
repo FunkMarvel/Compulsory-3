@@ -57,6 +57,9 @@ private:
 	UFUNCTION()
 		void OnEnemyDeath();
 
+	UFUNCTION()
+		void OnPlayerDeath();
+
 	void SpawnWave();
 
 };

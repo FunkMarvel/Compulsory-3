@@ -3,6 +3,8 @@
 
 #include "SpaceInvaderGameModeBase.h"
 #include "BaseEnemy.h"
+#include "ShipPawn.h"
+#include "GameHUD.h"
 #include "Kismet/KismetMathLibrary.h"
 
 ASpaceInvaderGameModeBase::ASpaceInvaderGameModeBase() {
@@ -13,6 +15,9 @@ void ASpaceInvaderGameModeBase::BeginPlay() {
 	Super::BeginPlay();
 
 	GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
+	AShipPawn* Player = Cast<AShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	if (Player) Player->OnPlayerDeath.AddDynamic(this, &ASpaceInvaderGameModeBase::OnPlayerDeath);
+
 	SpawnWave();
 }
 
@@ -59,6 +64,10 @@ void ASpaceInvaderGameModeBase::SpawnEnemies(int32 EnemyType) {
 void ASpaceInvaderGameModeBase::OnEnemyDeath() {
 	if (CurrentEnemyCount > 0) CurrentEnemyCount--;
 	GEngine->AddOnScreenDebugMessage(-12, 2, FColor::Green, TEXT("Enemy died."));
+}
+
+void ASpaceInvaderGameModeBase::OnPlayerDeath() {
+	AGameHUD* HUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 }
 
 void ASpaceInvaderGameModeBase::SpawnWave() {
