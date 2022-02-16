@@ -32,6 +32,13 @@ public:
 
 	UFUNCTION()
 	void SpinBlades(float Speed);
+
+	// scaling meshes
+	UFUNCTION()
+		void ScaleSpinner(UStaticMeshComponent* MeshComp, const float Scale, const float Alpha);
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|Scale")
+	float AttackingScale;
+	
 private:
 	
 	enum HulkState {

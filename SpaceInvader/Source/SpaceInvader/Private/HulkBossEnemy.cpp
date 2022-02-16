@@ -7,6 +7,8 @@
 
 
 AHulkBossEnemy::AHulkBossEnemy() {
+	AttackingScale = 1.4f;
+
 	ProjectileSpeed = 3000.f;
 	ShotInterval = 0.04f;
 
@@ -44,6 +46,13 @@ void AHulkBossEnemy::SpinBlades(float Speed)
 
 }
 
+void AHulkBossEnemy::ScaleSpinner(UStaticMeshComponent* MeshComp, const float Scale, const float Alpha)
+{
+	SpinnerThree->SetWorldScale3D(FMath::Lerp(MeshComp->GetComponentScale(), FVector(Scale),
+		UGameplayStatics::GetWorldDeltaSeconds(this) * Alpha));
+	return;
+}
+
 void AHulkBossEnemy::NormalState()
 {
 	if (!bEnterState)
@@ -53,8 +62,10 @@ void AHulkBossEnemy::NormalState()
 		// On Enter State Logic
 		NextBeamIndex = FMath::RandRange(0, 1);
 	}
-	StartOfStateTime += UGameplayStatics::GetWorldDeltaSeconds(this);
 
+	ScaleSpinner(SpinnerThree, 1.f, 5.f);
+
+	StartOfStateTime += UGameplayStatics::GetWorldDeltaSeconds(this);
 	FVector Direction = GetToPlayerDirection().GetSafeNormal();
 	Move(Direction);
 	RotateMeshAfterMovment(Mesh, Direction);
@@ -95,6 +106,11 @@ void AHulkBossEnemy::ClosingBeamState()
 		LastShotTime = 0.f;
 		StartSoundTime = 0.f;
 	}
+
+	
+
+	ScaleSpinner(SpinnerThree, AttackingScale, 10.f);
+
 	StartOfStateTime += UGameplayStatics::GetWorldDeltaSeconds(this);
 	LastShotTime += UGameplayStatics::GetWorldDeltaSeconds(this);
 	StartSoundTime += UGameplayStatics::GetWorldDeltaSeconds(this);
@@ -138,6 +154,8 @@ void AHulkBossEnemy::RotateBeamState()
 		// On Enter State Logic
 	}
 	
+	ScaleSpinner(SpinnerThree, AttackingScale, 10.f);
+
 	StartOfStateTime += UGameplayStatics::GetWorldDeltaSeconds(this);
 	LastShotTime += UGameplayStatics::GetWorldDeltaSeconds(this);
 	StartSoundTime += UGameplayStatics::GetWorldDeltaSeconds(this);

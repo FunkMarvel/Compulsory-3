@@ -103,7 +103,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|TiltAmount")
 	float CoolDownTilt;
 	
-	
 
 	//funcs
 	UFUNCTION()

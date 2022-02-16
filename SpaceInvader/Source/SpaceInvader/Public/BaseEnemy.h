@@ -44,6 +44,8 @@ public:
 		float ProjectileForwardOffset;
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 	float currentTilt = 20.f;
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
+		float DamageCollide;
 
 	// Getter setter func
 	float GetHealthPercent() { return Health / StartHealth;  }
@@ -75,6 +77,17 @@ public:
 
 	//handle destruction
 	void HandleDestruction();
+
+	//Change material on hit relevant
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|Material")
+		UMaterial* OnHitMaterial = nullptr;
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|Material")
+		float ChangeColorDuration;
+private:
+	UMaterial* StartMaterial;
+	FTimerHandle OnHitChangeColorTimerHandle;
+	UFUNCTION()
+		void SetToStartMaterial(UStaticMeshComponent* MeshComp);
 
 protected:
 

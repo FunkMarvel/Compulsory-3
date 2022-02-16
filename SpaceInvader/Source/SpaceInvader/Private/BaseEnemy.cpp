@@ -34,6 +34,11 @@ ABaseEnemy::ABaseEnemy()
 	MovmentSpeed = 200.f;
 	FireRange = 4000.f;
 	InnerRange = 1000.f;
+
+	DamageCollide = 4.f;
+
+	// Material
+	ChangeColorDuration = 0.4f;
 	
 }
 
@@ -47,7 +52,8 @@ void ABaseEnemy::BeginPlay()
 	CapsuleComp->OnComponentBeginOverlap.AddDynamic(this, &ABaseEnemy::OnHit);
 	Health = StartHealth;
 
-
+	//sets the start material to the material the enemy starts with
+	StartMaterial = Mesh->GetMaterial(0)->GetMaterial();
 	
 }
 
@@ -95,6 +101,12 @@ void ABaseEnemy::HandleDestruction()
 	Destroy();
 }
 
+void ABaseEnemy::SetToStartMaterial(UStaticMeshComponent* MeshComp)
+{
+	
+	
+}
+
 void ABaseEnemy::PlayDeathFX()
 {
 	if (FireParticleSystem)
@@ -123,6 +135,8 @@ void ABaseEnemy::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAc
 	//Code todo Damage and push away
 	if (OtherActor->IsA<AProjectile>())
 	{
+		//change material
+
 		if (!OtherActor->IsA<AEnemyProjectile>())
 		{
 			
@@ -156,7 +170,8 @@ void ABaseEnemy::FireAtPlayer()
 			NewProjectile->SetOwner(this);
 		
 		
-		DrawDebugSphere(GetWorld(), GetActorLocation() + GetActorForwardVector() * ProjectileForwardOffset, 40, 16, FColor::Red, false, 1.f);
+		//DrawDebugSphere(GetWorld(), GetActorLocation() + GetActorForwardVector() * 
+			//ProjectileForwardOffset, 40, 16, FColor::Red, false, 1.f);
 	}
 
 	
@@ -180,7 +195,8 @@ void ABaseEnemy::FireInDirection(FVector Direction)
 			NewProjectile->SetOwner(this);
 	
 		
-		DrawDebugSphere(GetWorld(), GetActorLocation() + GetActorForwardVector() * ProjectileForwardOffset, 40, 16, FColor::Red, false, 1.f);
+		/*DrawDebugSphere(GetWorld(), GetActorLocation() + GetActorForwardVector() * 
+			ProjectileForwardOffset, 40, 16, FColor::Red, false, 1.f);*/
 	}
 }
 
