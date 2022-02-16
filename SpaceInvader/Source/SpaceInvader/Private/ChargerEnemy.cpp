@@ -26,7 +26,7 @@ AChargerEnemy::AChargerEnemy() {
 	MovmentSpeed = 200.f;
 	NormalSpeed = 150.f;
 	WindupSpeed = 200.f;
-	ChargeSpeed = 90.f;
+	ChargeSpeed = 100.f;
 	CoolDownSpeed = 40.f;
 
 	//blade speeds
