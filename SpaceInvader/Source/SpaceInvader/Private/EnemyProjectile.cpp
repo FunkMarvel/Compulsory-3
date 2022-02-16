@@ -38,11 +38,13 @@ void AEnemyProjectile::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* O
 		AShipPawn* Ship = Cast<AShipPawn>(OtherActor); 
 		if (!Ship->GetDashState())	// If ship is dashing do nothing
 		{
+			SpawnOnHitFX();
 			Destroy();
 		}
 	}
 	else
 	{
 		Destroy();
+		SpawnOnHitFX();
 	}
 }

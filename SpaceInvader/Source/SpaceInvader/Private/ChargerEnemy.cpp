@@ -13,13 +13,13 @@ AChargerEnemy::AChargerEnemy() {
 	BladesMesh->SetupAttachment(Mesh);
 
 	//Base variables
-	InnerRange = 700.f;
+	InnerRange = 1700.f;
 	StartHealth = 3;
 	currentState = ChargerState::Moving;
 
 	// Diffrent Times in reach state
 	WindUpTime = 1.f;
-	ChargeTime = 1.f;
+	ChargeTime = 2.f;
 	CoolDownTime = 2.f;
 
 	//Movment Speeds
