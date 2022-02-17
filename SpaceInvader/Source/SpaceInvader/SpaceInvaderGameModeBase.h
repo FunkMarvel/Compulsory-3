@@ -64,4 +64,7 @@ private:
 
 public:
 	TArray<class ABaseEnemy*> GetAllEnemies() { return EnemyArray; }
+
+	UFUNCTION()
+		void OnResetGamePress();
 };

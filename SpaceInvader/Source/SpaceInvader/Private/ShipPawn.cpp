@@ -242,7 +242,13 @@ void AShipPawn::EndShooting() {
 	bShooting = false;
 }
 
-void AShipPawn::ResetLoaction() const {
+void AShipPawn::ResetPlayer() {
+	SetActorLocationAndRotation(FVector(0.f), FRotator(0.f));
+	Health = MaxHealth;
+	Ammo = MaxAmmo;
+	StaminaTimer = StaminaRechargeTime;
+	DashTimer = DashDuration;
+	ShotTimer = 0;
 }
 
 void AShipPawn::MoveXAxis(float Value) {
@@ -280,7 +286,6 @@ void AShipPawn::Dash() {
 		MouseDirection.Z = 0.f;
 
 		CapsuleComp->AddImpulse(MouseDirection * 2.5 *Acceleration);
-		//CapsuleComp->AddImpulse(-MouseDirection * Acceleration);
 	}
 }
 
@@ -293,11 +298,4 @@ void AShipPawn::Focus(float Value) {
 
 void AShipPawn::Death() {
 	OnPlayerDeath.Broadcast();
-
-	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-	DisableInput(PlayerController);
-	CapsuleComp->SetPhysicsLinearVelocity(FVector(0.f));
-	SetActorHiddenInGame(true);
-	SetActorEnableCollision(false);
-	SetActorTickEnabled(false);
 }

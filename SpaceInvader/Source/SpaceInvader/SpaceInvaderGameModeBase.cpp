@@ -5,6 +5,7 @@
 #include "BaseEnemy.h"
 #include "ShipPawn.h"
 #include "GameHUD.h"
+#include "Components/CapsuleComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
 ASpaceInvaderGameModeBase::ASpaceInvaderGameModeBase() {
@@ -29,9 +30,8 @@ void ASpaceInvaderGameModeBase::Tick(float DeltaTime) {
 		SpawnWave();
 	}
 	else if (CurrentEnemyCount <= 0 && CurrentWave >= NumberOfWaves) {
-	AGameHUD* HUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-
-	HUD->ViewGameWin(true);
+		AGameHUD* HUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+		HUD->ViewGameWin(true);
 	}
 }
 
@@ -71,7 +71,35 @@ void ASpaceInvaderGameModeBase::OnEnemyDeath() {
 void ASpaceInvaderGameModeBase::OnPlayerDeath() {
 	AGameHUD* HUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	DisableInput(PlayerController);
+	AShipPawn* Player = Cast<AShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	Player->CapsuleComp->SetPhysicsLinearVelocity(FVector(0.f));
+	Player->SetActorHiddenInGame(true);
+
 	HUD->ViewGameOver(true);
+}
+
+void ASpaceInvaderGameModeBase::OnResetGamePress() {
+	AGameHUD* HUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	DisableInput(PlayerController);
+	AShipPawn* Player = Cast<AShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	Player->ResetPlayer();
+	Player->SetActorHiddenInGame(false);
+
+	HUD->ViewGameOver(false);
+	HUD->ViewGameWin(false);
+
+	for (int i = 0; i < EnemyArray.Num(); i++) {
+		EnemyArray[i]->Destroy();
+	}
+
+	CurrentEnemyCount = 0;
+	EnemyArray.Empty();
+	CurrentWave = 0;
+	SpawnWave();
 }
 
 void ASpaceInvaderGameModeBase::SpawnWave() {

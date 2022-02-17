@@ -66,6 +66,7 @@ void AGameHUD::BeginPlay() {
 		if (GameOver) {
 			GameOver->SetVisibility(ESlateVisibility::Hidden);
 			GameOver->AddToViewport();
+			GameOver->AddOnPress();
 			GameOver->SetPositionInViewport(FVector2D(ViewSize.X*0.25f,ViewSize.Y*0.45f));
 		}
 	}
@@ -77,6 +78,7 @@ void AGameHUD::BeginPlay() {
 		if (GameWin) {
 			GameWin->SetVisibility(ESlateVisibility::Hidden);
 			GameWin->AddToViewport();
+			GameWin->AddOnPress();
 			GameWin->SetPositionInViewport(FVector2D(ViewSize.X*0.25f,ViewSize.Y*0.45f));
 		}
 	}

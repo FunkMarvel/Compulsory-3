@@ -98,7 +98,7 @@ public:
 	void EndShooting();
 
 	UFUNCTION(BluePrintCallable)
-		void ResetLoaction() const;
+		void ResetPlayer();
 	bool InContact;
 
 private:

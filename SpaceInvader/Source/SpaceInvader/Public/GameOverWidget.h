@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Button.h"
 #include "GameOverWidget.generated.h"
 
 /**
@@ -17,8 +18,12 @@ class SPACEINVADER_API UGameOverWidget : public UUserWidget
 public:
 	UGameOverWidget(const FObjectInitializer& ObjectInitializer);
 	virtual void NativeConstruct() override;
+	void AddOnPress();
 	
 protected:
 	UPROPERTY(meta = (BindWidget))
 		class UTextBlock* GameOverMessage;
+
+	UPROPERTY (meta = (BindWidget))
+		UButton* RestartGameButton;
 };
