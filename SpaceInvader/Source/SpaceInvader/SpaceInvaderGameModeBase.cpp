@@ -16,6 +16,7 @@ void ASpaceInvaderGameModeBase::BeginPlay() {
 
 	GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
 	AShipPawn* Player = Cast<AShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	
 	if (Player) Player->OnPlayerDeath.AddDynamic(this, &ASpaceInvaderGameModeBase::OnPlayerDeath);
 
 	SpawnWave();
@@ -59,11 +60,14 @@ void ASpaceInvaderGameModeBase::SpawnEnemies(int32 EnemyType) {
 			break;
 		}
 
+		
         EnemyArray.Add(tempEnemy);
+
 	}
 }
 
-void ASpaceInvaderGameModeBase::OnEnemyDeath() {
+void ASpaceInvaderGameModeBase::OnEnemyDeath(int32 Index) {
+	EnemyArray[Index] = nullptr;
 	if (CurrentEnemyCount > 0) CurrentEnemyCount--;
 	GEngine->AddOnScreenDebugMessage(-12, 2, FColor::Green, TEXT("Enemy died."));
 }
@@ -83,6 +87,7 @@ void ASpaceInvaderGameModeBase::SpawnWave() {
 			SpawnEnemies(EnemyType);
 			CurrentEnemyCount++;
 			EnemyArray[i]->OnEnemyDiedDelegate.AddDynamic(this, &ASpaceInvaderGameModeBase::OnEnemyDeath);
+			EnemyArray[i]->SetEnemyIndex(i);
 		}
 		break;
 	case 1:
@@ -91,6 +96,7 @@ void ASpaceInvaderGameModeBase::SpawnWave() {
 			SpawnEnemies(EnemyType);
 			CurrentEnemyCount++;
 			EnemyArray[i]->OnEnemyDiedDelegate.AddDynamic(this, &ASpaceInvaderGameModeBase::OnEnemyDeath);
+			EnemyArray[i]->SetEnemyIndex(i);
 		}
 		break;
 	case 2:
@@ -100,12 +106,14 @@ void ASpaceInvaderGameModeBase::SpawnWave() {
 			SpawnEnemies(EnemyType);
 			CurrentEnemyCount++;
 			EnemyArray[i]->OnEnemyDiedDelegate.AddDynamic(this, &ASpaceInvaderGameModeBase::OnEnemyDeath);
+			EnemyArray[i]->SetEnemyIndex(i);
 		}
 		break;
 	case 3:
 		SpawnEnemies(0);
 		CurrentEnemyCount++;
 		EnemyArray[0]->OnEnemyDiedDelegate.AddDynamic(this, &ASpaceInvaderGameModeBase::OnEnemyDeath);
+		EnemyArray[0]->SetEnemyIndex(0);
 		break;
 	default:
 		break;

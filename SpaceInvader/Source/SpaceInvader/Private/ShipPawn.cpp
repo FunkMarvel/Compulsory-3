@@ -18,6 +18,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Projectile.h"
 #include "DrawDebugHelpers.h"
+#include "../SpaceInvaderGameModeBase.h"
 #include "Components/WidgetComponent.h"
 #include "HealthBarWidget.h"
 #include "BaseEnemy.h"
@@ -73,6 +74,12 @@ AShipPawn::AShipPawn()
 	PlayerMesh->SetupAttachment(CapsuleComp);
 	PlayerMesh->SetSimulatePhysics(false);
 	PlayerMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	// set up pointer mesh:
+	PointerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pointer Mesh"));
+	PointerMesh->SetupAttachment(CapsuleComp);
+	PointerMesh->SetSimulatePhysics(false);
+	PointerMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	// Setting up camera:
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
@@ -159,6 +166,9 @@ void AShipPawn::Tick(float DeltaTime)
 		StaminaTimer = 0;
 		if (DashRechargeSound) UGameplayStatics::PlaySound2D(GetWorld(), DashRechargeSound);
 	}
+
+	// handling pointer mesh rotation
+	PointPointerMesh();
 }
 
 // Called to bind functionality to input
@@ -245,6 +255,64 @@ void AShipPawn::EndShooting() {
 }
 
 void AShipPawn::ResetLoaction() const {
+}
+
+void AShipPawn::PointPointerMesh()
+{
+	//gets the game mode
+	AGameModeBase* GameModeBase = GetWorld()->GetAuthGameMode();
+	if (GameModeBase->IsA<ASpaceInvaderGameModeBase>())
+	{
+		
+		
+
+		// casts the game mode
+		ASpaceInvaderGameModeBase* SpaceGameMode = Cast<ASpaceInvaderGameModeBase>(GameModeBase);
+		TArray<ABaseEnemy*> EnemyArray = SpaceGameMode->GetAllEnemies();
+
+		//  Guard claouse
+		if (EnemyArray.Num() == 0)
+		{
+			return;
+		}
+
+		UE_LOG(LogTemp, Warning, TEXT("Number of enemies - %d"), EnemyArray.Num())
+
+		float MinDistance = 1000000000.f;
+		int MinIndex = 0;
+
+		// Finds the closest player
+		for (int i = 0; i < EnemyArray.Num(); i++)
+		{
+			if (EnemyArray[i] != nullptr) {
+				float Distance = (GetActorLocation() - EnemyArray[i]->GetActorLocation()).SizeSquared();
+				if (Distance <= MinDistance)
+				{
+					MinDistance = Distance;
+					MinIndex = i;
+				}
+			}
+			
+		}
+
+		if (EnemyArray[MinIndex])
+		{
+			//debug sphere
+			DrawDebugSphere(GetWorld(), EnemyArray[MinIndex]->GetActorLocation(), 100.f, 32, FColor::Yellow);
+
+			// creates a new rotation based on lerp and sets it
+
+
+			CurrentPointerVec = FMath::VInterpTo(CurrentPointerVec,
+				(GetActorLocation() - EnemyArray[MinIndex]->GetActorLocation()).GetSafeNormal(),
+				UGameplayStatics::GetWorldDeltaSeconds(this), 1.f);
+			PointerMesh->SetWorldRotation(CurrentPointerVec.Rotation());
+		}
+		
+		
+
+		
+	}
 }
 
 void AShipPawn::MoveXAxis(float Value) {

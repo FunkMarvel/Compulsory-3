@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "BaseEnemy.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEnemyDiedDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEnemyDiedDelegate, int32, Index);
 
 UCLASS()
 class SPACEINVADER_API ABaseEnemy : public AActor
@@ -46,6 +46,8 @@ public:
 	float currentTilt = 20.f;
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 		float DamageCollide;
+	
+
 
 	// Getter setter func
 	float GetHealthPercent() { return Health / StartHealth;  }
@@ -83,6 +85,8 @@ public:
 		UMaterial* OnHitMaterial = nullptr;
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|Material")
 		float ChangeColorDuration;
+
+	void SetEnemyIndex(int32 Index) { EnemyIndex = Index; }
 private:
 	UMaterial* StartMaterial;
 	FTimerHandle OnHitChangeColorTimerHandle;
@@ -91,12 +95,17 @@ private:
 	UFUNCTION()
 		void SetToOnHitMaterial(UStaticMeshComponent* MeshComp) { MeshComp->SetMaterial(0, OnHitMaterial); }
 
+	// Enemy Index
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
+		int32 EnemyIndex = 0.f;
 protected:
 
 	float LastShotTime = 0.f;
 	int32 Health;
 	APawn* PlayerPawn = nullptr;
 
+	
+	
 	//projectile
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 		TSubclassOf<class AProjectile> ProjectileClass;
