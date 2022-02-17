@@ -116,8 +116,6 @@ void AShipPawn::Tick(float DeltaTime)
 	InContact = false;
 
 	// Handling movement:
-	//FVector Forward = GetActorForwardVector();
-	//FVector Sideways = GetActorRightVector();
 	FVector AccelDirection = FVector(XValue, YValue, 0.f).GetSafeNormal();
 	CapsuleComp->AddForce(AccelDirection*Acceleration);
 
@@ -298,6 +296,7 @@ void AShipPawn::Death() {
 
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 	DisableInput(PlayerController);
+	CapsuleComp->SetPhysicsLinearVelocity(FVector(0.f));
 	SetActorHiddenInGame(true);
 	SetActorEnableCollision(false);
 	SetActorTickEnabled(false);
