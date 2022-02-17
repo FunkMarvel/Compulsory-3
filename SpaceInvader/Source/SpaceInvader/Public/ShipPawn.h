@@ -34,6 +34,9 @@ public:
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Mesh")
 		class UStaticMeshComponent* PlayerMesh{nullptr};
 
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Mesh")
+		class UStaticMeshComponent* PointerMesh{ nullptr };
+
 	UPROPERTY(VisibleAnywhere, Category = "Collider")
 		class UCapsuleComponent* CapsuleComp{nullptr};
 
@@ -103,6 +106,9 @@ public:
 
 private:
 	
+	void PointPointerMesh();
+	FVector CurrentPointerVec = FVector::ZeroVector;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 		TSubclassOf<class AProjectile> ProjectileClass;
 

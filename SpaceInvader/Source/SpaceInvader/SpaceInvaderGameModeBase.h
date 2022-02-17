@@ -55,7 +55,7 @@ private:
 	int32 CurrentEnemyCount{};
 
 	UFUNCTION()
-		void OnEnemyDeath();
+		void OnEnemyDeath(int32 Index);
 
 	UFUNCTION()
 		void OnPlayerDeath();

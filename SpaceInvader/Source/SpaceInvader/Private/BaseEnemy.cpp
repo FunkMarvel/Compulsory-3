@@ -96,7 +96,7 @@ void ABaseEnemy::PlayFireSound()
 
 void ABaseEnemy::HandleDestruction()
 {
-	OnEnemyDiedDelegate.Broadcast();
+	OnEnemyDiedDelegate.Broadcast(EnemyIndex);
 	PlayDeathFX();
 	Destroy();
 }

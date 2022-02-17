@@ -8,9 +8,10 @@
 
 AHulkBossEnemy::AHulkBossEnemy() {
 	AttackingScale = 1.4f;
+	StartHealth = 45.f;
 
 	ProjectileSpeed = 3000.f;
-	ShotInterval = 0.04f;
+	ShotInterval = 0.03f;
 
 	ClosingBeamDuration = 1.f;
 	ClosingBeamCooldown = 2.f;
