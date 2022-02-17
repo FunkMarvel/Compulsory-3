@@ -112,8 +112,6 @@ void AShipPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	InContact = false;
-
 	// Handling movement:
 	FVector AccelDirection = FVector(XValue, YValue, 0.f).GetSafeNormal();
 	CapsuleComp->AddForce(AccelDirection*Acceleration);
