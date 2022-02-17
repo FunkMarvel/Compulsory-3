@@ -297,21 +297,12 @@ void AShipPawn::PointPointerMesh()
 
 		if (EnemyArray[MinIndex])
 		{
-			//debug sphere
-			DrawDebugSphere(GetWorld(), EnemyArray[MinIndex]->GetActorLocation(), 100.f, 32, FColor::Yellow);
-
 			// creates a new rotation based on lerp and sets it
-
-
 			CurrentPointerVec = FMath::VInterpTo(CurrentPointerVec,
 				(GetActorLocation() - EnemyArray[MinIndex]->GetActorLocation()).GetSafeNormal(),
-				UGameplayStatics::GetWorldDeltaSeconds(this), 1.f);
+				UGameplayStatics::GetWorldDeltaSeconds(this), 10.f);
 			PointerMesh->SetWorldRotation(CurrentPointerVec.Rotation());
 		}
-		
-		
-
-		
 	}
 }
 
