@@ -57,7 +57,7 @@ public:
 	int32 Ammo{MaxAmmo};
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Player")
-		float MaxHealth{ 100 };
+		float MaxHealth{ 50 };
 	float Health{ MaxHealth };
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
@@ -100,10 +100,6 @@ public:
 	void StartShooting();
 	void EndShooting();
 
-	UFUNCTION(BluePrintCallable)
-		void ResetPlayer();
-	bool InContact;
-
 private:
 	
 	void PointPointerMesh();
@@ -121,9 +117,6 @@ private:
 
 	void Dash();
 	void Focus(float Value);
-
-	UFUNCTION()
-		void Death();
 
 	float XValue{};
 	float YValue{};

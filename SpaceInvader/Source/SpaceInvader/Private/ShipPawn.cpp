@@ -79,6 +79,7 @@ AShipPawn::AShipPawn()
 	PointerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pointer Mesh"));
 	PointerMesh->SetupAttachment(CapsuleComp);
 	PointerMesh->SetSimulatePhysics(false);
+	PointerMesh->SetRelativeLocation(FVector(0.f,0.f,-200.f));
 	PointerMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	// Setting up camera:
@@ -95,12 +96,6 @@ AShipPawn::AShipPawn()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->bUsePawnControlRotation = false;
 	Camera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
-
-	//// Setting up health bar:
-	//HealthWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("Player Health Bar"));
-	//HealthWidgetComp->SetupAttachment(CapsuleComp);
-	//HealthWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
-	//HealthWidgetComp->SetRelativeLocation(FVector(-200.f, 0.f, 0.f));
 	
 }
 
@@ -110,9 +105,6 @@ void AShipPawn::BeginPlay()
 	Super::BeginPlay();
 	InitLocation = PlayerMesh->GetComponentLocation();
 	CapsuleComp->OnComponentBeginOverlap.AddDynamic(this, &AShipPawn::OnHit);
-
-	//UHealthBarWidget* HealthBar = Cast<UHealthBarWidget>(HealthWidgetComp->GetUserWidgetObject());
-	//HealthBar->SetOwnerOfBar(this);
 }
 
 // Called every frame
@@ -199,15 +191,14 @@ void AShipPawn::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAct
 		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Red, "HIT!");
 		AProjectile* Overlapper = Cast<AProjectile>(OtherActor);
 		Health -= Overlapper->Damage;
-		//UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
-		if (Health <= 0) Death();
+		if (Health <= 0) OnPlayerDeath.Broadcast();
 	}
 	else if (OtherActor->IsA<ABaseEnemy>()) {
 		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Red, "HIT!");
 		ABaseEnemy* Overlapper = Cast<ABaseEnemy>(OtherActor);
 		Health -= Overlapper->DamageCollide;
-		//UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
-		if (Health <= 0) Death();
+
+		if (Health <= 0) OnPlayerDeath.Broadcast();
 	}
 	else if (OtherActor->IsA<ABlockingVolume>()) { // Bounce back if pawn hits level bounds.
 		FVector Back = -GetVelocity().GetSafeNormal();
@@ -226,13 +217,12 @@ void AShipPawn::Shoot() {
 	{
 		FVector ShipVelocity = GetVelocity();
 		FVector Forward = GetActorForwardVector();
-		//the line under is unefficient, but since we dont have diffrent types of bullets we are using this
+		//the line under is inefficient, but since we dont have diffrent types of bullets we are using this
 		ProjectileClass.GetDefaultObject()->ProjectileMovmentComponent->InitialSpeed = ProjectileSpeed;
 		AProjectile* NewProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass,
 			GetActorLocation() + Forward * ProjectileForwardOffset,
 			GetActorRotation());
 
-		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Shoot!");
 		if (NewProjectile) NewProjectile->SetOwner(this);
 
 		if (ShootingSound) UGameplayStatics::PlaySound2D(GetWorld(), ShootingSound);
@@ -252,29 +242,17 @@ void AShipPawn::EndShooting() {
 	bShooting = false;
 }
 
-void AShipPawn::ResetPlayer() {
-	SetActorLocationAndRotation(FVector(0.f), FRotator(0.f));
-	Health = MaxHealth;
-	Ammo = MaxAmmo;
-	StaminaTimer = StaminaRechargeTime;
-	DashTimer = DashDuration;
-	ShotTimer = 0;
-}
-
 void AShipPawn::PointPointerMesh()
 {
 	//gets the game mode
 	AGameModeBase* GameModeBase = GetWorld()->GetAuthGameMode();
 	if (GameModeBase->IsA<ASpaceInvaderGameModeBase>())
 	{
-		
-		
-
 		// casts the game mode
 		ASpaceInvaderGameModeBase* SpaceGameMode = Cast<ASpaceInvaderGameModeBase>(GameModeBase);
 		TArray<ABaseEnemy*> EnemyArray = SpaceGameMode->GetAllEnemies();
 
-		//  Guard claouse
+		//  Guard clause
 		if (EnemyArray.Num() == 0)
 		{
 			return;
@@ -353,8 +331,4 @@ void AShipPawn::Focus(float Value) {
 	FVector CurrentVelocity = -GetVelocity();
 	CurrentVelocity.Normalize();
 	CapsuleComp->AddForce(CurrentVelocity*0.7*Acceleration);
-}
-
-void AShipPawn::Death() {
-	OnPlayerDeath.Broadcast();
 }

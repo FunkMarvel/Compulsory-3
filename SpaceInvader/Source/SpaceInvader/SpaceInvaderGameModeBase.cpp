@@ -7,6 +7,7 @@
 #include "GameHUD.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 ASpaceInvaderGameModeBase::ASpaceInvaderGameModeBase() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -85,25 +86,7 @@ void ASpaceInvaderGameModeBase::OnPlayerDeath() {
 }
 
 void ASpaceInvaderGameModeBase::OnResetGamePress() {
-	AGameHUD* HUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-
-	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-	DisableInput(PlayerController);
-	AShipPawn* Player = Cast<AShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
-	Player->ResetPlayer();
-	Player->SetActorHiddenInGame(false);
-
-	HUD->ViewGameOver(false);
-	HUD->ViewGameWin(false);
-
-	for (int i = 0; i < EnemyArray.Num(); i++) {
-		EnemyArray[i]->Destroy();
-	}
-
-	CurrentEnemyCount = 0;
-	EnemyArray.Empty();
-	CurrentWave = 0;
-	SpawnWave();
+	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 }
 
 void ASpaceInvaderGameModeBase::SpawnWave() {
