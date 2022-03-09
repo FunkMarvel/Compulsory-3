@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+
+#include "Enums.h"
+
 #include "ShipPawn.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDeathDelegate);
@@ -94,13 +97,44 @@ public:
 		void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	const FHitResult& SweepResult);
-
+	
 	void Reload();
 	void Shoot();
+	void Shoot(FVector FireLocation, float Angle);
 	void StartShooting();
 	void EndShooting();
 
+
+	//shotgun firing
+	UFUNCTION()
+	void SetCurrentFireState(EPlayerFireState NewFireState);
+	
+	UPROPERTY(EditAnywhere, Category = "Fire|Shotgun")
+	class UArrowComponent* LeftFireArrowComponent{nullptr};
+	UPROPERTY(EditAnywhere, Category = "Fire|Shotgun")
+	class UArrowComponent* RightFireArrowComponent{nullptr};
+
+	UPROPERTY(EditAnywhere, Category = "Fire|Shotgun")
+	class USkeletalMeshComponent* LeftTurretSkeletalMeshComponent{nullptr};
+	UPROPERTY(EditAnywhere, Category = "Fire|Shotgun")
+	class USkeletalMeshComponent* RightTurretSkeletalMeshComponent{nullptr};
+
+	UPROPERTY(EditAnywhere, Category = "Fire|Animations")
+	class UAnimationAsset* DeployTurretAnimationAsset{nullptr};
+	UPROPERTY(EditAnywhere, Category = "Fire|Animations")
+	class UAnimationAsset* RetractTurretAnimationAsset{nullptr};
+
+	//TEMP
+	UFUNCTION()
+	void SetFireMultiState() {SetCurrentFireState(EPlayerFireState::Multi); }
+	UFUNCTION()
+	void SetFireNormalState(){SetCurrentFireState(EPlayerFireState::Normal); }
 private:
+	// shotgun firing
+	UPROPERTY(meta = (AllowPrivateAccess = "true") ,EditAnywhere, Category = "Fire|Shotgun")
+	EPlayerFireState ECurrentFireState = EPlayerFireState::Normal;
+	UPROPERTY(meta = (AllowPrivateAccess = "true") ,EditAnywhere, Category = "Fire|Shotgun")
+	float MultiShotAngle = 5.f;
 	
 	void PointPointerMesh();
 	FVector CurrentPointerVec = FVector::ZeroVector;
@@ -116,7 +150,7 @@ private:
 	void Aim(float Value);
 
 	void Dash();
-	void Focus(float Value);
+	void Focus();
 
 	float XValue{};
 	float YValue{};

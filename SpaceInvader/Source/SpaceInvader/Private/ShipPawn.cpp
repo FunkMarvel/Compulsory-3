@@ -37,10 +37,16 @@ static void InitializeDefaultPawnInputBinding() {
 		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("Aim", EKeys::Mouse2D, 1.f));
 
 		UPlayerInput::AddEngineDefinedActionMapping(FInputActionKeyMapping("Dash", EKeys::LeftShift));
-		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("Focus", EKeys::SpaceBar));
+		
+		UPlayerInput::AddEngineDefinedActionMapping(FInputActionKeyMapping("Focus", EKeys::SpaceBar));
 
 		UPlayerInput::AddEngineDefinedActionMapping(FInputActionKeyMapping("Shoot",EKeys::LeftMouseButton));
 		UPlayerInput::AddEngineDefinedActionMapping(FInputActionKeyMapping("Reload",EKeys::R));
+
+		//TODO Remove for debbuging
+		UPlayerInput::AddEngineDefinedActionMapping(FInputActionKeyMapping("Multi", EKeys::M));
+		UPlayerInput::AddEngineDefinedActionMapping(FInputActionKeyMapping("Single", EKeys::N));
+		
 	}
 }
 
@@ -50,7 +56,7 @@ AShipPawn::AShipPawn()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(TEXT("StaticMesh'/Game/Models/PlayerPlane/Plane_2.Plane_2'"));
-
+	
 	// collision and physics mesh:
 	CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>("CapsuleComponent");
 	CapsuleComp->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
@@ -96,7 +102,22 @@ AShipPawn::AShipPawn()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->bUsePawnControlRotation = false;
 	Camera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
-	
+
+	// Setting up Multishot Fire Arrows
+	RightFireArrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("RightFireArrowComponent"));
+	RightFireArrowComponent->SetupAttachment(GetRootComponent());
+	LeftFireArrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("LeftFireArrowComponent"));
+	LeftFireArrowComponent->SetupAttachment(GetRootComponent());
+
+	//Setting up LeftRight TurretMeshes
+	RightTurretSkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("RightTurretSkeletalMeshComponent"));
+	RightTurretSkeletalMeshComponent->SetupAttachment(PlayerMesh);
+	RightTurretSkeletalMeshComponent->SetWorldScale3D(FVector(1.75));
+	RightTurretSkeletalMeshComponent->SetRelativeLocation(FVector(-10, 70, 0));
+	LeftTurretSkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("LeftTurretSkeletalMeshComponent"));
+	LeftTurretSkeletalMeshComponent->SetupAttachment(PlayerMesh);
+	LeftTurretSkeletalMeshComponent->SetWorldScale3D(FVector(1.75));
+	LeftTurretSkeletalMeshComponent->SetRelativeLocation(FVector(-10, -70, 0));
 }
 
 // Called when the game starts or when spawned
@@ -105,6 +126,7 @@ void AShipPawn::BeginPlay()
 	Super::BeginPlay();
 	InitLocation = PlayerMesh->GetComponentLocation();
 	CapsuleComp->OnComponentBeginOverlap.AddDynamic(this, &AShipPawn::OnHit);
+	SetCurrentFireState(EPlayerFireState::Multi);
 }
 
 // Called every frame
@@ -131,19 +153,41 @@ void AShipPawn::Tick(float DeltaTime)
 		FVector Sideways = GetActorRightVector();
 
 		FRotator CurrentRot = PlayerMesh->GetRelativeRotation();
-		FRotator DestinationRot = FMath::RInterpConstantTo(CurrentRot, FRotator(0, 0, 45*FVector::DotProduct(Velocity, Sideways)), DeltaTime, 100);
+		FRotator DestinationRot = FMath::RInterpConstantTo(CurrentRot, FRotator(
+			10.f * FVector::DotProduct(Velocity, GetActorForwardVector()),
+			0,
+			45*FVector::DotProduct(Velocity, Sideways)), DeltaTime, 100);
 		PlayerMesh->SetRelativeRotation(DestinationRot);
 		bDashing = false;
 	}
 
-	// handling sustained fire:
-	if (bShooting && ShotTimer >= TimeBetweenShots) {
-		Shoot();
-		ShotTimer = 0;
+	//handling fire states
+	if (ECurrentFireState == EPlayerFireState::Normal)
+	{
+		// handling sustained NormalFire:
+		if (bShooting && ShotTimer >= TimeBetweenShots) {
+			Shoot();
+			ShotTimer = 0;
+		}
+		else if (ShotTimer < TimeBetweenShots)  {
+			ShotTimer += DeltaTime;
+		}
 	}
-	else if (ShotTimer < TimeBetweenShots)  {
-		ShotTimer += DeltaTime;
+	else
+	{
+		// handling sustained MultiFire:
+		if (bShooting && ShotTimer >= TimeBetweenShots) {
+			Shoot();
+			Shoot(RightFireArrowComponent->GetComponentLocation(), MultiShotAngle);
+			Shoot(LeftFireArrowComponent->GetComponentLocation(), -MultiShotAngle);
+			ShotTimer = 0;
+		}
+		else if (ShotTimer < TimeBetweenShots)  {
+			ShotTimer += DeltaTime;
+		}
 	}
+	
+	
 
 	// handling stamina:
 	if (Stamina < 3 && StaminaTimer < StaminaRechargeTime) {
@@ -172,13 +216,17 @@ void AShipPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("Aim", this, &AShipPawn::Aim);
 
 	PlayerInputComponent->BindAction("Dash",EInputEvent::IE_Pressed,this,&AShipPawn::Dash);
-	PlayerInputComponent->BindAxis("Focus", this, &AShipPawn::Focus);
+	PlayerInputComponent->BindAction("Focus",EInputEvent::IE_Released, this, &AShipPawn::Focus);
 
 	PlayerInputComponent->BindAction("Shoot",EInputEvent::IE_Pressed,this,&AShipPawn::StartShooting);
 	PlayerInputComponent->BindAction("Shoot",EInputEvent::IE_Released,this,&AShipPawn::EndShooting);
 
 	PlayerInputComponent->BindAction("Reload",EInputEvent::IE_Pressed,this,&AShipPawn::Reload);
 
+
+	//TODO TEMP for debugging purposes
+	PlayerInputComponent->BindAction("Multi", EInputEvent::IE_Pressed, this, &AShipPawn::SetFireMultiState);
+	PlayerInputComponent->BindAction("Single", EInputEvent::IE_Pressed, this, &AShipPawn::SetFireNormalState);
 }
 
 void AShipPawn::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -232,12 +280,59 @@ void AShipPawn::Shoot() {
 	}
 }
 
+void AShipPawn::Shoot(FVector FireLocation, float Angle)
+{
+	if (ProjectileClass && Ammo > 0)
+	{
+		FVector ShipVelocity = GetVelocity();
+		FVector Forward = GetActorForwardVector();
+		//the line under is inefficient, but since we dont have diffrent types of bullets we are using this
+		ProjectileClass.GetDefaultObject()->ProjectileMovmentComponent->InitialSpeed = ProjectileSpeed;
+		AProjectile* NewProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass,
+			FireLocation,
+			GetActorRotation() + FRotator(0.f,Angle,0.f));
+
+		if (NewProjectile) NewProjectile->SetOwner(this);
+
+		if (ShootingSound) UGameplayStatics::PlaySound2D(GetWorld(), ShootingSound);
+		Ammo--;
+	}
+	else if (Ammo <= 0) {
+		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Orange, "Out of Ammo!");
+		if (AmmoWarning) UGameplayStatics::PlaySound2D(GetWorld(), AmmoWarning, 6.f);
+	}
+}
+
 void AShipPawn::StartShooting() {
 	bShooting = true;
 }
 
 void AShipPawn::EndShooting() {
 	bShooting = false;
+}
+
+void AShipPawn::SetCurrentFireState(EPlayerFireState NewFireState)
+{
+	ECurrentFireState = NewFireState;
+
+	switch (NewFireState)
+	{
+	case EPlayerFireState::Normal:
+		if (RetractTurretAnimationAsset != nullptr)
+		{
+			RightTurretSkeletalMeshComponent->PlayAnimation(RetractTurretAnimationAsset, false);
+			LeftTurretSkeletalMeshComponent->PlayAnimation(RetractTurretAnimationAsset, false);
+		}
+		break;
+	case EPlayerFireState::Multi:
+		if (DeployTurretAnimationAsset != nullptr)
+		{
+			RightTurretSkeletalMeshComponent->PlayAnimation(DeployTurretAnimationAsset, false);
+			LeftTurretSkeletalMeshComponent->PlayAnimation(DeployTurretAnimationAsset, false);
+		}
+		break;
+	}
+	
 }
 
 void AShipPawn::PointPointerMesh()
@@ -324,9 +419,7 @@ void AShipPawn::Dash() {
 	}
 }
 
-void AShipPawn::Focus(float Value) {
+void AShipPawn::Focus() {
 
-	FVector CurrentVelocity = -GetVelocity();
-	CurrentVelocity.Normalize();
-	CapsuleComp->AddForce(CurrentVelocity*0.7*Acceleration);
+	UE_LOG(LogTemp, Warning, TEXT("FOCUS!"))
 }
