@@ -23,7 +23,7 @@ void AHealthPickup::ApplyEffect(UPrimitiveComponent* OverlappedComponent, AActor
 	{
 		AShipPawn* OtherShip = Cast<AShipPawn>(OtherActor);
 
-		if ((OtherShip->MaxHealth - OtherShip->Health) < Healing)
+		if ((OtherShip->MaxHealth - OtherShip->Health) > Healing)
 		{
 			OtherShip->Health += Healing;
 		}
