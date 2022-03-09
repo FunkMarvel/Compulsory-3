@@ -22,6 +22,7 @@
 #include "Components/WidgetComponent.h"
 #include "HealthBarWidget.h"
 #include "BaseEnemy.h"
+#include "EnemyProjectile.h"
 
 static void InitializeDefaultPawnInputBinding() {
 	static bool BindingsAdded{false};
@@ -158,36 +159,8 @@ void AShipPawn::Tick(float DeltaTime)
 		PlayerMesh->SetRelativeRotation(DestinationRot);
 		bDashing = false;
 	}
-
-	//handling fire states
-	if (ECurrentFireState == EPlayerFireState::Normal)
-	{
-		ProjectileSpeed = NormalShootProjectileSpeed;
-		// handling sustained NormalFire:
-		if (bShooting && ShotTimer >= TimeBetweenShots) {
-			Shoot();
-			ShotTimer = 0;
-		}
-		else if (ShotTimer < TimeBetweenShots)  {
-			ShotTimer += DeltaTime;
-		}
-	}
-	else
-	{
-		ProjectileSpeed = MultiShootProjectileSpeed;
-		// handling sustained MultiFire:
-		if (bShooting && ShotTimer >= TimeBetweenShots) {
-			Shoot();
-			Shoot(RightFireArrowComponent->GetComponentLocation(), MultiShotAngle);
-			Shoot(LeftFireArrowComponent->GetComponentLocation(), -MultiShotAngle);
-			ShotTimer = 0;
-		}
-		else if (ShotTimer < TimeBetweenShots)  {
-			ShotTimer += DeltaTime;
-		}
-	}
 	
-	
+	HandleShooting();
 
 	// handling stamina:
 	if (Stamina < 3 && StaminaTimer < StaminaRechargeTime) {
@@ -221,16 +194,16 @@ void AShipPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Shoot",EInputEvent::IE_Pressed,this,&AShipPawn::StartShooting);
 	PlayerInputComponent->BindAction("Shoot",EInputEvent::IE_Released,this,&AShipPawn::EndShooting);
 
-	PlayerInputComponent->BindAction("Reload",EInputEvent::IE_Pressed,this,&AShipPawn::Reload);
+	//PlayerInputComponent->BindAction("Reload",EInputEvent::IE_Pressed,this,&AShipPawn::StartReload);
 }
 
 void AShipPawn::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	const FHitResult& SweepResult) {
 	
-	if (OtherActor->IsA<AProjectile>() && OtherActor->GetOwner() != this && !bDashing) {
+	if (OtherActor->IsA<AEnemyProjectile>() && OtherActor->GetOwner() != this && !bDashing) {
 		GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Red, "HIT!");
-		AProjectile* Overlapper = Cast<AProjectile>(OtherActor);
+		AEnemyProjectile* Overlapper = Cast<AEnemyProjectile>(OtherActor);
 		Health -= Overlapper->Damage;
 		if (Health <= 0) OnPlayerDeath.Broadcast();
 	}
@@ -248,8 +221,65 @@ void AShipPawn::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAct
 
 }
 
-void AShipPawn::Reload() {
-	Ammo = MaxAmmo;
+void AShipPawn::HandleShooting()
+{
+	//handling fire states
+	float DeltaTime = UGameplayStatics::GetWorldDeltaSeconds(this);
+	LastShotTimer += DeltaTime;
+
+	if (LastShotTimer > StartReloadingTime && Ammo < MaxAmmo)
+	{
+		if (!bReloadFirstFrame)
+		{
+			bReloadFirstFrame = true;
+			StartReload();
+		}
+		
+		
+		ReloadTime += DeltaTime;
+		while (ReloadTime > ReloadTimePeriod)
+		{
+			ReloadTime += -ReloadTimePeriod;
+			Ammo++;
+		}
+		
+	}
+	
+	if (ECurrentFireState == EPlayerFireState::Normal)
+	{
+		
+		// handling sustained NormalFire:
+		if (bShooting && ShotTimer >= TimeBetweenShots) {
+			ProjectileSpeed = NormalShootProjectileSpeed;
+			Shoot();
+			ShotTimer = 0;
+			LastShotTimer = 0.f;
+			bReloadFirstFrame = false;
+		}
+		else if (ShotTimer < TimeBetweenShots)  {
+			ShotTimer += DeltaTime;
+		}
+	}
+	else
+	{
+		// handling sustained MultiFire:
+		if (bShooting && ShotTimer >= TimeBetweenShots) {
+			ProjectileSpeed = MultiShootProjectileSpeed;
+			Shoot();
+			Shoot(RightFireArrowComponent->GetComponentLocation(), MultiShotAngle);
+			Shoot(LeftFireArrowComponent->GetComponentLocation(), -MultiShotAngle);
+			ShotTimer = 0;
+			LastShotTimer = 0.f;
+			bReloadFirstFrame = false;
+		}
+		else if (ShotTimer < TimeBetweenShots)  {
+			ShotTimer += DeltaTime;
+		}
+	}
+}
+
+void AShipPawn::StartReload() {
+	//Ammo = MaxAmmo;
 	if (ReloadingSound) UGameplayStatics::PlaySound2D(GetWorld(), ReloadingSound);
 }
 

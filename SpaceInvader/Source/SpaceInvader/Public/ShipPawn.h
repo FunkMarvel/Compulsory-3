@@ -89,16 +89,27 @@ public:
 	// Firing
 	UPROPERTY(EditAnywhere, Category = "Combat")
 		float ProjectileForwardOffset{200.f};
-
 	UPROPERTY(EditAnywhere, Category = "Combat")
 		float ProjectileSpeed{3000.f};
 
+		// Reload relevant
+	UPROPERTY(EditDefaultsOnly ,Category = "Combat|Reload")
+	float StartReloadingTime = 1.f;
+	UPROPERTY(EditDefaultsOnly ,Category = "Combat|Reload")
+	float ReloadTimePeriod = 0.06f;
+	UPROPERTY(EditDefaultsOnly ,Category = "Combat|Reload")
+	float ReloadTime = 0.f;
+	bool bReloadFirstFrame = false;
+	
+
+	
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	const FHitResult& SweepResult);
-	
-	void Reload();
+
+	void HandleShooting();
+	void StartReload();
 	void Shoot();
 	void Shoot(FVector FireLocation, float Angle);
 	void StartShooting();
@@ -109,19 +120,19 @@ public:
 	UFUNCTION()
 	void SetCurrentFireState(EPlayerFireState NewFireState);
 	
-	UPROPERTY(EditAnywhere, Category = "Fire|Shotgun")
+	UPROPERTY(EditAnywhere, Category = "Combat|Fire")
 	class UArrowComponent* LeftFireArrowComponent{nullptr};
-	UPROPERTY(EditAnywhere, Category = "Fire|Shotgun")
+	UPROPERTY(EditAnywhere, Category = "Combat|Fire")
 	class UArrowComponent* RightFireArrowComponent{nullptr};
 
-	UPROPERTY(EditAnywhere, Category = "Fire|Shotgun")
+	UPROPERTY(EditAnywhere, Category = "Combat|Fire")
 	class USkeletalMeshComponent* LeftTurretSkeletalMeshComponent{nullptr};
-	UPROPERTY(EditAnywhere, Category = "Fire|Shotgun")
+	UPROPERTY(EditAnywhere, Category = "Combat|Fire")
 	class USkeletalMeshComponent* RightTurretSkeletalMeshComponent{nullptr};
 
-	UPROPERTY(EditAnywhere, Category = "Fire|Animations")
+	UPROPERTY(EditAnywhere, Category = "Animations")
 	class UAnimationAsset* DeployTurretAnimationAsset{nullptr};
-	UPROPERTY(EditAnywhere, Category = "Fire|Animations")
+	UPROPERTY(EditAnywhere, Category = "Animations")
 	class UAnimationAsset* RetractTurretAnimationAsset{nullptr};
 
 	
@@ -171,6 +182,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Combat")
 		float TimeBetweenShots{ 0.25f };
 	float ShotTimer{};
+	float LastShotTimer{};
 
 	bool bFocused{ false };
 	bool bDashing{ false };
