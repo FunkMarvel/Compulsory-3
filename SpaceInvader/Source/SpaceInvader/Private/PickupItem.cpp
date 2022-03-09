@@ -32,7 +32,7 @@ APickupItem::APickupItem()
 void APickupItem::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	CapsuleComponent->OnComponentBeginOverlap.AddDynamic(this, &APickupItem::ApplyEffect);
 }
 
 // Called every frame
@@ -42,7 +42,9 @@ void APickupItem::Tick(float DeltaTime)
 
 }
 
-void APickupItem::ApplyEffect()
+void APickupItem::ApplyEffect(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	const FHitResult& SweepResult)
 {
 }
 

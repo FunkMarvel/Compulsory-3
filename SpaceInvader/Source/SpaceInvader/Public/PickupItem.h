@@ -35,6 +35,8 @@ protected:
 		int32 ScoreValue{100};
 
 	UFUNCTION()
-		virtual void ApplyEffect();
+	virtual void ApplyEffect(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+		const FHitResult& SweepResult);
 
 };
