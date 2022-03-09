@@ -124,11 +124,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Fire|Animations")
 	class UAnimationAsset* RetractTurretAnimationAsset{nullptr};
 
-	//TEMP
-	UFUNCTION()
-	void SetFireMultiState() {SetCurrentFireState(EPlayerFireState::Multi); }
-	UFUNCTION()
-	void SetFireNormalState(){SetCurrentFireState(EPlayerFireState::Normal); }
+	
 private:
 	// shotgun firing
 	UPROPERTY(meta = (AllowPrivateAccess = "true") ,EditAnywhere, Category = "Fire|Shotgun")
@@ -136,6 +132,12 @@ private:
 	UPROPERTY(meta = (AllowPrivateAccess = "true") ,EditAnywhere, Category = "Fire|Shotgun")
 	float MultiShotAngle = 5.f;
 	
+	UPROPERTY(meta = (AllowPrivateAccess = "true") ,EditAnywhere, Category = "Fire|Shotgun")
+	float NormalShootProjectileSpeed{4500.f};
+	UPROPERTY(meta = (AllowPrivateAccess = "true") ,EditAnywhere, Category = "Fire|Shotgun")
+	float MultiShootProjectileSpeed{2000.f};
+	
+	// pointer mesh
 	void PointPointerMesh();
 	FVector CurrentPointerVec = FVector::ZeroVector;
 
@@ -151,6 +153,7 @@ private:
 
 	void Dash();
 	void Focus();
+	bool bFocus{true};
 
 	float XValue{};
 	float YValue{};

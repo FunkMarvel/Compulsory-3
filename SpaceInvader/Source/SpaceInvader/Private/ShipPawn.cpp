@@ -43,9 +43,7 @@ static void InitializeDefaultPawnInputBinding() {
 		UPlayerInput::AddEngineDefinedActionMapping(FInputActionKeyMapping("Shoot",EKeys::LeftMouseButton));
 		UPlayerInput::AddEngineDefinedActionMapping(FInputActionKeyMapping("Reload",EKeys::R));
 
-		//TODO Remove for debbuging
-		UPlayerInput::AddEngineDefinedActionMapping(FInputActionKeyMapping("Multi", EKeys::M));
-		UPlayerInput::AddEngineDefinedActionMapping(FInputActionKeyMapping("Single", EKeys::N));
+		
 		
 	}
 }
@@ -126,7 +124,7 @@ void AShipPawn::BeginPlay()
 	Super::BeginPlay();
 	InitLocation = PlayerMesh->GetComponentLocation();
 	CapsuleComp->OnComponentBeginOverlap.AddDynamic(this, &AShipPawn::OnHit);
-	SetCurrentFireState(EPlayerFireState::Multi);
+	Focus();
 }
 
 // Called every frame
@@ -164,6 +162,7 @@ void AShipPawn::Tick(float DeltaTime)
 	//handling fire states
 	if (ECurrentFireState == EPlayerFireState::Normal)
 	{
+		ProjectileSpeed = NormalShootProjectileSpeed;
 		// handling sustained NormalFire:
 		if (bShooting && ShotTimer >= TimeBetweenShots) {
 			Shoot();
@@ -175,6 +174,7 @@ void AShipPawn::Tick(float DeltaTime)
 	}
 	else
 	{
+		ProjectileSpeed = MultiShootProjectileSpeed;
 		// handling sustained MultiFire:
 		if (bShooting && ShotTimer >= TimeBetweenShots) {
 			Shoot();
@@ -222,11 +222,6 @@ void AShipPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Shoot",EInputEvent::IE_Released,this,&AShipPawn::EndShooting);
 
 	PlayerInputComponent->BindAction("Reload",EInputEvent::IE_Pressed,this,&AShipPawn::Reload);
-
-
-	//TODO TEMP for debugging purposes
-	PlayerInputComponent->BindAction("Multi", EInputEvent::IE_Pressed, this, &AShipPawn::SetFireMultiState);
-	PlayerInputComponent->BindAction("Single", EInputEvent::IE_Pressed, this, &AShipPawn::SetFireNormalState);
 }
 
 void AShipPawn::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -351,7 +346,7 @@ void AShipPawn::PointPointerMesh()
 			return;
 		}
 
-		UE_LOG(LogTemp, Warning, TEXT("Number of enemies - %d"), EnemyArray.Num())
+		//UE_LOG(LogTemp, Warning, TEXT("Number of enemies - %d"), EnemyArray.Num())
 
 		float MinDistance = 1000000000.f;
 		int MinIndex = 0;
@@ -420,6 +415,15 @@ void AShipPawn::Dash() {
 }
 
 void AShipPawn::Focus() {
-
 	UE_LOG(LogTemp, Warning, TEXT("FOCUS!"))
+	bFocus = !bFocus;
+	if (bFocus)
+	{
+		SetCurrentFireState(EPlayerFireState::Multi);
+	}
+	else
+	{
+		SetCurrentFireState(EPlayerFireState::Normal);
+	}
+	
 }
