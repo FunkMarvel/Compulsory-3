@@ -1,2 +1,2 @@
-# Compulsory-2-SpaceInvader
-Compulsory 2: Space Invader
+# Compulsory-3
+Compulsory 3: Sky Raider
