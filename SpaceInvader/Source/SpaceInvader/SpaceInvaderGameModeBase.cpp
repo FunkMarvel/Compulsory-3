@@ -38,6 +38,7 @@ void ASpaceInvaderGameModeBase::Tick(float DeltaTime) {
 }
 
 void ASpaceInvaderGameModeBase::SpawnEnemies(int32 EnemyType) {
+	AGameHUD* HUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 	UWorld* World = GetWorld();
 	float RandNum = FMath::FRandRange(0.f,UKismetMathLibrary::GetTAU());
 	if (World) {
@@ -56,6 +57,10 @@ void ASpaceInvaderGameModeBase::SpawnEnemies(int32 EnemyType) {
 			break;
 		case 0:
 			tempEnemy = World->SpawnActor<ABaseEnemy>(Boss, Location, FRotator::ZeroRotator);
+			//TODO set owner og Boss HealthBass
+			
+			HUD->GetBossHealthBar()->SetOwnerOfBar(tempEnemy);
+			
 			break;
 		default:
 			break;

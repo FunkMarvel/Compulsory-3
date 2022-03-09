@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "HealthBarWidget.h"
 #include "GameFramework/HUD.h"
 #include "Components/WidgetComponent.h"
 #include "GameHUD.generated.h"
@@ -30,8 +31,14 @@ public:
 	UFUNCTION()
 		void UpdateAmmoBars();
 
+
+	
 	UPROPERTY(EditDefaultsOnly, Category="Widgets|HUD")
 		TSubclassOf<UUserWidget> HealthBarClass;
+
+	UPROPERTY(EditDefaultsOnly, Category="Widgets|HUD")
+		TSubclassOf<UUserWidget> BossHealthBarClass;
+
 
 	UPROPERTY(EditDefaultsOnly, Category="Widgets|HUD")
 		TSubclassOf<UUserWidget> DashBarsClass;
@@ -48,10 +55,15 @@ public:
 	void ViewGameOver(bool ShowGameOver);
 	void ViewGameWin(bool ShowGameWin);
 
+	class UHealthBarWidget* GetBossHealthBar(); 
+	
 private:
 	UPROPERTY()
 		class UHealthBarWidget* HealthBar{nullptr};
 
+	UPROPERTY()
+		class UHealthBarWidget* BossHealthBar{nullptr};
+	
 	UPROPERTY()
 		class UDashBars* DashBars{nullptr};
 

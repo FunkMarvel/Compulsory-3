@@ -33,6 +33,17 @@ void AGameHUD::BeginPlay() {
 		}
 	}
 
+	if (BossHealthBarClass){
+		BossHealthBar = CreateWidget<UHealthBarWidget>(GetWorld(), BossHealthBarClass);
+
+		if (BossHealthBar)
+		{
+			//BossHealthBar->SetOwnerOfBar(GetWorld()->GetFirstPlayerController()->GetPawn());
+			BossHealthBar->AddToViewport();
+			BossHealthBar->SetPositionInViewport(FVector2D(ViewSize.X * 0.5f, ViewSize.Y * 0.1f));
+		}
+	}
+
 	if (DashBarsClass) {
 
 		DashBars = CreateWidget<UDashBars>(GetWorld(), DashBarsClass);
@@ -121,4 +132,9 @@ void AGameHUD::ViewGameOver(bool ShowGameOver) {
 void AGameHUD::ViewGameWin(bool ShowGameWin) {
 	if (GameWin && ShowGameWin) { GameWin->SetVisibility(ESlateVisibility::Visible); }
 	else if (GameWin) { GameWin->SetVisibility(ESlateVisibility::Hidden); }
+}
+
+UHealthBarWidget* AGameHUD::GetBossHealthBar()
+{
+	return BossHealthBar;
 }

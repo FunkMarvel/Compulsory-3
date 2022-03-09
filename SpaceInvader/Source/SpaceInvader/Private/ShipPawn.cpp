@@ -445,7 +445,7 @@ void AShipPawn::Dash() {
 }
 
 void AShipPawn::Focus() {
-	UE_LOG(LogTemp, Warning, TEXT("FOCUS!"))
+	//UE_LOG(LogTemp, Warning, TEXT("FOCUS!"))
 	bFocus = !bFocus;
 	if (bFocus)
 	{
