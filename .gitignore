@@ -733,3 +733,6 @@ FodyWeavers.xsd
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,c++,unrealengine,windows,jetbrains
 SpaceInvader/Config/DefaultEditorPerProjectUserSettings.ini
+SpaceInvader/.idea/.idea.SpaceInvader/.idea/vcs.xml
+SpaceInvader/.idea/.idea.SpaceInvader/.idea/indexLayout.xml
+*.xml
