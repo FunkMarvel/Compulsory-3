@@ -8,6 +8,7 @@
 #include "Projectile.h"
 #include "DrawDebugHelpers.h"
 #include "EnemyProjectile.h"
+#include "PickupItem.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "ShipPawn.h"
 
@@ -97,6 +98,14 @@ void ABaseEnemy::PlayFireSound()
 void ABaseEnemy::HandleDestruction()
 {
 	OnEnemyDiedDelegate.Broadcast(EnemyIndex);
+
+	const float RandNum{ FMath::FRandRange(0.f, 1.f) };
+	if (PickupClass && RandNum <= DropRate)
+	{
+		APickupItem* DroppedItem = GetWorld()->SpawnActor<APickupItem>(PickupClass, GetActorLocation(),
+			FRotator(0.f));
+	}
+	
 	PlayDeathFX();
 	Destroy();
 }
