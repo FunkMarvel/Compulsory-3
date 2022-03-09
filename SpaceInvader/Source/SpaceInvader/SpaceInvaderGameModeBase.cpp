@@ -20,7 +20,7 @@ void ASpaceInvaderGameModeBase::BeginPlay() {
 	AShipPawn* Player = Cast<AShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	
 	if (Player) Player->OnPlayerDeath.AddDynamic(this, &ASpaceInvaderGameModeBase::OnPlayerDeath);
-
+	Score = 0;
 	SpawnWave();
 }
 

@@ -98,6 +98,7 @@ private:
 	// Enemy Index
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy")
 		int32 EnemyIndex = 0.f;
+	
 protected:
 
 	float LastShotTime = 0.f;
@@ -109,6 +110,13 @@ protected:
 	//projectile
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 		TSubclassOf<class AProjectile> ProjectileClass;
+
+	//pickup
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|Dropped Item")
+		TSubclassOf<class APickupItem> PickupClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|Dropped Item")
+		float DropRate{0.25f};
 
 	//FX
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|FX")

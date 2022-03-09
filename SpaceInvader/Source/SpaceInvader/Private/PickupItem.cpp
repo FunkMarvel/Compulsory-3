@@ -4,6 +4,7 @@
 #include "PickupItem.h"
 
 #include "Components/CapsuleComponent.h"
+#include "SpaceInvader/SpaceInvaderGameModeBase.h"
 
 // Sets default values
 APickupItem::APickupItem()
@@ -46,5 +47,10 @@ void APickupItem::ApplyEffect(UPrimitiveComponent* OverlappedComponent, AActor* 
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	const FHitResult& SweepResult)
 {
+	ASpaceInvaderGameModeBase* GameMode{ Cast<ASpaceInvaderGameModeBase>(GetWorld()->GetAuthGameMode()) };
+	if (GameMode)
+	{
+		GameMode->AddScore(ScoreValue);
+	}
 }
 

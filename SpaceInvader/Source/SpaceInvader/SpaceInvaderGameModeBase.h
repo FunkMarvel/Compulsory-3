@@ -54,6 +54,9 @@ private:
 		int32 NumEnemiesWaveThree{20};
 	int32 CurrentEnemyCount{};
 
+	UPROPERTY(EditAnywhere, Category="HUD|Score")
+		int32 Score{};
+
 	UFUNCTION()
 		void OnEnemyDeath(int32 Index);
 
@@ -67,4 +70,8 @@ public:
 
 	UFUNCTION()
 		void OnResetGamePress();
+	
+	int32 GetScore() const { return Score; }
+
+	void AddScore(int32 DeltaScore) { Score += DeltaScore; }
 };
