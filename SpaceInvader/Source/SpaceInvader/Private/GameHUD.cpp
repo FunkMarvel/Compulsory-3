@@ -29,7 +29,7 @@ void AGameHUD::BeginPlay() {
 		if (HealthBar) {
 			HealthBar->SetOwnerOfBar(GetWorld()->GetFirstPlayerController()->GetPawn());
 			HealthBar->AddToViewport();
-			HealthBar->SetPositionInViewport(FVector2D(ViewSize.X*0.45f,ViewSize.Y*0.90f));
+			//HealthBar->SetPositionInViewport(FVector2D(ViewSize.X*0.45f,ViewSize.Y*0.90f));
 		}
 	}
 
@@ -41,7 +41,8 @@ void AGameHUD::BeginPlay() {
 			//BossHealthBar->SetOwnerOfBar(GetWorld()->GetFirstPlayerController()->GetPawn());
 			BossHealthBar->AddToViewport();
 			//BossHealthBar->SetPositionInViewport(FVector2D(ViewSize.X * 0.1f, ViewSize.Y * 0.1f));
-			BossHealthBar->SetVisibility(ESlateVisibility::Hidden);
+			//BossHealthBar->SetVisibility(ESlateVisibility::Hidden);
+			BossHealthBar->HideHealthBarBPEvent();
 			
 		}
 	}
@@ -52,7 +53,7 @@ void AGameHUD::BeginPlay() {
 
 		if (DashBars) {
 			DashBars->AddToViewport();
-			DashBars->SetPositionInViewport(FVector2D(ViewSize.X*0.05f,ViewSize.Y*0.8f));
+			//DashBars->SetPositionInViewport(FVector2D(ViewSize.X*0.05f,ViewSize.Y*0.8f));
 			for (int32 i = 0; i < 3; i++) {
 				DashBars->UpdateStaminaBars(i, 1.f, 1.f);
 			}
@@ -65,7 +66,7 @@ void AGameHUD::BeginPlay() {
 
 		if (AmmoBars) {
 			AmmoBars->AddToViewport();
-			AmmoBars->SetPositionInViewport(FVector2D(ViewSize.X*0.825f,ViewSize.Y*0.8f));
+			//AmmoBars->SetPositionInViewport(FVector2D(ViewSize.X*0.825f,ViewSize.Y*0.8f));
 			for (int32 i = 1; i <= 3; i++) {
 				AmmoBars->UpdateAmmoBars(i, i);
 			}
@@ -80,7 +81,7 @@ void AGameHUD::BeginPlay() {
 			GameOver->SetVisibility(ESlateVisibility::Hidden);
 			GameOver->AddToViewport();
 			GameOver->AddOnPress();
-			GameOver->SetPositionInViewport(FVector2D(ViewSize.X*0.25f,ViewSize.Y*0.45f));
+			//GameOver->SetPositionInViewport(FVector2D(ViewSize.X*0.25f,ViewSize.Y*0.45f));
 		}
 	}
 
@@ -92,7 +93,7 @@ void AGameHUD::BeginPlay() {
 			GameWin->SetVisibility(ESlateVisibility::Hidden);
 			GameWin->AddToViewport();
 			GameWin->AddOnPress();
-			GameWin->SetPositionInViewport(FVector2D(ViewSize.X*0.25f,ViewSize.Y*0.45f));
+			//GameWin->SetPositionInViewport(FVector2D(ViewSize.X*0.25f,ViewSize.Y*0.45f));
 		}
 	}
 }

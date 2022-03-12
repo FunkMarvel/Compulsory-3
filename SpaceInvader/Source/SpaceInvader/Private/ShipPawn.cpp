@@ -441,6 +441,7 @@ void AShipPawn::Dash() {
 		MouseDirection.Z = 0.f;
 
 		CapsuleComp->AddImpulse(MouseDirection * 2.5 *Acceleration);
+		
 	}
 }
 
