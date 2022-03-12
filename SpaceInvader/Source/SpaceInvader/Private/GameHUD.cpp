@@ -40,7 +40,9 @@ void AGameHUD::BeginPlay() {
 		{
 			//BossHealthBar->SetOwnerOfBar(GetWorld()->GetFirstPlayerController()->GetPawn());
 			BossHealthBar->AddToViewport();
-			BossHealthBar->SetPositionInViewport(FVector2D(ViewSize.X * 0.5f, ViewSize.Y * 0.1f));
+			//BossHealthBar->SetPositionInViewport(FVector2D(ViewSize.X * 0.1f, ViewSize.Y * 0.1f));
+			BossHealthBar->SetVisibility(ESlateVisibility::Hidden);
+			
 		}
 	}
 
