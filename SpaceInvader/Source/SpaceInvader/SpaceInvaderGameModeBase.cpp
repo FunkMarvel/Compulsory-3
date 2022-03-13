@@ -58,9 +58,9 @@ void ASpaceInvaderGameModeBase::SpawnEnemies(int32 EnemyType) {
 		case 0:
 			tempEnemy = World->SpawnActor<ABaseEnemy>(Boss, Location, FRotator::ZeroRotator);
 			//TODO set owner og Boss HealthBass
-			
 			HUD->GetBossHealthBar()->SetOwnerOfBar(tempEnemy);
-			
+			//HUD->GetBossHealthBar()->SetVisibility(ESlateVisibility::Visible);
+			HUD->GetBossHealthBar()->ShowHealthBarBPEvent();
 			break;
 		default:
 			break;

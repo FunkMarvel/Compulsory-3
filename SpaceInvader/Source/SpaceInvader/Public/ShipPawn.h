@@ -101,7 +101,7 @@ public:
 	float ReloadTime = 0.f;
 	bool bReloadFirstFrame = false;
 	
-
+	
 	
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

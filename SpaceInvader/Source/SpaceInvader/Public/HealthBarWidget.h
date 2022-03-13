@@ -27,4 +27,9 @@ protected:
 
 public:
 	void SetOwnerOfBar(AActor* SomeActor) {OwnerActor = SomeActor; }
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ShowHealthBarBPEvent();
+	UFUNCTION(BlueprintImplementableEvent)
+	void HideHealthBarBPEvent();
 };
