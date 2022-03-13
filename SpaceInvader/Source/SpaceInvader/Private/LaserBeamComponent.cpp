@@ -23,6 +23,17 @@ void ULaserBeamComponent::BeginPlay()
 
 	// ...
 	
+	//ParticleSystemComponent->SetVectorParameter(FName("TargetL"), NewTarget);
+
+	UActorComponent* RefrenceComponent = ComponentRefrence.GetComponent(GetOwner());
+	
+	if (RefrenceComponent != nullptr)
+	{
+		if (RefrenceComponent->IsA(UParticleSystemComponent::StaticClass()))
+		{
+			ParticleSystemComponent = Cast<UParticleSystemComponent>(RefrenceComponent);
+		}
+	}
 }
 
 
@@ -31,6 +42,35 @@ void ULaserBeamComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	//TODO TEMP REmove
+
+	Target = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+
+	time += DeltaTime;
+	if (time > 4.f)
+	{
+		SetBeamVisibility(false);
+	}
+	if (time > 5.f)
+	{
+		SetBeamVisibility(true);
+	}
+	
+	//TODO TEmp EndRemove
+	
+
+	if (ParticleSystemComponent != nullptr)
+	{
+		ParticleSystemComponent->SetBeamEndPoint(0,Target);
+	}
 	// ...
+}
+
+void ULaserBeamComponent::SetBeamVisibility(bool bVisible)
+{
+	if (ParticleSystemComponent != nullptr)
+	{
+		ParticleSystemComponent->SetVisibility(bVisible, false);
+	}
 }
 
