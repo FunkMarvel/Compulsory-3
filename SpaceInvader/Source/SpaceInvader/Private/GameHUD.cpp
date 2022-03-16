@@ -96,6 +96,22 @@ void AGameHUD::BeginPlay() {
 			//GameWin->SetPositionInViewport(FVector2D(ViewSize.X*0.25f,ViewSize.Y*0.45f));
 		}
 	}
+
+	if (ScoreClass)
+	{
+		ScoreWidget = CreateWidget<UScoreWidget>(GetWorld(), ScoreClass);
+		
+		if (ScoreWidget)
+		{
+			ScoreWidget->SetVisibility(ESlateVisibility::Visible);
+			ScoreWidget->AddToViewport();
+			if (GetGameInstance()->IsA(UMainGameInstance::StaticClass()))
+			{
+				UMainGameInstance* NewGameInstance = Cast<UMainGameInstance>(GetGameInstance());
+				ScoreWidget->SetLocalMainGameInstance(NewGameInstance);
+			}
+		}
+	}
 }
 
 void AGameHUD::Tick(float DeltaTime) {
