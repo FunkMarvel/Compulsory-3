@@ -30,8 +30,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|SpinnerSpeed")
 	float SpinnerAttackModifier = 500.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning|Level Gate")
+		TSubclassOf<class ALevelGate> GateClass;
+
 	UFUNCTION()
 	void SpinBlades(float Speed);
+
+	//handle destruction
+	virtual void HandleDestruction() override;
 
 	// scaling meshes
 	UFUNCTION()

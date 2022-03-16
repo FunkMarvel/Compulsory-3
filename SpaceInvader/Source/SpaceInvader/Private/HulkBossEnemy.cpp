@@ -1,6 +1,8 @@
 
 
 #include "HulkBossEnemy.h"
+
+#include "LevelGate.h"
 #include "Components/StaticMeshComponent.h"
 #include "Curves/CurveFloat.h"
 #include "Kismet/GameplayStatics.h"
@@ -45,6 +47,20 @@ void AHulkBossEnemy::SpinBlades(float Speed)
 	SpinnerThree->AddLocalRotation(FRotator(0.f, DeltaSpeed * 1.2f, 0.f));
 	
 
+}
+
+void AHulkBossEnemy::HandleDestruction()
+{
+	OnEnemyDiedDelegate.Broadcast(EnemyIndex);
+	
+	if (GateClass)
+	{
+		ALevelGate* LevelGate = GetWorld()->SpawnActor<ALevelGate>(GateClass, GetActorLocation(),
+			FRotator(0.f));
+	}
+	
+	PlayDeathFX();
+	Destroy();
 }
 
 void AHulkBossEnemy::ScaleSpinner(UStaticMeshComponent* MeshComp, const float Scale, const float Alpha)
