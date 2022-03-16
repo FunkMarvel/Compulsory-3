@@ -28,7 +28,7 @@ ALevelGate::ALevelGate() : AActor()
 	PortalMesh->SetSimulatePhysics(false);
 	
 	Levels.Add(TEXT("MainLevel"));
-	Levels.Add(TEXT("NewLevel"));
+	Levels.Add(TEXT("FinalBossLevel"));
 
 }
 
