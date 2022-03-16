@@ -23,6 +23,9 @@ protected:
 
 	void SpawnEnemies(int32 EnemyType);
 
+	UPROPERTY(EditAnywhere, Category="Levels")
+		TArray<FString> Levels;
+
 private:
 	UPROPERTY(EditAnywhere, Category = "Spawning|Enemies")
 		TSubclassOf<class ABaseEnemy> Basic;

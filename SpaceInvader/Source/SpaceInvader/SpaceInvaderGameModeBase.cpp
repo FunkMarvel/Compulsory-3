@@ -11,17 +11,31 @@
 
 ASpaceInvaderGameModeBase::ASpaceInvaderGameModeBase() {
 	PrimaryActorTick.bCanEverTick = true;
+
+	Levels.Add(TEXT("MainLevel"));
+	Levels.Add(TEXT("FinalBossLevel"));
 }
 
 void ASpaceInvaderGameModeBase::BeginPlay() {
 	Super::BeginPlay();
 
+	FString CurrentMapName = GetWorld()->GetMapName();
+	CurrentMapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
+	
 	GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
 	AShipPawn* Player = Cast<AShipPawn>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	
 	if (Player) Player->OnPlayerDeath.AddDynamic(this, &ASpaceInvaderGameModeBase::OnPlayerDeath);
-	Score = 0;
-	SpawnWave();
+	
+	if (CurrentMapName == Levels[0])
+	{
+		Score = 0;
+		SpawnWave();
+	}
+	else
+	{
+		CurrentWave = 4;
+	}
 }
 
 void ASpaceInvaderGameModeBase::Tick(float DeltaTime) {
