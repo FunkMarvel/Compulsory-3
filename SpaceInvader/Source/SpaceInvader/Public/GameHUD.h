@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "HealthBarWidget.h"
+#include "ScoreWidget.h"
 #include "GameFramework/HUD.h"
 #include "Components/WidgetComponent.h"
 #include "GameHUD.generated.h"
@@ -52,6 +53,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Widgets|Game state")
 		TSubclassOf<UUserWidget> GameWinClass;
 
+	UPROPERTY(EditDefaultsOnly, Category="Widgets|Score")
+	TSubclassOf<UScoreWidget> ScoreClass;
+
 	void ViewGameOver(bool ShowGameOver);
 	void ViewGameWin(bool ShowGameWin);
 
@@ -75,6 +79,9 @@ private:
 
 	UPROPERTY()
 		class UGameOverWidget* GameWin{nullptr};
+
+	UPROPERTY()
+	class UScoreWidget* ScoreWidget{nullptr};
 
 	UPROPERTY()
 		FIntPoint ViewSize{};
