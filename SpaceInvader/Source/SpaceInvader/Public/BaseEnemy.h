@@ -78,7 +78,7 @@ public:
 	FEnemyDiedDelegate OnEnemyDiedDelegate;
 
 	//handle destruction
-	void HandleDestruction();
+	virtual void HandleDestruction();
 
 	//Change material on hit relevant
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|Material")
@@ -87,7 +87,7 @@ public:
 		float ChangeColorDuration;
 
 	void SetEnemyIndex(int32 Index) { EnemyIndex = Index; }
-private:
+protected:
 	UMaterial* StartMaterial;
 	FTimerHandle OnHitChangeColorTimerHandle;
 	UFUNCTION()
@@ -108,7 +108,7 @@ protected:
 	
 	
 	//projectile
-	UPROPERTY(EditDefaultsOnly, Category = "Combat")
+	UPROPERTY(EditDefaultsOnly, Category = "Spawning|Combat")
 		TSubclassOf<class AProjectile> ProjectileClass;
 
 	//pickup
