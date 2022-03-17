@@ -118,8 +118,8 @@ void AGameHUD::BeginPlay() {
 void AGameHUD::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
-	// UpdateDashBars();
-	// UpdateAmmoBars();
+	UpdateDashBars();
+	UpdateAmmoBars();
 }
 
 void AGameHUD::UpdateDashBars() {
