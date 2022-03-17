@@ -143,7 +143,7 @@ void ABaseEnemy::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherAc
 			
 			Health -= Cast<AProjectile>(OtherActor)->Damage;
 
-			if (Health <= 0.f)
+			if (Health <= 0)
 			{
 				HandleDestruction();
 				UE_LOG(LogTemp, Warning, TEXT("ON DEATH"));
