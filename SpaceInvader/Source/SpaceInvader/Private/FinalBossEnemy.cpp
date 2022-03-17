@@ -9,14 +9,14 @@ AFinalBossEnemy::AFinalBossEnemy()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
-	Health = StartHealth;
-	CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>("CapsuleComponent");
-	CapsuleComp->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
-	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	SetRootComponent(CapsuleComp);
-
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	Mesh->SetupAttachment(GetRootComponent());
+	// Health = StartHealth;
+	// CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>("CapsuleComponent");
+	// CapsuleComp->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	// CapsuleComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	// SetRootComponent(CapsuleComp);
+	//
+	// Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	// Mesh->SetupAttachment(GetRootComponent());
 
 	// setting up side comps:
 	LeftSideCapsuleComp = CreateDefaultSubobject<UCapsuleComponent>("LeftSideCapsuleComponent");
@@ -30,6 +30,19 @@ AFinalBossEnemy::AFinalBossEnemy()
 	RightSideCapsuleComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	RightSideCapsuleComp->SetupAttachment(GetRootComponent());
 	RightSideCapsuleComp->SetRelativeLocation(GetActorRightVector()*WingOffset);
+
+	// setting up side mesh:
+	LeftSideMesh = CreateDefaultSubobject<UStaticMeshComponent>("LeftSideMesh");
+	LeftSideMesh->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	LeftSideMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	LeftSideMesh->SetupAttachment(LeftSideCapsuleComp);
+	LeftSideMesh->SetRelativeLocation(-GetActorRightVector()*WingOffset);
+
+	RightSideMesh = CreateDefaultSubobject<UStaticMeshComponent>("RightSideMesh");
+	RightSideMesh->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	RightSideMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	RightSideMesh->SetupAttachment(RightSideCapsuleComp);
+	RightSideMesh->SetRelativeLocation(GetActorRightVector()*WingOffset);
 
 
 	// audio
