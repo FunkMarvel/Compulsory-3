@@ -110,6 +110,8 @@ void AGameHUD::BeginPlay() {
 				UMainGameInstance* NewGameInstance = Cast<UMainGameInstance>(GetGameInstance());
 				ScoreWidget->SetLocalMainGameInstance(NewGameInstance);
 				NewGameInstance->EventOnScoreChanged.AddDynamic(ScoreWidget, &UScoreWidget::UpdateScoreWidget);
+				//updates UI
+				NewGameInstance->EventOnScoreChanged.Broadcast(NewGameInstance->GetScore()); 
 			}
 		}
 	}

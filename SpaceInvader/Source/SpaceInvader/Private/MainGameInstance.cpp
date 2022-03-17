@@ -15,9 +15,10 @@ void UMainGameInstance::SetScore(int newScore)
 	EventOnScoreChanged.Broadcast(Score);
 }
 
-void UMainGameInstance::SetPlayerStats(int32 Health, int32 Ammo, int32 Dash)
+void UMainGameInstance::SetPlayerStats(float Health, int32 Ammo, int32 Dash, float StaminaTimer)
 {
 	PlayerHealth = Health;
 	PlayerAmmo = Ammo;
 	PlayerDash = Dash;
+	PlayerStaminaTimer = StaminaTimer;
 }

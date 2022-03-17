@@ -20,7 +20,12 @@ void UHealthBarWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime
 
 	Super::NativeTick(MyGeometry, InDeltaTime);
 	
-	if (!OwnerActor.IsValid()) return;
+	if (!OwnerActor.IsValid())
+	{
+		HealthBar->SetPercent(0.f);
+		return;
+	}
+	
 
 	AActor* Owner = Cast<AActor>(OwnerActor);
 
@@ -32,6 +37,7 @@ void UHealthBarWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime
 		AHulkBossEnemy* HulkBossEnemy = Cast<AHulkBossEnemy>(OwnerActor);
 		HealthBar->SetPercent(HulkBossEnemy->GetHealthPercent());
 	}
+	
 	
 }
 

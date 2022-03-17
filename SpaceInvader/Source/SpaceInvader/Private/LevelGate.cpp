@@ -3,6 +3,7 @@
 
 #include "LevelGate.h"
 
+#include "MainGameInstance.h"
 #include "ShipPawn.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -60,6 +61,17 @@ void ALevelGate::ChangeLevel(UPrimitiveComponent* OverlappedComponent, AActor* O
 
 		if (NextLevel >= Levels.Num()) NextLevel = 0;
 
+		//saves the players stats
+		UGameInstance* GameInstance = GetGameInstance();
+		if (GameInstance->IsA(UMainGameInstance::StaticClass()))
+		{
+			UMainGameInstance* MainGameInstance = Cast<UMainGameInstance>(GameInstance);
+			AShipPawn* ShipPawn = Cast<AShipPawn>(OtherActor);
+			
+			MainGameInstance->SetPlayerStats(ShipPawn->Health, ShipPawn->Ammo, ShipPawn->Stamina,
+				ShipPawn->StaminaTimer);
+		}
+
 		UGameplayStatics::OpenLevel(GetWorld(), FName(*Levels[NextLevel]), false);
 	}
 }
@@ -69,4 +81,6 @@ void ALevelGate::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
+
+
 
