@@ -3,8 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MainGameInstance.h"
 #include "GameFramework/GameModeBase.h"
 #include "SpaceInvaderGameModeBase.generated.h"
+
+
 
 /**
  * 
@@ -75,6 +78,6 @@ public:
 		void OnResetGamePress();
 	
 	int32 GetScore() const { return Score; }
-
-	void AddScore(int32 DeltaScore) { Score += DeltaScore; }
+	
+	void AddScore(int32 DeltaScore);
 };

@@ -108,6 +108,16 @@ void ASpaceInvaderGameModeBase::OnResetGamePress() {
 	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 }
 
+void ASpaceInvaderGameModeBase::AddScore(int32 DeltaScore)
+{
+	Score += DeltaScore;
+	UGameInstance* GameInstance = GetGameInstance();
+	if (GameInstance->IsA(UMainGameInstance::StaticClass()))
+	{
+		Cast<UMainGameInstance>(GameInstance)->AddToScore(DeltaScore);
+	}
+}
+
 void ASpaceInvaderGameModeBase::SpawnWave() {
 	int32 EnemyType{2};
 
