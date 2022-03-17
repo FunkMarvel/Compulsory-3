@@ -39,6 +39,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Spawning|Enemies")
 		TSubclassOf<class ABaseEnemy> Boss;
 
+	UPROPERTY(EditAnywhere, Category = "Spawning|Enemies")
+		TSubclassOf<class ABaseEnemy> FinalBoss;
+
 	TArray<class ABaseEnemy*> EnemyArray;
 
 	bool bAllDead;

@@ -18,7 +18,7 @@ ASpaceInvaderGameModeBase::ASpaceInvaderGameModeBase() {
 
 void ASpaceInvaderGameModeBase::BeginPlay() {
 	Super::BeginPlay();
-
+	
 	FString CurrentMapName = GetWorld()->GetMapName();
 	CurrentMapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
 	
@@ -35,6 +35,16 @@ void ASpaceInvaderGameModeBase::BeginPlay() {
 	else
 	{
 		CurrentWave = 4;
+		if (FinalBoss)
+		{
+			ABaseEnemy* TempEnemy = GetWorld()->SpawnActor<ABaseEnemy>(FinalBoss,
+				FVector(20000.f,0.f,0.f), FRotator::ZeroRotator);
+
+			TempEnemy->OnEnemyDiedDelegate.AddDynamic(this, &ASpaceInvaderGameModeBase::OnEnemyDeath);
+			TempEnemy->SetEnemyIndex(0);
+			EnemyArray.Add(TempEnemy);
+			CurrentEnemyCount++;
+		}
 	}
 }
 
@@ -45,9 +55,9 @@ void ASpaceInvaderGameModeBase::Tick(float DeltaTime) {
 		CurrentWave++;
 		SpawnWave();
 	}
-	else if (CurrentEnemyCount <= 0 && CurrentWave >= NumberOfWaves) {
+	else if (CurrentEnemyCount <= 0 && CurrentWave > NumberOfWaves) {
 		AGameHUD* HUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-		// HUD->ViewGameWin(true);
+		HUD->ViewGameWin(true);
 	}
 }
 
@@ -105,7 +115,7 @@ void ASpaceInvaderGameModeBase::OnPlayerDeath() {
 }
 
 void ASpaceInvaderGameModeBase::OnResetGamePress() {
-	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+	UGameplayStatics::OpenLevel(this, FName(*Levels[0]), false);
 }
 
 void ASpaceInvaderGameModeBase::SpawnWave() {
