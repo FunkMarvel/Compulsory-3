@@ -35,3 +35,5 @@ void UHealthBarWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime
 	
 }
 
+
+

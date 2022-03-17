@@ -52,12 +52,14 @@ void AHulkBossEnemy::SpinBlades(float Speed)
 void AHulkBossEnemy::HandleDestruction()
 {
 	OnEnemyDiedDelegate.Broadcast(EnemyIndex);
-	
+	// UE_LOG(LogTemp, Warning, TEXT("Hulk Died!"))
 	if (GateClass)
 	{
 		ALevelGate* LevelGate = GetWorld()->SpawnActor<ALevelGate>(GateClass, GetActorLocation(),
 			FRotator(0.f));
 	}
+	
+	//gets the game mode instance
 	
 	PlayDeathFX();
 	Destroy();
@@ -183,8 +185,8 @@ void AHulkBossEnemy::RotateBeamState()
 
 		LastShotTime = 0.f;
 		FVector OffSetVecR = ClosingBeamDirection.RotateAngleAxis(RotatingBeamCurve->GetFloatValue(StartOfStateTime * (1 / RotatingBeamDuration)) * 90.f, GetActorUpVector());
-		UE_LOG(LogTemp, Warning, TEXT("CURRENT: %f"), RotatingBeamCurve->GetFloatValue(StartOfStateTime * (1 / RotatingBeamDuration)) * 90.f)
-			UE_LOG(LogTemp, Warning, TEXT("CURRENT: %s"), *OffSetVecR.ToString())
+		/*UE_LOG(LogTemp, Warning, TEXT("CURRENT: %f"), RotatingBeamCurve->GetFloatValue(StartOfStateTime * (1 / RotatingBeamDuration)) * 90.f)
+		UE_LOG(LogTemp, Warning, TEXT("CURRENT: %s"), *OffSetVecR.ToString())*/
 		FireInDirection(OffSetVecR);
 		FireInDirection(-OffSetVecR);
 

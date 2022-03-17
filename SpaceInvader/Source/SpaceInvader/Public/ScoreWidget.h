@@ -17,7 +17,10 @@ class SPACEINVADER_API UScoreWidget : public UUserWidget
 
 public:
 	void SetLocalMainGameInstance(UMainGameInstance* NewMainGameInstance){MainGameInstance = NewMainGameInstance; }
-	
+
+	// is subscribed to a Multicast event from main game instance.
+	UFUNCTION()
+	void UpdateScoreWidget(int32 Score);
 private:
 
 	UPROPERTY(meta = (BindWidget))

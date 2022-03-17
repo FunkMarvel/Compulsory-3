@@ -103,12 +103,13 @@ void AGameHUD::BeginPlay() {
 		
 		if (ScoreWidget)
 		{
-			ScoreWidget->SetVisibility(ESlateVisibility::Visible);
+			// ScoreWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
 			ScoreWidget->AddToViewport();
 			if (GetGameInstance()->IsA(UMainGameInstance::StaticClass()))
 			{
 				UMainGameInstance* NewGameInstance = Cast<UMainGameInstance>(GetGameInstance());
 				ScoreWidget->SetLocalMainGameInstance(NewGameInstance);
+				NewGameInstance->EventOnScoreChanged.AddDynamic(ScoreWidget, &UScoreWidget::UpdateScoreWidget);
 			}
 		}
 	}

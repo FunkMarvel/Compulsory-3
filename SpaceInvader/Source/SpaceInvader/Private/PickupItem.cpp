@@ -3,6 +3,7 @@
 
 #include "PickupItem.h"
 
+#include "ShipPawn.h"
 #include "Components/CapsuleComponent.h"
 #include "SpaceInvader/SpaceInvaderGameModeBase.h"
 
@@ -47,10 +48,14 @@ void APickupItem::ApplyEffect(UPrimitiveComponent* OverlappedComponent, AActor* 
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	ASpaceInvaderGameModeBase* GameMode{ Cast<ASpaceInvaderGameModeBase>(GetWorld()->GetAuthGameMode()) };
-	if (GameMode)
+	if (OtherActor->IsA(AShipPawn::StaticClass()))
 	{
-		GameMode->AddScore(ScoreValue);
+		ASpaceInvaderGameModeBase* GameMode{ Cast<ASpaceInvaderGameModeBase>(GetWorld()->GetAuthGameMode()) };
+		if (GameMode)
+		{
+			GameMode->AddScore(ScoreValue);
+		}
+		
 	}
 }
 

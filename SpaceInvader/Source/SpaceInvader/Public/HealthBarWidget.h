@@ -32,4 +32,6 @@ public:
 	void ShowHealthBarBPEvent();
 	UFUNCTION(BlueprintImplementableEvent)
 	void HideHealthBarBPEvent();
+
+	
 };
