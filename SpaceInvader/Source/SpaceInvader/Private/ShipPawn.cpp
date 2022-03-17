@@ -163,10 +163,10 @@ void AShipPawn::Tick(float DeltaTime)
 	HandleShooting();
 
 	// handling stamina:
-	if (Stamina < 3 && StaminaTimer < StaminaRechargeTime) {
+	if (Stamina < MaxStamina && StaminaTimer < StaminaRechargeTime) {
 		StaminaTimer += DeltaTime;
 	}
-	else if (Stamina < 3) {
+	else if (Stamina < MaxStamina) {
 		Stamina++;
 		StaminaTimer = 0;
 		if (DashRechargeSound) UGameplayStatics::PlaySound2D(GetWorld(), DashRechargeSound);

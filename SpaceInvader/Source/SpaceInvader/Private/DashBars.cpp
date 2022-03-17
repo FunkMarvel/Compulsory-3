@@ -30,6 +30,11 @@ void UDashBars::UpdateStaminaBars(int32 Stamina, float RechargeTime, float Curre
 		StaminaBar2->SetPercent(1.f);
 		StaminaBar1->SetPercent(1.f);
 		break;
+	case 3:
+		StaminaBar3->SetPercent(1.f);
+		StaminaBar2->SetPercent(1.f);
+		StaminaBar1->SetPercent(1.f);
+		break;
 	default:
 		break;
 	}

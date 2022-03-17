@@ -26,12 +26,13 @@ void AStaminaPickup::ApplyEffect(UPrimitiveComponent* OverlappedComponent, AActo
 		if ((OtherShip->MaxStamina - OtherShip->Stamina) > StaminaRecharge)
 		{
 			OtherShip->Stamina += StaminaRecharge;
+			OtherShip->StaminaTimer = 0;
 		}
 		else
 		{
-			OtherShip->Stamina = OtherShip->MaxStamina;
+			OtherShip->Stamina = OtherShip->MaxStamina - 1;
+			OtherShip->StaminaTimer = OtherShip->StaminaRechargeTime;
 		}
-		OtherShip->StaminaTimer = 0;
 		
 		Destroy();
 	}

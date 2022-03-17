@@ -31,7 +31,19 @@ AFinalBossEnemy::AFinalBossEnemy()
 	RightSideCapsuleComp->SetupAttachment(GetRootComponent());
 	RightSideCapsuleComp->SetRelativeLocation(GetActorRightVector()*WingOffset);
 
+	// setting up side mesh:
+	LeftSideMesh = CreateDefaultSubobject<UStaticMeshComponent>("LeftSideMesh");
+	LeftSideMesh->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	LeftSideMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	LeftSideMesh->SetupAttachment(LeftSideCapsuleComp);
+	LeftSideMesh->SetRelativeLocation(-GetActorRightVector()*WingOffset);
 
+	RightSideMesh = CreateDefaultSubobject<UStaticMeshComponent>("RightSideMesh");
+	RightSideMesh->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	RightSideMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	RightSideMesh->SetupAttachment(RightSideCapsuleComp);
+	RightSideMesh->SetRelativeLocation(GetActorRightVector()*WingOffset);
+	
 	// audio
 	FiringSound = CreateDefaultSubobject<USoundBase>(TEXT("Fire Sound"));
 
