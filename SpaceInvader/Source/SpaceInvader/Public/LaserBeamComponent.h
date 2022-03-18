@@ -24,20 +24,28 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
-	//this needs to be the exact name of the ParticleSystemComponent you are going to refrence
-	//see LaserBeamDemo for example
-	UPROPERTY(EditAnywhere, Category = "Beam")
-	FComponentReference ComponentRefrence;
-
-	void SetTarget(FVector NewTarget){Target = NewTarget; }
-	void SetBeamVisibility(bool bVisible);
-
-	float time = 0.f;
+	
+	UPROPERTY()
+	bool bBeamActive = false;
+	UPROPERTY(EditAnywhere, Category = "LaserBeam")
+	FVector EmitterDirection = FVector::XAxisVector;
+	
+	FTimerHandle CoolDownTimerHandle;
+	UPROPERTY()
+	bool bDamage = true;
+	void SetDamageActive(){bDamage =true; }
+	void SetDamageInactive(){ bDamage = false; }
+	
+	void SetBeamActive(bool bActive);
+	// void SetRelativeEmitterLocation(FVector StartPos);
+	
+	void SetEmitterDirection(FVector NewDirection);
+	
+	UPROPERTY()
+	class UParticleSystemComponent* ParticleSystemComponent = nullptr;
 	
 private:
 	UPROPERTY()
 	FVector Target;
 	
-	UPROPERTY()
-	class UParticleSystemComponent* ParticleSystemComponent = nullptr;
 };
