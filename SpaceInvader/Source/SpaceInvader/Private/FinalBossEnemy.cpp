@@ -2,22 +2,16 @@
 
 
 #include "FinalBossEnemy.h"
+
+#include "LaserBeamComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 
 AFinalBossEnemy::AFinalBossEnemy()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
-	//Health = StartHealth;
-	//CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>("CapsuleComponent");
-	//CapsuleComp->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
-	//CapsuleComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	//SetRootComponent(CapsuleComp);
-
-	// Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	// Mesh->SetupAttachment(GetRootComponent());
-
 	// setting up side comps:
 	LeftSideCapsuleComp = CreateDefaultSubobject<UCapsuleComponent>("LeftSideCapsuleComponent");
 	LeftSideCapsuleComp->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
@@ -35,21 +29,29 @@ AFinalBossEnemy::AFinalBossEnemy()
 	LeftSideMesh = CreateDefaultSubobject<UStaticMeshComponent>("LeftSideMesh");
 	LeftSideMesh->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	LeftSideMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	LeftSideMesh->SetupAttachment(LeftSideCapsuleComp);
+	LeftSideMesh->SetupAttachment(Mesh);
 	LeftSideMesh->SetRelativeLocation(-GetActorRightVector()*WingOffset);
 
 	RightSideMesh = CreateDefaultSubobject<UStaticMeshComponent>("RightSideMesh");
 	RightSideMesh->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	RightSideMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	RightSideMesh->SetupAttachment(RightSideCapsuleComp);
+	RightSideMesh->SetupAttachment(Mesh);
 	RightSideMesh->SetRelativeLocation(GetActorRightVector()*WingOffset);
+
+	// combat components
+	// LaserBeamParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("LaserParticles"));
+	// LaserBeamParticle->SetupAttachment(GetRootComponent());
+	//
+	// LaserBeamComp = CreateDefaultSubobject<ULaserBeamComponent>(TEXT("LaserBeam"));
+	// LaserBeamComp->ComponentRefrence.ComponentProperty = FName(TEXT("LaserBeamParticle"));
+	
 	
 	// audio
 	FiringSound = CreateDefaultSubobject<USoundBase>(TEXT("Fire Sound"));
 
 	// Setting basic variables
 	StartHealth = 7;
-	MovmentSpeed = 200.f;
+	MovmentSpeed = 10000.f;
 	FireRange = 4000.f;
 	InnerRange = 1000.f;
 
@@ -62,9 +64,56 @@ AFinalBossEnemy::AFinalBossEnemy()
 void AFinalBossEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 }
 
 void AFinalBossEnemy::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	switch (CurrentState)
+	{
+	case BossState::Normal:
+		NormalState();
+		break;
+	case BossState::DirectFire:
+		DirectFireState();
+		break;
+	case BossState::ClosingBeam:
+		ClosingBeamState();
+		break;
+	case BossState::RotatingBeam:
+		RotateBeamState();
+		break;
+	}
+}
+
+void AFinalBossEnemy::NormalState()
+{
+
+	if (IsInInnerRange())
+	{
+		ChangeCurrentState(BossState::DirectFire);
+	}
+	else
+	{
+		FVector Direction{GetToPlayerDirection()};
+		// LookAtPlayer();
+		Move(Direction);
+		RotateMeshAfterMovment(Mesh, Direction);
+	}
+}
+
+void AFinalBossEnemy::DirectFireState()
+{
+	
+}
+
+void AFinalBossEnemy::ClosingBeamState()
+{
+}
+
+void AFinalBossEnemy::RotateBeamState()
+{
 }
