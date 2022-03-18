@@ -35,6 +35,24 @@ void ASpaceInvaderGameModeBase::BeginPlay() {
 	else
 	{
 		CurrentWave = 4;
+
+
+		//gets the game instance
+		UGameInstance* GameInstance = GetGameInstance();
+		if (GameInstance->IsA(UMainGameInstance::StaticClass())){
+			UMainGameInstance* MainGameInstance = Cast<UMainGameInstance>(GameInstance);
+
+			Player->Health = MainGameInstance->GetPlayerHealth();
+			Player->Ammo = MainGameInstance->GetPlayerAmmo();
+			Player->Stamina = MainGameInstance->GetStamina();
+			Player->StaminaTimer = MainGameInstance->GetPlayerStaminaTimer();
+			//stamia 3 max
+			//stamia timer = current stamia on exit
+			
+		}
+		
+
+
 		if (FinalBoss)
 		{
 			ABaseEnemy* TempEnemy = GetWorld()->SpawnActor<ABaseEnemy>(FinalBoss,
