@@ -1,5 +1,5 @@
 #include "FinalBossEnemy.h"
-
+#include "Components/ActorComponent.h"
 #include "LaserBeamComponent.h"
 #include "Projectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -29,30 +29,38 @@ AFinalBossEnemy::AFinalBossEnemy()
 	LeftSideMesh->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	LeftSideMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	LeftSideMesh->SetupAttachment(LeftSideCapsuleComp);
-	LeftSideMesh->SetRelativeLocation(GetActorRightVector() * EBossPart::Left * WingOffset);
+	// LeftSideMesh->SetRelativeLocation(GetActorRightVector() * EBossPart::Left * WingOffset);
 
 	RightSideMesh = CreateDefaultSubobject<UStaticMeshComponent>("RightSideMesh");
 	RightSideMesh->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 	RightSideMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	RightSideMesh->SetupAttachment(RightSideCapsuleComp);
-	RightSideMesh->SetRelativeLocation(GetActorRightVector() * EBossPart::Right * WingOffset);
+	// RightSideMesh->SetRelativeLocation(GetActorRightVector() * EBossPart::Right * WingOffset);
 
 	// combat components
-	// LaserBeamParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("LaserParticles"));
-	// LaserBeamParticle->SetupAttachment(GetRootComponent());
-	//
-	// LaserBeamComp = CreateDefaultSubobject<ULaserBeamComponent>(TEXT("LaserBeam"));
-	// LaserBeamComp->ComponentRefrence.ComponentProperty = FName(TEXT("LaserBeamParticle"));
+	LeftLaserBeamParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("LeftLaserParticles"));
+	// LeftLaserBeamParticle->SetupAttachment(GetRootComponent());
+
+	// RightLaserBeamParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("RightLaserParticles"));
+	// RightLaserBeamParticle->SetupAttachment(GetRootComponent());
+	
+	LeftLaserBeamComp = CreateDefaultSubobject<ULaserBeamComponent>(TEXT("LeftLaserBeam"));
+	LeftLaserBeamComp->ParticleSystemComponent = LeftLaserBeamParticle;
+	// LeftLaserBeamComp->ApplyWorldOffset(GetActorLocation() + GetActorRightVector() * EBossPart::Left * WingOffset, false);
+
+	// RightLaserBeamComp = CreateDefaultSubobject<ULaserBeamComponent>(TEXT("RightLaserBeam"));
+	// RightLaserBeamComp->ParticleSystemComponent = RightLaserBeamParticle;
+	// // RightLaserBeamComp->ApplyWorldOffset(GetActorLocation() + GetActorRightVector() * EBossPart::Right * WingOffset, false);
 
 
 	// audio
 	FiringSound = CreateDefaultSubobject<USoundBase>(TEXT("Fire Sound"));
 
 	// Setting basic variables
-	StartHealth = 7;
-	MovmentSpeed = 500.f;
+	StartHealth = 60;
+	MovmentSpeed = 2500.f;
 	FireRange = 200.f;
-	InnerRange = 2000.f;
+	InnerRange = 3500.f;
 	ShotInterval = 0.25f;
 	ProjectileForwardOffset = 500.f;
 	ProjectileSpeed = 3500.f;
@@ -68,6 +76,12 @@ AFinalBossEnemy::AFinalBossEnemy()
 void AFinalBossEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	FVector LeftStartDirection{GetActorRightVector()*EBossPart::Left};
+	FVector RightStartDirection{GetActorRightVector()*EBossPart::Right};
+	LeftLaserBeamComp->SetEmitterDirection(LeftStartDirection);
+	// RightLaserBeamComp->SetEmitterDirection(RightStartDirection);
+	SetBeamsOn(false);
 
 	PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 	SetActorRotation(GetToPlayerDirection().Rotation());
@@ -104,6 +118,7 @@ void AFinalBossEnemy::NormalState()
 	{
 		FVector Direction{GetToPlayerDirection()};
 		// LookAtPlayer();
+		RotateBossPart(EBossPart::Middle, GetToPlayerDirection().Rotation());
 		Move(Direction);
 		RotateMeshAfterMovment(Mesh, Direction);
 	}
@@ -136,10 +151,52 @@ void AFinalBossEnemy::DirectFireState()
 		LastShotTime += GetWorld()->GetDeltaSeconds();
 	}
 	if (!IsInInnerRange()) ChangeCurrentState(EBossState::Normal);
+	if (AttackTimer >= TimeToChangeAttack)
+	{
+		AttackTimer = 0;
+		ChangeCurrentState(EBossState::ClosingBeam);
+		return;
+	}
+	AttackTimer += GetWorld()->GetDeltaSeconds();
 }
 
 void AFinalBossEnemy::ClosingBeamState()
 {
+	FVector LeftStartDirection{GetActorRightVector()*EBossPart::Left};
+	FVector RightStartDirection{GetActorRightVector()*EBossPart::Right};
+
+	if (AttackTimer <= 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Set Directions."));
+		FinalBeamDirection = GetToPlayerDirection();
+		LeftLaserBeamComp->SetEmitterDirection(LeftStartDirection);
+		// RightLaserBeamComp->SetEmitterDirection(RightStartDirection);
+		SetBeamsOn(true);
+	}
+
+	if (AttackTimer > 0 && CloseBeamTimer <= TimeToCloseBeams)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Beam timer %f"), CloseBeamTimer);
+		CloseBeamTimer += GetWorld()->GetDeltaSeconds();
+		float Alpha = CloseBeamTimer/TimeToCloseBeams;
+		Alpha = FMath::Clamp<float>(Alpha, 0, 1);
+		FVector LeftCurrentDirection{FMath::Lerp(LeftStartDirection, FinalBeamDirection, Alpha)};
+		FVector RightCurrentDirection{FMath::Lerp(RightStartDirection, FinalBeamDirection, Alpha)};
+
+		LeftLaserBeamComp->SetEmitterDirection(LeftCurrentDirection);
+		// RightLaserBeamComp->SetEmitterDirection(RightCurrentDirection);
+		
+	} else if (AttackTimer >= TimeToChangeAttack)
+	{
+		SetBeamsOn(false);
+		AttackTimer = 0;
+		ChangeCurrentState(EBossState::DirectFire);
+	}
+	else
+	{
+		CloseBeamTimer = 0;
+	}
+	AttackTimer += GetWorld()->GetDeltaSeconds();
 }
 
 void AFinalBossEnemy::RotateBeamState()
@@ -231,5 +288,24 @@ void AFinalBossEnemy::FireFromPart(EBossPart PartToFireFrom)
 		/*GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Sharpshooter!");*/
 		if (NewProjectile)
 			NewProjectile->SetOwner(this);
+	}
+}
+
+void AFinalBossEnemy::SetBeamsOn(bool bBeamsOn)
+{
+	switch (bBeamsOn)
+	{
+	case true:
+		LeftLaserBeamComp->SetDamageActive();
+		// RightLaserBeamComp->SetDamageActive();
+		LeftLaserBeamComp->SetBeamActive(true);
+		// RightLaserBeamComp->SetBeamActive(true);
+		break;
+	case false:
+		LeftLaserBeamComp->SetDamageInactive();
+		// RightLaserBeamComp->SetDamageInactive();
+		LeftLaserBeamComp->SetBeamActive(false);
+		// RightLaserBeamComp->SetBeamActive(false);
+		break;
 	}
 }

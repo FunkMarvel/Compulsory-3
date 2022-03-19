@@ -33,15 +33,25 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|Wings")
 	class UStaticMeshComponent* RightSideMesh;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Beams")
+	class ULaserBeamComponent* LeftLaserBeamComp{nullptr};
+
 	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Beams")
-	// class ULaserBeamComponent* LaserBeamComp{nullptr};
+	// class ULaserBeamComponent* RightLaserBeamComp{nullptr};
 	//
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Beams")
+	class UParticleSystemComponent* LeftLaserBeamParticle{nullptr};
+
 	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Beams")
-	// class UParticleSystemComponent* LaserBeamParticle{nullptr};
+	// class UParticleSystemComponent* RightLaserBeamParticle{nullptr};
 	
 protected:
 	UPROPERTY(EditAnywhere, Category="Enemy|Wings")
 	float WingOffset{300.f};
+
+	UPROPERTY(EditAnywhere, Category="Enemy|Wings")
+	float TimeToChangeAttack{12};
+	float AttackTimer{0};
 
 	enum EBossState
 	{
@@ -84,4 +94,9 @@ protected:
 	
 	void FireFromPart(EBossPart PartToFireFrom);
 	bool bFireFromLeft{true};
+
+	void SetBeamsOn(bool bBeamsOn);
+	float TimeToCloseBeams{10};
+	float CloseBeamTimer{0};
+	FVector FinalBeamDirection{};
 };

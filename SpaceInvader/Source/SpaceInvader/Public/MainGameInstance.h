@@ -41,7 +41,7 @@ private:
 	int32 Score = 0;
 
 	//player stats
-	float PlayerHealth = 5;
+	float PlayerHealth = 50;
 	int32 PlayerAmmo = 0;
 	int32 PlayerDash = 0;
 	float PlayerStaminaTimer = 0.f;

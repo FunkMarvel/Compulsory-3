@@ -84,7 +84,7 @@ void ULaserBeamComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 void ULaserBeamComponent::SetBeamActive(bool bActive)
 {
-	if (ParticleSystemComponent != nullptr)
+	if (ParticleSystemComponent)
 	{
 		ParticleSystemComponent->SetVisibility(bActive, false);
 	}
