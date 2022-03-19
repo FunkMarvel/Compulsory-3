@@ -43,7 +43,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Enemy|Wings")
 	float WingOffset{300.f};
 
-	enum BossState
+	enum EBossState
 	{
 		Normal,
 		DirectFire,
@@ -51,7 +51,14 @@ protected:
 		RotatingBeam
 	};
 
-	BossState CurrentState{BossState::Normal};
+	enum EBossPart
+	{
+		Left = -1,
+		Middle = 0,
+		Right = 1
+	};
+
+	EBossState CurrentState{EBossState::Normal};
 
 	UFUNCTION()
 	void NormalState();
@@ -65,5 +72,17 @@ protected:
 	UFUNCTION()
 	void RotateBeamState();
 
-	void ChangeCurrentState(BossState NewState) {CurrentState = NewState;}
+	UFUNCTION()
+	virtual void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+
+	void ChangeCurrentState(EBossState NewState) {CurrentState = NewState;}
+
+	// using wings:
+	void RotateBossPart(EBossPart PartToRotate, FRotator NewRotation);
+	FVector GetLeftDirToPlayer();
+	FVector GetRightDirToPlayer();
+	
+	void FireFromPart(EBossPart PartToFireFrom);
+	bool bFireFromLeft{true};
 };
