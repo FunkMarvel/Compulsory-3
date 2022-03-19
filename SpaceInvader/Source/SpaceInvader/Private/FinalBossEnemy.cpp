@@ -52,7 +52,7 @@ AFinalBossEnemy::AFinalBossEnemy()
 	StartHealth = 7;
 	MovmentSpeed = 500.f;
 	FireRange = 200.f;
-	InnerRange = 1000.f;
+	InnerRange = 2000.f;
 	ShotInterval = 0.25f;
 	ProjectileForwardOffset = 500.f;
 	ProjectileSpeed = 3500.f;
@@ -229,7 +229,7 @@ void AFinalBossEnemy::FireFromPart(EBossPart PartToFireFrom)
 			Origin + Direction * ProjectileForwardOffset,
 			Rotation);
 		/*GEngine->AddOnScreenDebugMessage(-10, 1, FColor::Green, "Sharpshooter!");*/
-		if (NewProjectile != nullptr)
+		if (NewProjectile)
 			NewProjectile->SetOwner(this);
 	}
 }
