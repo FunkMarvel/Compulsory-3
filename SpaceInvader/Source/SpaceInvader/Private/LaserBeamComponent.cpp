@@ -28,7 +28,7 @@ void ULaserBeamComponent::BeginPlay()
 	// ...
 	
 	//ParticleSystemComponent->SetVectorParameter(FName("TargetL"), NewTarget);
-	SetBeamActive(true);
+	SetBeamActive(false);
 	
 }
 
@@ -41,6 +41,7 @@ void ULaserBeamComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	
 	if (!bBeamActive || ParticleSystemComponent == nullptr)
 	{
+		// UE_LOG(LogTemp, Warning, TEXT("Set Directions."));
 		return;
 	}
 	
@@ -50,7 +51,7 @@ void ULaserBeamComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	FVector RayStartLocation = ParticleSystemComponent->GetComponentLocation();
 	FVector RayEndLocation = EmitterDirection.GetSafeNormal() * 100000.f; // temp distance
 	GetWorld()->LineTraceSingleByChannel(HitResult, RayStartLocation, RayEndLocation, ECollisionChannel::ECC_WorldDynamic);
-	//DrawDebugLine(GetWorld(), RayStartLocation, RayEndLocation, FColor::Blue, true);
+	// DrawDebugLine(GetWorld(), RayStartLocation, RayEndLocation, FColor::Blue, true);
 	if (HitResult.IsValidBlockingHit())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Hit"))
@@ -84,7 +85,7 @@ void ULaserBeamComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 void ULaserBeamComponent::SetBeamActive(bool bActive)
 {
-	if (ParticleSystemComponent)
+	if (IsValid(ParticleSystemComponent))
 	{
 		ParticleSystemComponent->SetVisibility(bActive, false);
 	}

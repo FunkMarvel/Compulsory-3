@@ -36,21 +36,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Beams")
 	class ULaserBeamComponent* LeftLaserBeamComp{nullptr};
 
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Beams")
-	// class ULaserBeamComponent* RightLaserBeamComp{nullptr};
-	//
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Beams")
+	class ULaserBeamComponent* RightLaserBeamComp{nullptr};
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Beams")
 	class UParticleSystemComponent* LeftLaserBeamParticle{nullptr};
 
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Beams")
-	// class UParticleSystemComponent* RightLaserBeamParticle{nullptr};
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Beams")
+	class UParticleSystemComponent* RightLaserBeamParticle{nullptr};
 	
 protected:
 	UPROPERTY(EditAnywhere, Category="Enemy|Wings")
 	float WingOffset{300.f};
 
-	UPROPERTY(EditAnywhere, Category="Enemy|Wings")
-	float TimeToChangeAttack{12};
+	UPROPERTY(EditAnywhere, Category="Combat")
+	float TimeToChangeAttack{10};
 	float AttackTimer{0};
 
 	enum EBossState
@@ -96,7 +96,7 @@ protected:
 	bool bFireFromLeft{true};
 
 	void SetBeamsOn(bool bBeamsOn);
-	float TimeToCloseBeams{10};
+	float TimeToCloseBeams{2};
 	float CloseBeamTimer{0};
 	FVector FinalBeamDirection{};
 };
