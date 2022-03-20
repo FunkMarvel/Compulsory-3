@@ -259,6 +259,7 @@ void AFinalBossEnemy::SecondPhaseState()
 {
 	bRotateBeams = true;
 	bCanRotateBeams = true;
+	TimeToChangeAttack = 6;
 	AttackTimer = 0;
 	ChangeCurrentState(EBossState::DirectFire);
 }
