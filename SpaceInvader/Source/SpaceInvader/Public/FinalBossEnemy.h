@@ -58,7 +58,8 @@ protected:
 		Normal,
 		DirectFire,
 		ClosingBeam,
-		RotatingBeam
+		RotatingBeam,
+		SecondPhase
 	};
 
 	enum EBossPart
@@ -81,6 +82,12 @@ protected:
 
 	UFUNCTION()
 	void RotateBeamState();
+	bool bRotateBeams{false};
+	bool bCanRotateBeams{false};
+
+	UFUNCTION()
+	void SecondPhaseState();
+	bool bSeconPhase{false};
 	
 	virtual void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
@@ -98,5 +105,11 @@ protected:
 	void SetBeamsOn(bool bBeamsOn);
 	float TimeToCloseBeams{2};
 	float CloseBeamTimer{0};
+
+	float TimeToSpinBeams{3};
+	float SpinBeamTimer{3};
 	FVector FinalBeamDirection{};
+
+	FVector LeftStartDirection{};
+	FVector RightStartDirection{};
 };

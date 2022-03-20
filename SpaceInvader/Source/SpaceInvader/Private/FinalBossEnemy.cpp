@@ -5,6 +5,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Math/UnrealMathUtility.h"
 
 AFinalBossEnemy::AFinalBossEnemy()
 {
@@ -58,7 +59,7 @@ AFinalBossEnemy::AFinalBossEnemy()
 
 	// Setting basic variables
 	StartHealth = 60;
-	MovmentSpeed = 2500.f;
+	MovmentSpeed = 2000.f;
 	FireRange = 200.f;
 	InnerRange = 3500.f;
 	ShotInterval = 0.25f;
@@ -81,6 +82,9 @@ void AFinalBossEnemy::BeginPlay()
 	// FVector RightStartDirection{GetActorRightVector() * EBossPart::Right};
 	// // LeftLaserBeamComp->SetEmitterDirection(LeftStartDirection);
 	// // RightLaserBeamComp->SetEmitterDirection(RightStartDirection);
+
+	// LeftSideCapsuleComp->OnComponentBeginOverlap.AddDynamic(this, &ABaseEnemy::OnHit);
+	// RightSideCapsuleComp->OnComponentBeginOverlap.AddDynamic(this, &ABaseEnemy::OnHit);
 
 	PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 	SetActorRotation(GetToPlayerDirection().Rotation());
@@ -108,6 +112,14 @@ void AFinalBossEnemy::Tick(float DeltaSeconds)
 	case EBossState::RotatingBeam:
 		RotateBeamState();
 		break;
+	case EBossState::SecondPhase:
+		SecondPhaseState();
+		break;
+	}
+
+	if (bSeconPhase && AttackTimer >= TimeToChangeAttack)
+	{
+		FireAtPlayer();
 	}
 }
 
@@ -120,10 +132,8 @@ void AFinalBossEnemy::NormalState()
 	else
 	{
 		FVector Direction{GetToPlayerDirection()};
-		// LookAtPlayer();
 		RotateBossPart(EBossPart::Middle, GetToPlayerDirection().Rotation());
 		Move(Direction);
-		// RotateMeshAfterMovment(Mesh, Direction);
 	}
 }
 
@@ -154,10 +164,16 @@ void AFinalBossEnemy::DirectFireState()
 		LastShotTime += GetWorld()->GetDeltaSeconds();
 	}
 	if (!IsInInnerRange()) ChangeCurrentState(EBossState::Normal);
-	if (AttackTimer >= TimeToChangeAttack)
+	if (AttackTimer >= TimeToChangeAttack && !bRotateBeams)
 	{
 		AttackTimer = -0.1;
 		ChangeCurrentState(EBossState::ClosingBeam);
+		return;
+	}
+	else if (AttackTimer >= TimeToChangeAttack)
+	{
+		AttackTimer = -0.1;
+		ChangeCurrentState(EBossState::RotatingBeam);
 		return;
 	}
 	AttackTimer += GetWorld()->GetDeltaSeconds();
@@ -165,8 +181,8 @@ void AFinalBossEnemy::DirectFireState()
 
 void AFinalBossEnemy::ClosingBeamState()
 {
-	FVector LeftStartDirection{GetActorRightVector()*EBossPart::Left};
-	FVector RightStartDirection{GetActorRightVector()*EBossPart::Right};
+	LeftStartDirection = GetActorRightVector()*EBossPart::Left;
+	RightStartDirection = GetActorRightVector()*EBossPart::Right;
 
 	if (AttackTimer <= 0)
 	{
@@ -192,6 +208,8 @@ void AFinalBossEnemy::ClosingBeamState()
 		
 	} else if (AttackTimer >= TimeToChangeAttack || CloseBeamTimer >= TimeToCloseBeams)
 	{
+		if (bCanRotateBeams) bRotateBeams = true;
+		
 		SetBeamsOn(false);
 		AttackTimer = 0;
 		ChangeCurrentState(EBossState::DirectFire);
@@ -205,13 +223,55 @@ void AFinalBossEnemy::ClosingBeamState()
 
 void AFinalBossEnemy::RotateBeamState()
 {
+	if (AttackTimer <= 0)
+	{
+		SpinBeamTimer = 0;
+		RightStartDirection = GetActorRightVector()*EBossPart::Right;
+		SetBeamsOn(true);
+		AttackTimer += GetWorld()->GetDeltaSeconds();
+	}
+	else if (AttackTimer <= TimeToChangeAttack && SpinBeamTimer <= TimeToSpinBeams)
+	{
+		float Theta{SpinBeamTimer*2*PI/TimeToSpinBeams};
+		FVector NewDirection{FVector(RightStartDirection.X*cos(Theta) - RightStartDirection.Y*sin(Theta),
+			RightStartDirection.X*sin(Theta) - RightStartDirection.Y*cos(Theta), 0.f)};
+
+		LeftLaserBeamComp->SetEmitterDirection(NewDirection*EBossPart::Left);
+		RightLaserBeamComp->SetEmitterDirection(NewDirection*EBossPart::Right);
+		SpinBeamTimer += GetWorld()->GetDeltaSeconds();
+	}
+	else if (AttackTimer >= TimeToChangeAttack || SpinBeamTimer >= TimeToSpinBeams)
+	{
+		SetBeamsOn(false);
+		AttackTimer = 0;
+		bRotateBeams = false;
+		ChangeCurrentState(EBossState::DirectFire);
+	}
+	AttackTimer += GetWorld()->GetDeltaSeconds();
+}
+
+void AFinalBossEnemy::SecondPhaseState()
+{
+	TimeToChangeAttack = 5;
+	bSeconPhase = true;
+	AttackTimer = 0;
+	ChangeCurrentState(EBossState::DirectFire);
 }
 
 void AFinalBossEnemy::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	Super::OnHit(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
-	
+
+	if (Health <= 0.5*StartHealth && !bSeconPhase)
+	{
+		ChangeCurrentState(EBossState::SecondPhase);
+	}
+	else if (Health <= 0.75*StartHealth && !bCanRotateBeams)
+	{
+		bRotateBeams = true;
+		bCanRotateBeams = true;
+	}
 }
 
 void AFinalBossEnemy::RotateBossPart(EBossPart PartToRotate, FRotator NewRotation)
