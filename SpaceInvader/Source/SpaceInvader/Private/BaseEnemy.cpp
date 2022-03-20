@@ -26,6 +26,7 @@ ABaseEnemy::ABaseEnemy()
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(GetRootComponent());
+	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	// audio
 	FiringSound = CreateDefaultSubobject<USoundBase>(TEXT("Fire Sound"));

@@ -65,7 +65,7 @@ AFinalBossEnemy::AFinalBossEnemy()
 	StartHealth = 60;
 	MovmentSpeed = 2000.f;
 	FireRange = 200.f;
-	InnerRange = 3500.f;
+	InnerRange = 5000.f;
 	ShotInterval = 0.25f;
 	ProjectileForwardOffset = 500.f;
 	ProjectileSpeed = 3500.f;
