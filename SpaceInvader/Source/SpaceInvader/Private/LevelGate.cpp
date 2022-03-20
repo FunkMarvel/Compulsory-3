@@ -20,13 +20,20 @@ ALevelGate::ALevelGate() : AActor()
 	Collider->SetSimulatePhysics(false);
 	Collider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	Collider->SetCollisionResponseToAllChannels(ECR_Overlap);
-
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> GateMesh(TEXT("StaticMesh'/Game/Models/MaterialSphere.MaterialSphere'"));
+	
 	PortalMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PortalMesh"));
-	PortalMesh->SetStaticMesh(GateMesh.Object);
 	PortalMesh->SetupAttachment(Collider);
 	PortalMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	PortalMesh->SetSimulatePhysics(false);
+
+	PortalSpinnerOne = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PortalSpinnerOne"));
+	PortalSpinnerOne->SetupAttachment(Collider);
+	PortalSpinnerOne->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	PortalSpillerTwo = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PortalSpinnerTwo"));
+	PortalSpillerTwo->SetupAttachment(Collider);
+	PortalSpillerTwo->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
 	
 	Levels.Add(TEXT("MainLevel"));
 	Levels.Add(TEXT("FinalBossLevel"));
@@ -40,9 +47,18 @@ void ALevelGate::BeginPlay()
 	Collider->OnComponentBeginOverlap.AddUniqueDynamic(this, &ALevelGate::ChangeLevel);
 }
 
+void ALevelGate::SpinSpinners()
+{
+	float DeltaTime = UGameplayStatics::GetWorldDeltaSeconds(this);
+
+	PortalMesh->AddRelativeRotation(FRotator(0.f, DeltaTime * PortalMeshSpinnerSpeed , 0.f));
+	PortalSpinnerOne->AddRelativeRotation(FRotator(0.f, DeltaTime * PortalSpinnerOneSpeed , 0.f));
+	PortalSpillerTwo->AddRelativeRotation(FRotator(0.f, DeltaTime * PortalSpinnerTwoSpeed , 0.f));
+}
+
 void ALevelGate::ChangeLevel(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-	const FHitResult& SweepResult)
+                             UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                             const FHitResult& SweepResult)
 {
 	if (OtherActor->IsA<AShipPawn>())
 	{
@@ -80,6 +96,7 @@ void ALevelGate::ChangeLevel(UPrimitiveComponent* OverlappedComponent, AActor* O
 void ALevelGate::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	SpinSpinners();
 }
 
 
