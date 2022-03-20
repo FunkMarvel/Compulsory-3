@@ -1,11 +1,15 @@
 #include "FinalBossEnemy.h"
+
+#include "GameHUD.h"
 #include "Components/ActorComponent.h"
 #include "LaserBeamComponent.h"
 #include "Projectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Math/UnrealMathUtility.h"
+#include "SpaceInvader/SpaceInvaderGameModeBase.h"
 
 AFinalBossEnemy::AFinalBossEnemy()
 {
@@ -92,6 +96,8 @@ void AFinalBossEnemy::BeginPlay()
 	LeftLaserBeamComp->ParticleSystemComponent = LeftLaserBeamParticle;
 	RightLaserBeamComp->ParticleSystemComponent = RightLaserBeamParticle;
 	SetBeamsOn(false);
+
+	
 }
 
 void AFinalBossEnemy::Tick(float DeltaSeconds)
@@ -120,6 +126,19 @@ void AFinalBossEnemy::Tick(float DeltaSeconds)
 	if (bSeconPhase && AttackTimer >= TimeToChangeAttack)
 	{
 		FireAtPlayer();
+	}
+
+
+	if (bLateUpdate == true)
+	{
+		// handle UI
+		AGameHUD* HUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+		if (HUD != nullptr)
+		{
+			HUD->GetBossHealthBar()->ShowHealthBarBPEvent();
+			HUD->GetBossHealthBar()->SetOwnerOfBar(this);
+		}
+		bLateUpdate = false;
 	}
 }
 

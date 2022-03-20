@@ -112,4 +112,7 @@ protected:
 
 	FVector LeftStartDirection{};
 	FVector RightStartDirection{};
+
+	UPROPERTY()
+	bool bLateUpdate = true;
 };

@@ -17,6 +17,9 @@ class SPACEINVADER_API UMainGameInstance : public UGameInstance
 public:
 	UPROPERTY()
 	FBroadCastScore EventOnScoreChanged;
+
+	UPROPERTY()
+	int32 CurrentLevel = 0;
 	
 	UFUNCTION()
 	void AddToScore(int Addition);

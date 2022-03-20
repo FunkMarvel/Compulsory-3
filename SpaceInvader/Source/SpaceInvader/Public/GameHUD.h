@@ -39,7 +39,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Widgets|HUD")
 		TSubclassOf<UUserWidget> BossHealthBarClass;
-
+	
+	UPROPERTY(EditDefaultsOnly, Category="Widgets|HUD")
+	TSubclassOf<UUserWidget> FinalBossHealthBarClass;
 
 	UPROPERTY(EditDefaultsOnly, Category="Widgets|HUD")
 		TSubclassOf<UUserWidget> DashBarsClass;

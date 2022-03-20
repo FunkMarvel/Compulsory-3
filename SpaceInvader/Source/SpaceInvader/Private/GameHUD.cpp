@@ -34,8 +34,17 @@ void AGameHUD::BeginPlay() {
 	}
 
 	if (BossHealthBarClass){
+		UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
+		if (GameInstance != nullptr)
+		{
+			if (GameInstance->CurrentLevel == 1)
+			{
+				BossHealthBarClass = FinalBossHealthBarClass;
+			}
+		}
 		BossHealthBar = CreateWidget<UHealthBarWidget>(GetWorld(), BossHealthBarClass);
 
+		
 		if (BossHealthBar)
 		{
 			//BossHealthBar->SetOwnerOfBar(GetWorld()->GetFirstPlayerController()->GetPawn());
