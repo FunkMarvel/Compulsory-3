@@ -78,7 +78,7 @@ void ASpaceInvaderGameModeBase::Tick(float DeltaTime) {
 	}
 }
 
-void ASpaceInvaderGameModeBase::SpawnEnemies(int32 EnemyType) {
+void ASpaceInvaderGameModeBase::SpawnEnemies(EEnemyType EnemyType) {
 	AGameHUD* HUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 	UWorld* World = GetWorld();
 	float RandNum = FMath::FRandRange(0.f,UKismetMathLibrary::GetTAU());
@@ -87,16 +87,16 @@ void ASpaceInvaderGameModeBase::SpawnEnemies(int32 EnemyType) {
 
 		FVector Location = (EnemyType) * 2000 * FVector(FMath::Cos(RandNum), FMath::Sin(RandNum), 0.f);
 		switch (EnemyType) {
-		case 2:
+		case EEnemyType::BasicType:
 			tempEnemy = World->SpawnActor<ABaseEnemy>(Basic, Location, FRotator::ZeroRotator);
 			break;
-		case 1:
+		case EEnemyType::ChargerType:
 			tempEnemy = World->SpawnActor<ABaseEnemy>(Charger, Location, FRotator::ZeroRotator);
 			break;
-		case 3:
+		case EEnemyType::SharpShooterType:
 			tempEnemy = World->SpawnActor<ABaseEnemy>(SharpShooter, Location, FRotator::ZeroRotator);
 			break;
-		case 0:
+		case EEnemyType::BossType:
 			tempEnemy = World->SpawnActor<ABaseEnemy>(Boss, Location, FRotator::ZeroRotator);
 			//TODO set owner og Boss HealthBass
 			HUD->GetBossHealthBar()->SetOwnerOfBar(tempEnemy);
@@ -146,7 +146,7 @@ void ASpaceInvaderGameModeBase::AddScore(int32 DeltaScore)
 }
 
 void ASpaceInvaderGameModeBase::SpawnWave() {
-	int32 EnemyType{2};
+	EEnemyType EnemyType{EEnemyType::BasicType};
 
 	switch (CurrentWave) {
 	case 0:
@@ -159,7 +159,7 @@ void ASpaceInvaderGameModeBase::SpawnWave() {
 		break;
 	case 1:
 		for (int i = 0; i < NumEnemiesWaveTwo; i++) {
-			if (i >= NumEnemiesWaveTwo/2) EnemyType = 3;
+			if (i >= NumEnemiesWaveTwo/2) EnemyType = EEnemyType::SharpShooterType;
 			SpawnEnemies(EnemyType);
 			CurrentEnemyCount++;
 			EnemyArray[i]->OnEnemyDiedDelegate.AddDynamic(this, &ASpaceInvaderGameModeBase::OnEnemyDeath);
@@ -168,8 +168,8 @@ void ASpaceInvaderGameModeBase::SpawnWave() {
 		break;
 	case 2:
 		for (int i = 0; i < NumEnemiesWaveThree; i++) {
-			if (i >= 3*NumEnemiesWaveTwo/4) EnemyType = 3;
-			else if (i >= NumEnemiesWaveTwo/2) EnemyType = 1;
+			if (i >= 3*NumEnemiesWaveTwo/4) EnemyType = EEnemyType::SharpShooterType;
+			else if (i >= NumEnemiesWaveTwo/2) EnemyType = EEnemyType::ChargerType;
 			SpawnEnemies(EnemyType);
 			CurrentEnemyCount++;
 			EnemyArray[i]->OnEnemyDiedDelegate.AddDynamic(this, &ASpaceInvaderGameModeBase::OnEnemyDeath);
@@ -177,7 +177,7 @@ void ASpaceInvaderGameModeBase::SpawnWave() {
 		}
 		break;
 	case 3:
-		SpawnEnemies(0);
+		SpawnEnemies(EEnemyType::BossType);
 		CurrentEnemyCount++;
 		EnemyArray[0]->OnEnemyDiedDelegate.AddDynamic(this, &ASpaceInvaderGameModeBase::OnEnemyDeath);
 		EnemyArray[0]->SetEnemyIndex(0);

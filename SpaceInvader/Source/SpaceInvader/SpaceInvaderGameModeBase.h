@@ -20,11 +20,19 @@ class SPACEINVADER_API ASpaceInvaderGameModeBase : public AGameModeBase
 protected:
 	ASpaceInvaderGameModeBase();
 
+	enum EEnemyType
+	{
+		BossType,
+		ChargerType,
+		BasicType,
+		SharpShooterType
+	};
+
 	void BeginPlay() override final;
 
 	void Tick(float DeltaTime) override;
 
-	void SpawnEnemies(int32 EnemyType);
+	void SpawnEnemies(EEnemyType EnemyType);
 
 	UPROPERTY(EditAnywhere, Category="Levels")
 		TArray<FString> Levels;
