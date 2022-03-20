@@ -47,7 +47,7 @@ public:
 	
 protected:
 	UPROPERTY(EditAnywhere, Category="Enemy|Wings")
-	float WingOffset{300.f};
+	float WingOffset{500.f};
 
 	UPROPERTY(EditAnywhere, Category="Combat")
 	float TimeToChangeAttack{10};
