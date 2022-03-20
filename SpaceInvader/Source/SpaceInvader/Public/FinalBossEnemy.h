@@ -99,4 +99,8 @@ protected:
 	float TimeToCloseBeams{2};
 	float CloseBeamTimer{0};
 	FVector FinalBeamDirection{};
+
+
+	UPROPERTY()
+	bool bLateUpdate = true;
 };

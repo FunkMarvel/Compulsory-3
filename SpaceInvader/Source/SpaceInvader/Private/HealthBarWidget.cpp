@@ -5,6 +5,7 @@
 #include "Components/ProgressBar.h"
 #include "ShipPawn.h"
 #include "Engine.h"
+#include "FinalBossEnemy.h"
 #include "HulkBossEnemy.h"
 
 
@@ -36,6 +37,11 @@ void UHealthBarWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime
 	else if (Owner->IsA<AHulkBossEnemy>()){
 		AHulkBossEnemy* HulkBossEnemy = Cast<AHulkBossEnemy>(OwnerActor);
 		HealthBar->SetPercent(HulkBossEnemy->GetHealthPercent());
+	}
+	else if (Owner->IsA(AFinalBossEnemy::StaticClass()))
+	{
+		AFinalBossEnemy* FinalBossEnemy = Cast<AFinalBossEnemy>(OwnerActor);
+		HealthBar->SetPercent(FinalBossEnemy->GetHealthPercent());
 	}
 	
 	
