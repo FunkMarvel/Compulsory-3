@@ -82,14 +82,6 @@ void AFinalBossEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// FVector LeftStartDirection{GetActorRightVector() * EBossPart::Left};
-	// FVector RightStartDirection{GetActorRightVector() * EBossPart::Right};
-	// // LeftLaserBeamComp->SetEmitterDirection(LeftStartDirection);
-	// // RightLaserBeamComp->SetEmitterDirection(RightStartDirection);
-
-	// LeftSideCapsuleComp->OnComponentBeginOverlap.AddDynamic(this, &ABaseEnemy::OnHit);
-	// RightSideCapsuleComp->OnComponentBeginOverlap.AddDynamic(this, &ABaseEnemy::OnHit);
-
 	PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 	SetActorRotation(GetToPlayerDirection().Rotation());
 
@@ -122,12 +114,6 @@ void AFinalBossEnemy::Tick(float DeltaSeconds)
 		SecondPhaseState();
 		break;
 	}
-
-	if (bSeconPhase && AttackTimer >= TimeToChangeAttack)
-	{
-		FireAtPlayer();
-	}
-
 
 	if (bLateUpdate == true)
 	{
@@ -271,8 +257,8 @@ void AFinalBossEnemy::RotateBeamState()
 
 void AFinalBossEnemy::SecondPhaseState()
 {
-	TimeToChangeAttack = 5;
-	bSeconPhase = true;
+	bRotateBeams = true;
+	bCanRotateBeams = true;
 	AttackTimer = 0;
 	ChangeCurrentState(EBossState::DirectFire);
 }
@@ -280,16 +266,18 @@ void AFinalBossEnemy::SecondPhaseState()
 void AFinalBossEnemy::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                             UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (Health <= 0) SetBeamsOn(false);
+	
 	Super::OnHit(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 
-	if (Health <= 0.5*StartHealth && !bSeconPhase)
+	if (Health <= 0.5*StartHealth && !bCanRotateBeams)
 	{
 		ChangeCurrentState(EBossState::SecondPhase);
 	}
-	else if (Health <= 0.75*StartHealth && !bCanRotateBeams)
+	else if (Health <= 0.75*StartHealth && !bSpeedUpShot)
 	{
-		bRotateBeams = true;
-		bCanRotateBeams = true;
+		ShotInterval = 0.125f;
+		bSpeedUpShot = true;
 	}
 }
 
